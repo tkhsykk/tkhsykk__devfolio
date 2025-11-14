@@ -4,7 +4,8 @@
  */
 
 import gulp from 'gulp';
-import sass from 'gulp-sass';
+import dartSass from 'sass';
+import gulpSass from 'gulp-sass';
 import autoprefixer from 'gulp-autoprefixer';
 import sourcemaps from 'gulp-sourcemaps';
 import cleanCSS from 'gulp-clean-css';
@@ -13,6 +14,8 @@ import { build as esbuild } from 'esbuild';
 import browserSync from 'browser-sync';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
+
+const sass = gulpSass(dartSass);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,13 +46,11 @@ const paths = {
  * HTMLファイルをコピー
  */
 export function html() {
-	return gulp
-		.src(paths.html.src)
-		.pipe(gulp.dest(paths.html.dist));
+	return gulp.src(paths.html.src).pipe(gulp.dest(paths.html.dist));
 }
 
 /**
- * SCSSをコンパイルしてCSSを生成
+ * SCSSコンパイル（dart-sass版）
  */
 export function styles() {
 	return gulp
@@ -63,13 +64,14 @@ export function styles() {
 }
 
 /**
- * JavaScriptをバンドル
- * 注意: エントリーポイントファイルが存在する場合のみ実行
+ * JSバンドル（esbuild）
  */
 export async function scripts() {
-	// エントリーポイントファイルが存在するかチェック
 	const fs = await import('fs');
-	const jsFiles = fs.readdirSync(join(srcDir, 'assets/js'), { recursive: true })
+
+	// JSファイル探索
+	const jsFiles = fs
+		.readdirSync(join(srcDir, 'assets/js'), { recursive: true })
 		.filter((file) => file.endsWith('.js'))
 		.map((file) => join(srcDir, 'assets/js', file));
 
@@ -89,14 +91,14 @@ export async function scripts() {
 }
 
 /**
- * アセットファイルをコピー
+ * アセットコピー
  */
 export function copyAssets() {
 	return gulp.src(paths.assets.src).pipe(gulp.dest(paths.assets.dist));
 }
 
 /**
- * 開発サーバーを起動
+ * BrowserSync（開発サーバー）
  */
 export function serve() {
 	browserSync.init({
@@ -114,7 +116,7 @@ export function serve() {
 }
 
 /**
- * 本番用ビルド（minify + 最適化）
+ * HTML minify（本番用）
  */
 export function buildProd() {
 	return gulp
@@ -129,7 +131,7 @@ export function buildProd() {
 }
 
 /**
- * 本番用CSSビルド（minify）
+ * CSS minify（本番用）
  */
 export function stylesProd() {
 	return gulp
@@ -141,7 +143,7 @@ export function stylesProd() {
 }
 
 /**
- * 開発タスク
+ * 開発環境
  */
 export const dev = gulp.series(
 	gulp.parallel(html, styles, scripts, copyAssets),
@@ -149,11 +151,10 @@ export const dev = gulp.series(
 );
 
 /**
- * 本番ビルドタスク
+ * 本番ビルド
  */
 export const build = gulp.series(
 	gulp.parallel(buildProd, stylesProd, scripts, copyAssets)
 );
 
 export default dev;
-
