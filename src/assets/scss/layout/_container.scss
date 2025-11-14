@@ -1,0 +1,25 @@
+/**
+ * コンテナレイアウト
+ * 最大幅と中央揃えを管理
+ */
+
+@use '../global' as *;
+
+.l-container {
+	width: 100%;
+	max-width: 72rem; // max-w-6xl (1152px)
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: $spacing-6;
+	padding-right: $spacing-6;
+
+	@include mq(md) {
+		padding-left: $spacing-6;
+		padding-right: $spacing-6;
+	}
+}
+
+.l-container--narrow {
+	max-width: 64rem; // max-w-4xl (1024px)
+}
+

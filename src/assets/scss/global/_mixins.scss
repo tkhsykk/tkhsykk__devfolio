@@ -1,0 +1,48 @@
+/**
+ * グローバルミックスイン
+ * メディアクエリ、ユーティリティ関数などを定義
+ */
+
+@use 'variables' as *;
+
+/**
+ * メディアクエリミックスイン
+ * @param {string} $breakpoint - ブレークポイント名（sm, md, lg, xl）
+ */
+@mixin mq($breakpoint) {
+	@if $breakpoint == sm {
+		@media (min-width: $breakpoint-sm) {
+			@content;
+		}
+	} @else if $breakpoint == md {
+		@media (min-width: $breakpoint-md) {
+			@content;
+		}
+	} @else if $breakpoint == lg {
+		@media (min-width: $breakpoint-lg) {
+			@content;
+		}
+	} @else if $breakpoint == xl {
+		@media (min-width: $breakpoint-xl) {
+			@content;
+		}
+	}
+}
+
+/**
+ * トランジション
+ */
+@mixin transition($property: all, $duration: $transition-base) {
+	transition: $property $duration;
+}
+
+/**
+ * ホバーエフェクト
+ */
+@mixin hover-lift {
+	@include transition(transform);
+	&:hover {
+		transform: scale(1.05);
+	}
+}
+

@@ -29,7 +29,7 @@ const paths = {
 		dist: distDir,
 	},
 	scss: {
-		src: join(srcDir, 'assets/scss/**/*.scss'),
+		src: join(srcDir, 'assets/scss/style.scss'),
 		dist: join(distDir, 'css'),
 	},
 	js: {
@@ -37,7 +37,11 @@ const paths = {
 		dist: join(distDir, 'js'),
 	},
 	assets: {
-		src: join(srcDir, 'assets/**/*'),
+		src: [
+			join(srcDir, 'assets/**/*'),
+			`!${join(srcDir, 'assets/scss/**/*')}`,
+			`!${join(srcDir, 'assets/js/**/*')}`,
+		],
 		dist: join(distDir, 'assets'),
 	},
 };
@@ -110,7 +114,7 @@ export function serve() {
 	});
 
 	gulp.watch(paths.html.src, html).on('change', browserSync.reload);
-	gulp.watch(paths.scss.src, styles);
+	gulp.watch(join(srcDir, 'assets/scss/**/*.scss'), styles);
 	gulp.watch(paths.js.src, scripts).on('change', browserSync.reload);
 	gulp.watch(paths.assets.src, copyAssets).on('change', browserSync.reload);
 }

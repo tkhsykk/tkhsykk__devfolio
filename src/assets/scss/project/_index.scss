@@ -1,0 +1,10 @@
+/**
+ * プロジェクトレイヤー
+ * ページ固有のスタイル
+ */
+
+@use '../global' as *;
+@use '../component' as *;
+
+@forward 'portfolio';
+

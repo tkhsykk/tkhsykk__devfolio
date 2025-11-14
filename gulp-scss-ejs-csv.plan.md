@@ -77,13 +77,13 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
    - `.u-*` → 単機能
    - `.p-hero__*` → ページ固有
 
-- [ ] `src/index.html`からTailwindクラスを分析
-- [ ] TailwindクラスをPDFLOCSS形式に変換
-- [ ] カラー変数、スペーシング、タイポグラフィを`src/assets/scss/global/_variables.scss`に定義
-- [ ] レイアウト要素を`src/assets/scss/layout/`に`.l-*`クラスとして作成
-- [ ] 再利用可能なUI要素を`src/assets/scss/component/`に`.c-*`クラスとして作成
-- [ ] ページ固有のスタイルを`src/assets/scss/project/`に`.p-[page]`配下で定義
-- [ ] 単機能クラスを`src/assets/scss/utility/`に`.u-*`クラスとして作成
+- [x] `src/index.html`からTailwindクラスを分析
+- [x] TailwindクラスをPDFLOCSS形式に変換
+- [x] カラー変数、スペーシング、タイポグラフィを`src/assets/scss/global/_variables.scss`に定義
+- [x] レイアウト要素を`src/assets/scss/layout/`に`.l-*`クラスとして作成
+- [x] 再利用可能なUI要素を`src/assets/scss/component/`に`.c-*`クラスとして作成
+- [x] ページ固有のスタイルを`src/assets/scss/project/`に`.p-[page]`配下で定義
+- [x] 単機能クラスを`src/assets/scss/utility/`に`.u-*`クラスとして作成
 
 **重要：** このフェーズでは EJS に触らない（HTMLは1ファイルにまとめておく）。
 
@@ -95,10 +95,10 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 - `gulp js` -> esbuildでバンドル
 - `gulp dev` → watch + BrowserSync
 
-- [ ] `gulp html`タスクを作成
-- [ ] `gulp styles`タスクを作成（SCSSコンパイル）
-- [ ] `gulp dev`タスクを作成（watch + BrowserSync）
-- [ ] `gulp build`タスクを作成（本番用ビルド：minify + assetコピー）
+- [x] `gulp html`タスクを作成
+- [x] `gulp styles`タスクを作成（SCSSコンパイル）
+- [x] `gulp dev`タスクを作成（watch + BrowserSync）
+- [x] `gulp build`タスクを作成（本番用ビルド：minify + assetコピー）
 
 💡 EJSなしで HTML と SCSSとJS だけに集中することで、作業速度が桁違いに上がる。
 

@@ -1,0 +1,12 @@
+/**
+ * メインスタイルシート
+ * PDFLOCSSの順序で各レイヤーをインポート
+ */
+
+@use 'global' as *;
+@use 'foundation' as *;
+@use 'layout' as *;
+@use 'component' as *;
+@use 'utility' as *;
+@use 'project' as *;
+
