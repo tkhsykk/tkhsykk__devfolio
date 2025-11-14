@@ -31,10 +31,10 @@
   └─ site/            ← Gulpの出力先
 ```
 
-- [ ] `src/`ディレクトリを作成
-- [ ] `src/assets/scss/`配下にPDFLOCSSレイヤーディレクトリを作成（global, foundation, layout, component, utility, project）
-- [ ] `src/assets/js/`ディレクトリを作成（バンドルは必要に応じて）
-- [ ] `site/`ディレクトリをビルド出力先として作成
+- [x] `src/`ディレクトリを作成
+- [x] `src/assets/scss/`配下にPDFLOCSSレイヤーディレクトリを作成（global, foundation, layout, component, utility, project）
+- [x] `src/assets/js/`ディレクトリを作成（バンドルは必要に応じて）
+- [x] `site/`ディレクトリをビルド出力先として作成
 
 ### 1.2 Gulp のセットアップ
 
@@ -49,9 +49,9 @@
 - gulp-htmlmin
 - esbuild
 
-- [ ] 必要パッケージをインストール: `npm i -D gulp sass gulp-sass gulp-autoprefixer gulp-sourcemaps browser-sync gulp-clean-css gulp-htmlmin gulp-ejs esbuild`
-- [ ] `gulpfile.js`を作成
-- [ ] `package.json`のscriptsを更新（`dev`, `build`）
+- [x] 必要パッケージをインストール: `npm i -D gulp sass gulp-sass gulp-autoprefixer gulp-sourcemaps browser-sync gulp-clean-css gulp-htmlmin gulp-ejs esbuild`
+- [x] `gulpfile.js`を作成
+- [x] `package.json`のscriptsを更新（`dev`, `build`）
 
 ### 1.3 Tailwind削除 → SCSS変換ルール
 

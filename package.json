@@ -1,0 +1,32 @@
+{
+	"name": "tkhsykk__devfolio",
+	"version": "1.0.0",
+	"private": true,
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/tkhsykk/tkhsykk__devfolio.git"
+	},
+	"author": "tkhsykk",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/tkhsykk/tkhsykk__devfolio/issues"
+	},
+	"homepage": "https://github.com/tkhsykk/tkhsykk__devfolio#readme",
+	"scripts": {
+		"dev": "gulp dev",
+		"build": "gulp build"
+	},
+	"devDependencies": {
+		"browser-sync": "^3.0.4",
+		"esbuild": "^0.27.0",
+		"gulp": "^5.0.0",
+		"gulp-autoprefixer": "^9.0.0",
+		"gulp-clean-css": "^4.3.0",
+		"gulp-ejs": "^5.1.0",
+		"gulp-htmlmin": "^5.0.1",
+		"gulp-sass": "^5.1.0",
+		"gulp-sourcemaps": "^2.6.5",
+		"sass": "^1.83.0"
+	}
+}
