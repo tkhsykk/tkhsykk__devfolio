@@ -174,7 +174,7 @@ select {
  * カードコンポーネント
  * 再利用可能なカードUI
  */
-.c-card {
+.c-card, .p-portfolio__skill-card, .p-portfolio__work-card, .p-portfolio__note-card {
   background-color: #fff;
   padding: 2rem;
   border-radius: 1rem;
@@ -182,7 +182,7 @@ select {
   border: 1px solid #ecebff;
   transition: all 0.3s ease;
 }
-.c-card:hover {
+.c-card:hover, .p-portfolio__skill-card:hover, .p-portfolio__work-card:hover, .p-portfolio__note-card:hover {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
@@ -200,7 +200,7 @@ select {
   background-color: #ecebff;
   color: #494b67;
   font-size: 0.875rem;
-  border-radius: 9999px;
+  border-radius: 99em;
   transition: all 0.3s ease;
 }
 .c-badge:hover {
@@ -451,6 +451,29 @@ select {
 .p-portfolio__work-card:hover {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
+.p-portfolio__work-content {
+  padding: 1.5rem;
+}
+.p-portfolio__work-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.p-portfolio__work-meta {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  margin-bottom: 0.75rem;
+}
+.p-portfolio__work-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+}
+.p-portfolio__work-summary {
+  font-size: 0.875rem;
+  opacity: 0.6;
+}
 .p-portfolio__work-image {
   aspect-ratio: 16/9;
   overflow: hidden;
@@ -502,11 +525,57 @@ select {
 .p-portfolio__note-card:hover {
   border-color: #ff006c;
 }
+.p-portfolio__note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+.p-portfolio__note-date {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.5;
+}
+.p-portfolio__note-icon {
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.5;
+}
+.p-portfolio__note-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.p-portfolio__note-text {
+  font-size: 0.875rem;
+  opacity: 0.7;
+  line-height: 1.625;
+}
+.p-portfolio__about-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 1024px) {
+  .p-portfolio__about-grid {
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+  }
+}
+.p-portfolio__about-visual {
+  display: flex;
+  justify-content: center;
+}
+.p-portfolio__about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
 .p-portfolio__about-avatar {
   width: 12rem;
   height: 12rem;
   background: linear-gradient(to bottom right, #ff006c, #494b67);
-  border-radius: 9999px;
+  border-radius: 99em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -545,7 +614,7 @@ select {
   width: 0.5rem;
   height: 0.5rem;
   background-color: #ff006c;
-  border-radius: 9999px;
+  border-radius: 99em;
   margin-right: 0.75rem;
 }
 .p-portfolio__contact {

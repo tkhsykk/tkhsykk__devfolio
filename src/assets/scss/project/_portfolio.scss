@@ -4,6 +4,7 @@
  */
 
 @use '../global' as *;
+@use '../component' as *;
 
 .p-portfolio {
 	min-height: 100vh;
@@ -118,7 +119,7 @@
 	}
 
 	&__skill-card {
-		@extend .c-card !optional;
+		@extend .c-card;
 		margin-bottom: $spacing-6;
 	}
 
@@ -149,7 +150,7 @@
 	// ワークスセクション
 	&__work-card {
 		position: relative;
-		@extend .c-card !optional;
+		@extend .c-card;
 		overflow: hidden;
 		cursor: pointer;
 		@include transition();
@@ -157,6 +158,34 @@
 		&:hover {
 			box-shadow: $shadow-lg;
 		}
+	}
+
+	&__work-content {
+		padding: $spacing-6;
+	}
+
+	&__work-title {
+		font-size: $font-size-lg;
+		font-weight: $font-weight-semibold;
+		margin-bottom: $spacing-2;
+	}
+
+	&__work-meta {
+		font-size: $font-size-sm;
+		opacity: 0.7;
+		margin-bottom: $spacing-3;
+	}
+
+	&__work-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $spacing-1;
+		margin-bottom: $spacing-3;
+	}
+
+	&__work-summary {
+		font-size: $font-size-sm;
+		opacity: 0.6;
 	}
 
 	&__work-image {
@@ -212,7 +241,7 @@
 	}
 
 	&__note-card {
-		@extend .c-card !optional;
+		@extend .c-card;
 		border-color: $color-bg-light;
 		cursor: pointer;
 
@@ -221,7 +250,60 @@
 		}
 	}
 
+	&__note-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		margin-bottom: $spacing-3;
+	}
+
+	&__note-date {
+		font-size: $font-size-xs;
+		font-weight: $font-weight-medium;
+		opacity: 0.5;
+	}
+
+	&__note-icon {
+		width: 1rem;
+		height: 1rem;
+		opacity: 0.5;
+	}
+
+	&__note-title {
+		font-size: $font-size-lg;
+		font-weight: $font-weight-semibold;
+		margin-bottom: $spacing-2;
+	}
+
+	&__note-text {
+		font-size: $font-size-sm;
+		opacity: 0.7;
+		line-height: $line-height-relaxed;
+	}
+
 	// アバウトセクション
+	&__about-grid {
+		display: grid;
+		gap: $spacing-8;
+		grid-template-columns: 1fr;
+
+		@include mq(lg) {
+			grid-template-columns: 1fr 2fr;
+			align-items: center;
+		}
+	}
+
+	&__about-visual {
+		display: flex;
+		justify-content: center;
+	}
+
+	&__about-content {
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-6;
+	}
+
 	&__about-avatar {
 		width: 12rem;
 		height: 12rem;
@@ -310,4 +392,3 @@
 		text-align: center;
 	}
 }
-

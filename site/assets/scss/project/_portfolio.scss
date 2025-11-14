@@ -118,7 +118,7 @@
 	}
 
 	&__skill-card {
-		@extend .c-card !optional;
+		@extend .c-card;
 		margin-bottom: $spacing-6;
 	}
 
@@ -149,7 +149,7 @@
 	// ワークスセクション
 	&__work-card {
 		position: relative;
-		@extend .c-card !optional;
+		@extend .c-card;
 		overflow: hidden;
 		cursor: pointer;
 		@include transition();
@@ -212,7 +212,7 @@
 	}
 
 	&__note-card {
-		@extend .c-card !optional;
+		@extend .c-card;
 		border-color: $color-bg-light;
 		cursor: pointer;
 
