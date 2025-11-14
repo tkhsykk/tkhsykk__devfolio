@@ -6,7 +6,7 @@ import { authHandler, initAuthConfig } from '@hono/auth-js';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { hash, verify } from 'argon2';
 import { Hono } from 'hono';
-import { contextStorage, getContext } from 'hono/context-storage';
+import { contextStorage } from 'hono/context-storage';
 import { cors } from 'hono/cors';
 import { proxy } from 'hono/proxy';
 import { requestId } from 'hono/request-id';
@@ -44,7 +44,12 @@ const app = new Hono();
 app.use('*', requestId());
 
 app.use('*', (c, next) => {
+  //const requestId = c.get('requestId');
+  //return als.run({ requestId }, () => next());
   const requestId = c.get('requestId');
+  if (typeof requestId !== 'string') {
+    return next();
+  }
   return als.run({ requestId }, () => next());
 });
 

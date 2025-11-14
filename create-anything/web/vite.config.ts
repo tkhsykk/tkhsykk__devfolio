@@ -14,12 +14,29 @@ import { restart } from './plugins/restart';
 import { restartEnvFileChange } from './plugins/restartEnvFileChange';
 
 export default defineConfig({
+  //ssr: {
+  //  //noExternal: [
+  //  //  'react-router-hono-server',
+  //  //  '@hono/auth-js',
+  //  //  '@auth/core',
+  //  //  '@react-router/node',
+  //  //  '@react-router/serve',
+  //  //], // ESM変換が必要な依存があれば追加
+  //  noExternal: ['react-router-hono-server'],
+  //  resolve: {
+  //    conditions: ['import', 'module', 'browser', 'default'],
+  //    externalConditions: ['import', 'module', 'browser', 'default'],
+  //  },
+  //  target: 'node',
+  //  format: 'esm',
+  //},
   // Keep them available via import.meta.env.NEXT_PUBLIC_*
   envPrefix: 'NEXT_PUBLIC_',
   optimizeDeps: {
     // Explicitly include fast-glob, since it gets dynamically imported and we
     // don't want that to cause a re-bundle.
-    include: ['fast-glob', 'lucide-react'],
+    //include: ['fast-glob', 'lucide-react', 'react-dom/server'],
+    include: ['react-dom/server'],
     exclude: [
       '@hono/auth-js/react',
       '@hono/auth-js',
@@ -33,6 +50,8 @@ export default defineConfig({
   },
   logLevel: 'info',
   plugins: [
+    //reactDomServerFix(),
+    //ssrEsmFix(),
     nextPublicProcessEnv(),
     restartEnvFileChange(),
     reactRouterHonoServer({
@@ -41,9 +60,9 @@ export default defineConfig({
     }),
     babel({
       include: ['src/**/*.{js,jsx,ts,tsx}'], // or RegExp: /src\/.*\.[tj]sx?$/
-      exclude: /node_modules/, // skip everything else
+      exclude: [/node_modules/, /__create/], // skip everything else and __create directory
       babelConfig: {
-        babelrc: false, // don’t merge other Babel files
+        babelrc: false, // don't merge other Babel files
         configFile: false,
         plugins: ['styled-jsx/babel'],
       },
@@ -78,6 +97,13 @@ export default defineConfig({
     dedupe: ['react', 'react-dom'],
   },
   clearScreen: false,
+  build: {
+    //ssr: true,
+    //ssrEmitAssets: false,
+    //target: 'node22',
+    //ssrTarget: 'node22',
+    target: 'esnext',
+  },
   server: {
     allowedHosts: true,
     host: '0.0.0.0',
