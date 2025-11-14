@@ -15,23 +15,25 @@
 
 ### 1.1 ディレクトリ構造の準備
 ```
-project/
+リポジトリルート/
   ├─ src/
   │   ├─ index.html   ← ここでまず完成形まで組む
-  │   ├─ assets/
-  │   └─ scss/
-  │        ├─ global/
-  │        ├─ foundation/
-  │        ├─ layout/
-  │        ├─ component/
-  │        ├─ utility/
-  │        └─ project/
+  │   └─ assets/
+  │       ├─ scss/
+  │       │   ├─ global/
+  │       │   ├─ foundation/
+  │       │   ├─ layout/
+  │       │   ├─ component/
+  │       │   ├─ utility/
+  │       │   └─ project/
+  │       └─ js/
   ├─ gulpfile.js
   └─ site/            ← Gulpの出力先
 ```
 
 - [ ] `src/`ディレクトリを作成
-- [ ] `src/scss/`配下にPDFLOCSSレイヤーディレクトリを作成（global, foundation, layout, component, utility, project）
+- [ ] `src/assets/scss/`配下にPDFLOCSSレイヤーディレクトリを作成（global, foundation, layout, component, utility, project）
+- [ ] `src/assets/js/`ディレクトリを作成（バンドルは必要に応じて）
 - [ ] `site/`ディレクトリをビルド出力先として作成
 
 ### 1.2 Gulp のセットアップ
@@ -45,8 +47,9 @@ project/
 - browser-sync
 - gulp-clean-css
 - gulp-htmlmin
+- esbuild
 
-- [ ] 必要パッケージをインストール: `npm i -D gulp sass gulp-sass gulp-autoprefixer gulp-sourcemaps browser-sync gulp-clean-css gulp-htmlmin gulp-ejs`
+- [ ] 必要パッケージをインストール: `npm i -D gulp sass gulp-sass gulp-autoprefixer gulp-sourcemaps browser-sync gulp-clean-css gulp-htmlmin gulp-ejs esbuild`
 - [ ] `gulpfile.js`を作成
 - [ ] `package.json`のscriptsを更新（`dev`, `build`）
 
@@ -76,11 +79,11 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 
 - [ ] `src/index.html`からTailwindクラスを分析
 - [ ] TailwindクラスをPDFLOCSS形式に変換
-- [ ] カラー変数、スペーシング、タイポグラフィを`src/scss/global/_variables.scss`に定義
-- [ ] レイアウト要素を`src/scss/layout/`に`.l-*`クラスとして作成
-- [ ] 再利用可能なUI要素を`src/scss/component/`に`.c-*`クラスとして作成
-- [ ] ページ固有のスタイルを`src/scss/project/`に`.p-[page]`配下で定義
-- [ ] 単機能クラスを`src/scss/utility/`に`.u-*`クラスとして作成
+- [ ] カラー変数、スペーシング、タイポグラフィを`src/assets/scss/global/_variables.scss`に定義
+- [ ] レイアウト要素を`src/assets/scss/layout/`に`.l-*`クラスとして作成
+- [ ] 再利用可能なUI要素を`src/assets/scss/component/`に`.c-*`クラスとして作成
+- [ ] ページ固有のスタイルを`src/assets/scss/project/`に`.p-[page]`配下で定義
+- [ ] 単機能クラスを`src/assets/scss/utility/`に`.u-*`クラスとして作成
 
 **重要：** このフェーズでは EJS に触らない（HTMLは1ファイルにまとめておく）。
 
@@ -89,6 +92,7 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 タスク例：
 - `gulp html` → `src/index.html` → `site/index.html`
 - `gulp styles` → SCSS → CSS（`site/css/style.css`）
+- `gulp js` -> esbuildでバンドル
 - `gulp dev` → watch + BrowserSync
 
 - [ ] `gulp html`タスクを作成
@@ -96,7 +100,7 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 - [ ] `gulp dev`タスクを作成（watch + BrowserSync）
 - [ ] `gulp build`タスクを作成（本番用ビルド：minify + assetコピー）
 
-💡 EJSなしで HTML と SCSS だけに集中することで、作業速度が桁違いに上がる。
+💡 EJSなしで HTML と SCSSとJS だけに集中することで、作業速度が桁違いに上がる。
 
 ### 1.5 フェーズ1のゴール
 
