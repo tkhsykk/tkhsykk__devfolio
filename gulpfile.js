@@ -37,6 +37,7 @@ const paths = {
 		dist: join(distDir, 'js'),
 	},
 	assets: {
+		// 画像、フォント、その他のアセットのみ（SCSS/JSは除外）
 		src: [
 			join(srcDir, 'assets/**/*'),
 			`!${join(srcDir, 'assets/scss/**/*')}`,
@@ -95,10 +96,13 @@ export async function scripts() {
 }
 
 /**
- * アセットコピー
+ * アセットコピー（画像、フォントなど、SCSS/JS以外）
+ * SCSS/JSのソースファイルは最初からコピーしない
  */
 export function copyAssets() {
-	return gulp.src(paths.assets.src).pipe(gulp.dest(paths.assets.dist));
+	return gulp
+		.src(paths.assets.src, { allowEmpty: true })
+		.pipe(gulp.dest(paths.assets.dist));
 }
 
 /**
@@ -156,6 +160,7 @@ export const dev = gulp.series(
 
 /**
  * 本番ビルド
+ * SCSS/JSはバンドル後のファイルのみがsite/に配置される
  */
 export const build = gulp.series(
 	gulp.parallel(buildProd, stylesProd, scripts, copyAssets)
