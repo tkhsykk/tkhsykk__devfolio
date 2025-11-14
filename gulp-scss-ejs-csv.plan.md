@@ -3,11 +3,11 @@
 ## フェーズ0: 素材抽出（React/TS/Routerの残骸削除）
 目的：React Router v7 や Tailwind の不要スクリプトを完全除去し、純粋な素材HTMLを作る
 
-- [ ] `build/client/index.html` を `src/` にコピー
-- [ ] `build/client/assets/` を `src/assets/` にコピー
-- [ ] React Router の `<script>`・`<link rel="modulepreload">` などを削除
-- [ ] SSRコメント（`<!--$!-->` など）を削除
-- [ ] 純静的HTMLにする（JavaScript依存ゼロ）
+- [x] `build/client/index.html` を `src/` にコピー
+- [x] `build/client/assets/` を `src/assets/` にコピー
+- [x] React Router の `<script>`・`<link rel="modulepreload">` などを削除
+- [x] SSRコメント（`<!--$!-->` など）を削除
+- [x] 純静的HTMLにする（JavaScript依存ゼロ）
 
 💡 この段階で Tailwind や React を二度と触らずに済む。
 
@@ -195,7 +195,7 @@ const data = Papa.parse(fs.readFileSync('data/skills.csv', 'utf8'), { header: tr
 
 ## 🏁 全体の進行順（最短で沼らない順番）
 
-1. [ ] 素材HTMLを作る（React/TS完全排除）
+1. [x] 素材HTMLを作る（React/TS完全排除）
 2. [ ] Tailwind → SCSS（PDFLOCSS）変換
 3. [ ] GulpでHTML+SCSSの開発環境
 4. [ ] デザイン確定
