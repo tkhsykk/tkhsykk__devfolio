@@ -101,12 +101,21 @@ function fixHTML() {
 		}
 	}
 
-	// 絶対パス（/assets/）を相対パス（assets/）に変換
-	fixedHTML = fixedHTML.replace(/\/assets\//g, 'assets/');
+	// 絶対パス（/assets/）を相対パス（./assets/）に変換
+	// ESモジュールのインポートでは ./ で始まる必要がある
+	fixedHTML = fixedHTML.replace(/\/assets\//g, './assets/');
+	// 既に assets/ となっている場合も ./assets/ に変換（import文やJSON内のパスなど）
+	// import文のパスを変換
+	fixedHTML = fixedHTML.replace(/(import\s+.*?\s+from\s+["'])assets\//g, '$1./assets/');
+	// JSON内のパス（"module": "assets/..."など）を変換
+	fixedHTML = fixedHTML.replace(/(["']):\s*["']assets\//g, '$1: "./assets/');
+	fixedHTML = fixedHTML.replace(/(["'])\s*:\s*\[?\s*["']assets\//g, '$1: ["./assets/');
+	// その他の "assets/ や 'assets/ を ./assets/ に変換
+	fixedHTML = fixedHTML.replace(/(["'])assets\//g, '$1./assets/');
 
 	writeFileSync(htmlPath, fixedHTML, 'utf-8');
 	console.log('HTMLファイルを修正しました:', cssFile);
-	console.log('絶対パスを相対パスに変換しました');
+	console.log('絶対パスを相対パスに変換しました（ESモジュール対応）');
 }
 
 fixHTML();

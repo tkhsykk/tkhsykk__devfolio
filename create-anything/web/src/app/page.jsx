@@ -434,18 +434,6 @@ export default function PortfolioPage() {
           </p>
         </div>
       </footer>
-
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
-        
-        .font-inter {
-          font-family: 'Inter', sans-serif;
-        }
-        
-        html {
-          scroll-behavior: smooth;
-        }
-      `}</style>
     </div>
   );
 }
