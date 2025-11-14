@@ -1,116 +1,200 @@
-<!-- f621ee35-ad80-41b4-a040-7dfac7d10901 5e67bdee-4f07-4bf9-bdee-220c112b9df8 -->
 # Gulp + SCSS + EJS + CSV移行計画
 
-## フェーズ1: Gulp + SCSSへの移行（スタイル開発環境構築）
+## フェーズ0: 素材抽出（React/TS/Routerの残骸削除）
+目的：React Router v7 や Tailwind の不要スクリプトを完全除去し、純粋な素材HTMLを作る
 
-### 1.1 ディレクトリ構造の整理
-- [ ] `ejs/`配下に`scss/`, `data/`ディレクトリを作成（EJSソースファイル用、`create-anything\web\build\client\index.html`をEJS化）
-- [ ] `site/`ディレクトリをビルド出力先として設定（Netlifyで公開）
-- [ ] 既存のReact関連ファイルを削除
+- [ ] `build/client/index.html` を `src/` にコピー
+- [ ] `build/client/assets/` を `src/assets/` にコピー
+- [ ] React Router の `<script>`・`<link rel="modulepreload">` などを削除
+- [ ] SSRコメント（`<!--$!-->` など）を削除
+- [ ] 純静的HTMLにする（JavaScript依存ゼロ）
 
-### 1.2 静的HTMLの作成
-- [ ] `ejs/index.ejs`を作成（現在の`build/client/index.html`をベース）
-- [ ] HTMLにPDFLOCSS形式のクラスを適用：
-  - [ ] `body.page-[slug]`と`main.p-[page]`を基準に構造化
-  - [ ] レイアウト要素に`.l-*`クラスを適用
-  - [ ] 再利用可能なUI要素に`.c-*`クラスを適用
-  - [ ] 必要に応じて`.u-*`ユーティリティクラスを適用
-- [ ] 一時的にハードコードされたテキストでHTML構造を再現
-- [ ] GulpタスクでEJSをコンパイルして`site/`にHTMLを生成（データ読み込みは後回し）
+💡 この段階で Tailwind や React を二度と触らずに済む。
 
-### 1.3 SCSSファイルの作成（PDFLOCSS形式）
-- [ ] PDFLOCSSレイヤー構成に従ってディレクトリ構造を作成：
-  - [ ] `ejs/scss/global/`: 変数・関数・ミックスイン（`_index.scss`で`@forward`）
-  - [ ] `ejs/scss/foundation/`: リセットとベースタイポ（`_index.scss`で`@forward`）
-  - [ ] `ejs/scss/layout/`: `.l-*` クラス（ヘッダー、フッター、セクション等）
-  - [ ] `ejs/scss/component/`: `.c-*` クラス（再利用可能なUI）
-  - [ ] `ejs/scss/project/`: `main.p-[page]` 配下のページ固有スタイル
-  - [ ] `ejs/scss/utility/`: `.u-*` クラス（単機能ユーティリティ）
-- [ ] `ejs/scss/style.scss`をエントリーポイントとして作成（`@use`順序: global → foundation → layout → component → utility → project）
-- [ ] 現在の`page.jsx`のTailwindクラスを分析
-- [ ] TailwindクラスをPDFLOCSS形式に変換：
-  - [ ] カラー変数、スペーシング、タイポグラフィを`global/_variables.scss`に定義
-  - [ ] レイアウト要素（nav, section等）を`layout/`に`.l-*`クラスとして作成
-  - [ ] 再利用可能なUI要素を`component/`に`.c-*`クラスとして作成
-  - [ ] ページ固有のスタイルを`project/`に`.p-[page]`配下で定義
-  - [ ] 単機能クラスを`utility/`に`.u-*`クラスとして作成
+## フェーズ1: Gulp + SCSS（HTMLとスタイルの固定フェーズ）
 
-### 1.4 Gulpのセットアップ
+### 1.1 ディレクトリ構造の準備
+```
+project/
+  ├─ src/
+  │   ├─ index.html   ← ここでまず完成形まで組む
+  │   ├─ assets/
+  │   └─ scss/
+  │        ├─ global/
+  │        ├─ foundation/
+  │        ├─ layout/
+  │        ├─ component/
+  │        ├─ utility/
+  │        └─ project/
+  ├─ gulpfile.js
+  └─ site/            ← Gulpの出力先
+```
+
+- [ ] `src/`ディレクトリを作成
+- [ ] `src/scss/`配下にPDFLOCSSレイヤーディレクトリを作成（global, foundation, layout, component, utility, project）
+- [ ] `site/`ディレクトリをビルド出力先として作成
+
+### 1.2 Gulp のセットアップ
+
+使用するプラグイン：
+- gulp
+- gulp-sass（dart-sass）
+- gulp-autoprefixer
+- gulp-sourcemaps
+- gulp-ejs（フェーズ2で使用）
+- browser-sync
+- gulp-clean-css
+- gulp-htmlmin
+
+- [ ] 必要パッケージをインストール: `npm i -D gulp sass gulp-sass gulp-autoprefixer gulp-sourcemaps browser-sync gulp-clean-css gulp-htmlmin gulp-ejs`
 - [ ] `gulpfile.js`を作成
-- [ ] 必要なGulpプラグインをインストール（gulp-sass, gulp-autoprefixer, gulp-sourcemaps, gulp-ejs, gulp-browser-sync等）
 - [ ] `package.json`のscriptsを更新（`dev`, `build`）
 
-### 1.5 React Router v7の削除
-- [ ] `react-router.config.ts`を削除
-- [ ] `vite.config.ts`を削除
-- [ ] `postcss.config.js`を削除
-- [ ] `tailwind.config.js`を削除
-- [ ] React関連の依存関係を`package.json`から削除
-- [ ] `src/app/`ディレクトリを削除
-- [ ] `scripts/fix-html.js`を削除（Gulpで処理するため）
+### 1.3 Tailwind削除 → SCSS変換ルール
 
-### 1.6 Gulpタスクの実装
-- [ ] `gulp dev`: ファイル監視、SCSSコンパイル、EJSコンパイル、ブラウザリロード
-- [ ] `gulp build`: 本番用ビルド（SCSS圧縮、HTML最適化、`site/`に出力）
+HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 
-### 1.7 Netlify設定とセキュリティ
-- [ ] `netlify.toml`を作成して`site/`ディレクトリを公開設定
-- [ ] `.gitignore`に`.env`、`site/`、その他非公開情報を追加
+変換手順：
+1. ブロック単位で class を BEM に書き換え
+   ```html
+   <h1 class="text-4xl md:text-6xl font-bold">  
+   ↓  
+   <h1 class="p-hero__title">
+   ```
+
+2. Tailwind の値を SCSS に移植（解釈しなくてOK）
+   ```scss
+   font-size: 2.25rem;
+   @include mq(md) { font-size: 3.75rem; }
+   ```
+
+3. PDFLOCSS階層に振り分ける
+   - `.l-*` → レイアウト
+   - `.c-*` → コンポーネント
+   - `.u-*` → 単機能
+   - `.p-hero__*` → ページ固有
+
+- [ ] `src/index.html`からTailwindクラスを分析
+- [ ] TailwindクラスをPDFLOCSS形式に変換
+- [ ] カラー変数、スペーシング、タイポグラフィを`src/scss/global/_variables.scss`に定義
+- [ ] レイアウト要素を`src/scss/layout/`に`.l-*`クラスとして作成
+- [ ] 再利用可能なUI要素を`src/scss/component/`に`.c-*`クラスとして作成
+- [ ] ページ固有のスタイルを`src/scss/project/`に`.p-[page]`配下で定義
+- [ ] 単機能クラスを`src/scss/utility/`に`.u-*`クラスとして作成
+
+**重要：** このフェーズでは EJS に触らない（HTMLは1ファイルにまとめておく）。
+
+### 1.4 Gulpで HTML + SCSS の開発環境
+
+タスク例：
+- `gulp html` → `src/index.html` → `site/index.html`
+- `gulp styles` → SCSS → CSS（`site/css/style.css`）
+- `gulp dev` → watch + BrowserSync
+
+- [ ] `gulp html`タスクを作成
+- [ ] `gulp styles`タスクを作成（SCSSコンパイル）
+- [ ] `gulp dev`タスクを作成（watch + BrowserSync）
+- [ ] `gulp build`タスクを作成（本番用ビルド：minify + assetコピー）
+
+💡 EJSなしで HTML と SCSS だけに集中することで、作業速度が桁違いに上がる。
+
+### 1.5 フェーズ1のゴール
+
+- [ ] `index.html` と `style.css` が "完成形"
+- [ ] Tailwind 完全除去
+- [ ] React Router の JS も完全除去
+- [ ] CSS 設計が完全にあなたのスタックに統合される
+
+## フェーズ2: EJS化（構造の分割フェーズ）
+目的：HTML が固まったタイミングで初めて分割する
+
+### 2.1 EJS ディレクトリ構造
+```
+ejs/
+  ├─ index.ejs
+  ├─ _header.ejs
+  ├─ _footer.ejs
+  ├─ _hero.ejs
+  ├─ _skills.ejs
+  ├─ _works.ejs
+  ├─ _about.ejs
+  └─ _contact.ejs
+```
+
+- [ ] `ejs/`ディレクトリを作成
+- [ ] `ejs/index.ejs`を作成
+- [ ] パーシャルファイルを作成（`_header.ejs`, `_footer.ejs`, `_hero.ejs`, `_skills.ejs`, `_works.ejs`, `_about.ejs`, `_contact.ejs`）
+
+### 2.2 EJS ロジック
+
+HTML をパーツに分割し、include で組み立てる：
+```ejs
+<%- include('_header') %>
+<%- include('_hero') %>
+...
+<%- include('_footer') %>
+```
+
+- [ ] `src/index.html`をEJSテンプレートに分割
+- [ ] `ejs/index.ejs`でincludeを使用して組み立て
+- [ ] Gulp に EJSパイプラインを追加
+
+**重要：** ここで初めて Gulp に EJSパイプラインを追加（フェーズ1では絶対に使わない）
+
+## フェーズ3: CSV（データ外部化フェーズ）
+目的：EJS テンプレをCSVから生成できるようにする
+
+### 3.1 dataディレクトリ
+```
+data/
+  ├─ hero.csv
+  ├─ skills.csv
+  ├─ works.csv
+  ├─ notes.csv
+  ├─ about.csv
+  └─ contact.csv
+```
+
+- [ ] `data/`ディレクトリを作成
+- [ ] CSVファイルを作成（`hero.csv`, `skills.csv`, `works.csv`, `notes.csv`, `about.csv`, `contact.csv`）
+
+### 3.2 Gulpで CSV → JSON に変換
+
+papaparseを使用してJSON を EJS に渡す
+
+スクリプト例：
+```javascript
+const Papa = require('papaparse');
+const data = Papa.parse(fs.readFileSync('data/skills.csv', 'utf8'), { header: true }).data;
+```
+
+- [ ] `gulpfile.js`にCSV読み込み処理を追加
+- [ ] `papaparse`を使用してCSVをJSONに変換
+- [ ] EJSコンパイル時にCSVデータを渡す
+
+### 3.3 EJS でループ表示
+```ejs
+<% skills.forEach(skill => { %>
+  <div><%= skill.name %></div>
+<% }) %>
+```
+
+- [ ] EJSテンプレートでCSVデータをループ表示
+- [ ] 各セクション（hero, skills, works等）でEJSのループ構文を使用
+
+## フェーズ4: 本番ビルド + Netlify デプロイ
+
+- [ ] `gulp build` → minify + assetコピー
+- [ ] `netlify.toml`を作成して`publish = "site"`を設定
+- [ ] `.gitignore`に`site/`、`.env`、その他非公開情報を追加
 - [ ] Netlifyのビルドコマンドを`gulp build`に設定
 
-## フェーズ2: EJS + CSVへの移行（データ外部化）
+## 🏁 全体の進行順（最短で沼らない順番）
 
-### 2.1 CSVファイルの作成
-- [ ] `ejs/data/`ディレクトリに以下のCSVファイルを作成：
-  - [ ] `hero.csv`: タイトル、サブタイトル、説明文
-  - [ ] `skills.csv`: カテゴリ、スキル名（カンマ区切りで複数スキル）
-  - [ ] `works.csv`: 作品情報（id, title, thumbnail, scope, technologies, features, details）
-  - [ ] `tech-notes.csv`: タイトル、説明、日付
-  - [ ] `about.csv`: 名前、役職、説明、経験項目
-  - [ ] `contact.csv`: メールアドレス、GitHub URL
-  - [ ] `navigation.csv`: ナビゲーション項目
-
-### 2.2 CSV読み込みモジュールの作成
-- [ ] `gulpfile.js`内または別ファイルでCSVパーサーを実装
-- [ ] `papaparse`を使用してCSVをJSONに変換
-- [ ] データ構造をEJSテンプレートで使いやすい形式に整形
-
-### 2.3 EJSテンプレートの更新
-- [ ] `ejs/index.ejs`を更新してCSVデータを参照
-- [ ] 各セクション（hero, skills, works等）でEJSのループ構文を使用
-- [ ] パーシャル（`ejs/_header.ejs`, `ejs/_footer.ejs`等）を作成してテンプレートを分割
-
-### 2.4 Gulpタスクの更新
-- [ ] CSV読み込み処理を追加
-- [ ] EJSコンパイル時にCSVデータを渡す
-- [ ] `gulp build`でCSVからHTMLを生成
-
-## 実装ファイル
-
-### 新規作成
-- [ ] `gulpfile.js`
-- [ ] `ejs/scss/style.scss`（エントリーポイント）
-- [ ] `ejs/scss/global/_index.scss`, `ejs/scss/global/_variables.scss`（変数・関数・ミックスイン）
-- [ ] `ejs/scss/foundation/_index.scss`（リセットとベースタイポ）
-- [ ] `ejs/scss/layout/`配下のファイル（`.l-*`クラス）
-- [ ] `ejs/scss/component/`配下のファイル（`.c-*`クラス）
-- [ ] `ejs/scss/project/`配下のファイル（`.p-[page]`配下のスタイル）
-- [ ] `ejs/scss/utility/`配下のファイル（`.u-*`クラス）
-- [ ] `ejs/index.ejs`
-- [ ] `ejs/_header.ejs`, `ejs/_footer.ejs`（パーシャル）
-- [ ] `ejs/data/*.csv`（複数ファイル）
-- [ ] `netlify.toml`（Netlify設定）
-
-### 削除
-- [ ] `react-router.config.ts`
-- [ ] `vite.config.ts`
-- [ ] `postcss.config.js`
-- [ ] `tailwind.config.js`
-- [ ] `src/app/`ディレクトリ全体
-- [ ] `scripts/fix-html.js`
-- [ ] React関連の依存関係
-
-### 更新
-- [ ] `package.json`: Gulp関連パッケージの追加、React関連の削除、scriptsの更新
-- [ ] `.gitignore`: `.env`、`site/`、その他非公開情報を追加
-
+1. [ ] 素材HTMLを作る（React/TS完全排除）
+2. [ ] Tailwind → SCSS（PDFLOCSS）変換
+3. [ ] GulpでHTML+SCSSの開発環境
+4. [ ] デザイン確定
+5. [ ] EJS化（初めてテンプレ化）
+6. [ ] CSV化（データ外部化）
+7. [ ] Netlify公開
