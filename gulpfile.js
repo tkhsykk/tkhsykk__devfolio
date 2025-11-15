@@ -76,6 +76,7 @@ export function html() {
 /**
  * SCSSコンパイル（dart-sass版）
  * PostCSSでautoprefixerとメディアクエリ結合を実行
+ * cleanCSSでコメントを削除（開発環境でもコメント削除）
  */
 export function styles() {
 	return gulp
@@ -84,6 +85,15 @@ export function styles() {
 		.pipe(sourcemaps.init())
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
+		.pipe(
+			cleanCSS({
+				level: {
+					1: {
+						specialComments: 0, // すべてのコメントを削除
+					},
+				},
+			})
+		)
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest(paths.scss.dist))
 		.pipe(browserSync.stream());
@@ -172,6 +182,7 @@ export function buildProd() {
 /**
  * CSS minify（本番用）
  * PostCSSでautoprefixerとメディアクエリ結合を実行
+ * cleanCSSでコメントを削除し、CSSを圧縮
  */
 export function stylesProd() {
 	return gulp
@@ -179,7 +190,15 @@ export function stylesProd() {
 		.pipe(plumber(plumberOptions))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
-		.pipe(cleanCSS())
+		.pipe(
+			cleanCSS({
+				level: {
+					1: {
+						specialComments: 0, // すべてのコメントを削除
+					},
+				},
+			})
+		)
 		.pipe(gulp.dest(paths.scss.dist));
 }
 
