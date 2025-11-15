@@ -104,10 +104,10 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 
 ### 1.5 フェーズ1のゴール
 
-- [ ] `index.html` と `style.css` が "完成形"
-- [ ] Tailwind 完全除去
-- [ ] React Router の JS も完全除去
-- [ ] CSS 設計が完全にあなたのスタックに統合される
+- [x] `index.html` と `style.css` が "完成形"
+- [x] Tailwind 完全除去
+- [x] React Router の JS も完全除去
+- [x] CSS 設計が完全にあなたのスタックに統合される
 
 ## フェーズ2: EJS化（構造の分割フェーズ）
 目的：HTML が固まったタイミングで初めて分割する
