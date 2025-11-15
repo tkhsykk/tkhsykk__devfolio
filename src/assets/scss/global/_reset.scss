@@ -6,8 +6,13 @@
 @use '../foundation' as *;
 
 html {
-	font-size: 100％;
+	font-size: 100%; // 1rem = 16px を明示的に設定
 	scroll-behavior: smooth;
+
+	// ユーザーがアニメーションを減らす設定を有効にしている場合は、スムーズスクロールを無効化
+	@media (prefers-reduced-motion: reduce) {
+		scroll-behavior: auto;
+	}
 }
 
 body {

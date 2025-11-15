@@ -9,9 +9,11 @@
 	display: inline-flex;
 	align-items: center;
 	padding: $spacing-3 $spacing-8;
+	border: 3px solid $color-primary;
 	border-radius: $border-radius-lg;
 	font-weight: $font-weight-semibold;
 	@include transition();
+		border: 3px solid $color-primary;
 
 	&--primary {
 		background-color: $color-primary;
@@ -19,11 +21,12 @@
 
 		&:hover {
 			background-color: $color-text;
+			border-color: $color-text;
 		}
 	}
 
 	&--outline {
-		border: 2px solid $color-primary;
+		//border: 3px solid $color-primary;
 		color: $color-primary;
 
 		&:hover {

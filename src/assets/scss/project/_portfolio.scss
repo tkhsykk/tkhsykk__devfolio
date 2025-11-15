@@ -34,7 +34,7 @@
 
 	&__nav-logo {
 		font-weight: $font-weight-bold;
-		font-size: $font-size-lg;
+		font-size: $font-size-2xl;
 		letter-spacing: 0.05em;
 	}
 
@@ -68,7 +68,11 @@
 		color: $color-text;
 
 		@include mq(md) {
-			font-size: $font-size-6xl;
+			//font-size: $font-size-4xl;
+		}
+
+		.u-text-primary {
+			font-size: $font-size-2xl;
 		}
 	}
 
@@ -94,17 +98,19 @@
 	// セクション共通
 	&__section {
 		padding: $spacing-20 $spacing-6;
+		scroll-margin-top: 80px;
 	}
 
 	&__section-title {
-		font-size: $font-size-3xl;
-		font-weight: $font-weight-bold;
+		font-size: $font-size-4xl;
+		font-weight: $font-weight-medium;
+		font-family: $font-family-en;
 		margin-bottom: $spacing-4;
 		text-align: center;
 		position: relative;
 
 		@include mq(md) {
-			font-size: $font-size-4xl;
+			//font-size: $font-size-4xl;
 		}
 
 		&::after {
@@ -113,7 +119,7 @@
 			width: 4rem;
 			height: 0.25rem;
 			background-color: $color-primary;
-			margin: $spacing-4 auto 0;
+			margin: $spacing-2 auto 0;
 		}
 	}
 
@@ -138,8 +144,8 @@
 	}
 
 	&__skill-icon {
-		width: 1.5rem;
-		height: 1.5rem;
+		width: 1.5em;
+		height: 1.5em;
 		color: $color-primary;
 	}
 
@@ -152,24 +158,43 @@
 	&__skill-tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: $spacing-2;
+		gap: $spacing-3;
+
+		.c-badge {
+			cursor: default;
+		}
 	}
 
 	// ワークスセクション
-	&__work-card {
+	&__works ul.l-grid.l-grid--cols-3{
 		position: relative;
+	}
+	&__work-card {
+		//position: relative;
 		@extend .c-card;
-		overflow: hidden;
+		//overflow: hidden;
 		cursor: pointer;
 		@include transition();
+		display: flex;
+		flex-direction: column;
+		height: 100%;
 
 		&:hover {
 			box-shadow: $shadow-lg;
 		}
+
+		> article {
+			display: flex;
+			flex-direction: column;
+			height: 100%;
+		}
 	}
 
 	&__work-content {
-		padding: $spacing-6;
+		padding: $spacing-4 0;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
 	}
 
 	&__work-title {
@@ -187,7 +212,7 @@
 	&__work-tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: $spacing-1;
+		gap: $spacing-2;
 		margin-bottom: $spacing-3;
 	}
 
@@ -199,39 +224,45 @@
 
 	// 課題 → 解決方法ブロック
 	&__work-solution {
-		margin-top: $spacing-6;
+		margin-top: auto;
 		padding-top: $spacing-6;
 		border-top: 1px solid $color-border;
 		display: flex;
 		flex-direction: column;
-		gap: $spacing-4;
 		align-items: flex-start;
-
-		@include mq(sm) {
-			flex-direction: row;
-			align-items: center;
-		}
 	}
 
 	&__work-problem {
 		flex: 1;
-		background-color: rgba($color-error, 0.05);
-		border-left: 3px solid $color-error;
+		//background-color: rgba($color-primary, 0.5);
+		background-color: $color-bg-light;
 		padding: $spacing-3 $spacing-4;
-		border-radius: $border-radius-sm;
+		position: relative;
+
+		&::before {
+			content: '';
+			position: absolute;
+			bottom: -19px;
+			left: 0;
+			width: 100%;
+			height: 20px;
+			//aspect-ratio: 2;
+			clip-path: polygon(50% 100%,100% 0,0 0);
+			//background: linear-gradient(0deg,rgba($color-text, 0.01),$color-bg-light);
+			background-color: $color-bg-light;
+		}
 	}
 
 	&__work-problem-title {
-		font-size: $font-size-xs;
+		//font-size: $font-size-xs;
 		font-weight: $font-weight-semibold;
-		color: $color-error;
+		color: $color-primary;
 		margin-bottom: $spacing-1;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.1em;
 	}
 
 	&__work-problem-text {
-		font-size: $font-size-xs;
+		//font-size: $font-size-xs;
 		line-height: $line-height-relaxed;
 		color: $color-text;
 		opacity: 0.8;
@@ -251,26 +282,27 @@
 
 	&__work-solution-content {
 		flex: 1;
-		background-color: rgba($color-primary, 0.05);
-		border-left: 3px solid $color-primary;
-		padding: $spacing-3 $spacing-4;
-		border-radius: $border-radius-sm;
+		background-color: $color-white;
+		border: 2px solid $color-bg-light;
+		border-top: none;
+		padding: $spacing-6 $spacing-4 $spacing-3;
+		//border-radius: $border-radius-sm;
+		background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, $color-bg-light 10px, $color-bg-light 12px );
 	}
 
 	&__work-solution-title {
-		font-size: $font-size-xs;
+		//font-size: $font-size-xs;
 		font-weight: $font-weight-semibold;
 		color: $color-primary;
 		margin-bottom: $spacing-1;
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.1em;
+		opacity: 0.7;
 	}
 
 	&__work-solution-text {
-		font-size: $font-size-xs;
+		//font-size: $font-size-xs;
 		line-height: $line-height-relaxed;
 		color: $color-text;
-		opacity: 0.8;
 	}
 
 	&__work-image {
@@ -292,12 +324,14 @@
 	&__work-overlay {
 		position: absolute;
 		inset: 0;
-		background-color: rgba($color-white, 0.95);
-		backdrop-filter: blur(4px);
+		background-color: rgba($color-white, 0.6);
+		backdrop-filter: blur(14px);
+		box-shadow: $shadow-lg;
 		padding: $spacing-6;
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
+		border-radius: $border-radius-lg;
+		//justify-content: center;
 		opacity: 0;
 		pointer-events: none;
 		@include transition(opacity);
@@ -305,6 +339,9 @@
 		.p-portfolio__work-card:hover & {
 			opacity: 1;
 			pointer-events: auto;
+			z-index: 1;
+			width: fit-content;
+			margin: 0 auto;
 		}
 	}
 
@@ -344,16 +381,18 @@
 		align-items: flex-start;
 		padding: $spacing-6;
 		padding-left: calc(3rem + #{$spacing-6} + #{$spacing-6});
-		border-left: 3px solid $color-primary;
-		background-color: $color-bg-light;
-		border-radius: $border-radius-md;
+		//background-color: $color-bg-light;
+		background-size: auto auto;
+		background-color: rgba(255, 255, 255, 1);
+		background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, $color-bg-light 10px, $color-bg-light 12px );
+		//border-radius: $border-radius-md;
 		counter-increment: flow-counter;
 		position: relative;
 		@include transition();
 
 		&:hover {
-			background-color: $color-bg-lighter;
-			box-shadow: $shadow-md;
+			background-color: $color-bg-light;
+			//box-shadow: $shadow-md;
 		}
 
 		&::before {
@@ -369,7 +408,8 @@
 			justify-content: center;
 			background: linear-gradient(to bottom right, $color-primary, color.scale($color-primary, $lightness: -10%));
 			color: $color-white;
-			font-weight: $font-weight-bold;
+			font-weight: $font-weight-semibold;
+			font-family: $font-family-en;
 			font-size: $font-size-lg;
 			border-radius: $border-radius-full;
 			box-shadow: $shadow-sm;
@@ -417,8 +457,10 @@
 
 	&__note-card {
 		@extend .c-card;
-		border-color: $color-bg-light;
+		border-color: $color-bg-lighter;
+		border-width: 3px;
 		cursor: pointer;
+		box-shadow: none;
 
 		&:hover {
 			border-color: $color-primary;
@@ -457,6 +499,10 @@
 	}
 
 	// アバウトセクション
+	&__about {
+		background-color: $color-bg-light;
+	}
+
 	&__about-grid {
 		display: grid;
 		gap: $spacing-8;
@@ -482,6 +528,7 @@
 	&__about-avatar {
 		width: 12rem;
 		height: 12rem;
+		color: $color-white;
 		background: linear-gradient(to bottom right, $color-primary, $color-text);
 		border-radius: $border-radius-full;
 		display: flex;
@@ -537,7 +584,7 @@
 
 	// コンタクトセクション
 	&__contact {
-		background-color: $color-bg-light;
+		//background-color: $color-bg-light;
 	}
 
 	&__contact-text {
@@ -556,18 +603,25 @@
 		@include mq(sm) {
 			flex-direction: row;
 		}
+
+		.c-button {
+			font-size: $font-size-lg;
+		}
 	}
 
 	// フッター
 	&__footer {
 		padding: $spacing-8 $spacing-6;
-		border-top: 1px solid $color-border;
-		background-color: $color-white;
+		//border-top: 1px solid $color-border;
+		background-color: $color-text;
 	}
 
 	&__footer-text {
 		font-size: $font-size-sm;
-		opacity: 0.5;
+		font-family: $font-family-en;
+		color: $color-white;
+		opacity: 0.8;
 		text-align: center;
+		letter-spacing: 0.1em;
 	}
 }

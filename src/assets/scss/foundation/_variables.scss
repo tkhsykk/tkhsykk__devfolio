@@ -10,7 +10,6 @@ $color-text: #494b67;
 $color-bg-light: #d5f7ff;
 $color-bg-lighter: #ecebff;
 $color-border: #ecebff;
-$color-error: #ef4444;
 
 // スペーシング（Tailwind準拠）
 $spacing-1: 0.25rem; // 4px
@@ -27,15 +26,15 @@ $spacing-32: 8rem; // 128px
 
 // タイポグラフィ
 $font-family-base: 'Noto Sans JP', sans-serif;
-$font-size-xs: 0.75rem; // 12px
-$font-size-sm: 0.875rem; // 14px
-$font-size-base: 1rem; // 16px
-$font-size-lg: 1.125rem; // 18px
-$font-size-xl: 1.25rem; // 20px
-$font-size-2xl: 1.5rem; // 24px
-$font-size-3xl: 1.875rem; // 30px
-$font-size-4xl: 2.25rem; // 36px
-$font-size-6xl: 3.75rem; // 60px
+$font-family-en: 'Pixelify Sans', 'Noto Sans JP', sans-serif;
+$font-size-xs: 0.875rem; // 14px
+$font-size-sm: 1rem; // 16px
+$font-size-base: 1.125rem; // 18px
+$font-size-lg: 1.25rem; // 20px
+$font-size-xl: 1.5rem; // 24px
+$font-size-2xl: 1.875rem; // 30px
+$font-size-3xl: 2.25rem; // 36px
+$font-size-4xl: 3.75rem; // 60px
 
 $font-weight-light: 300;
 $font-weight-normal: 400;
