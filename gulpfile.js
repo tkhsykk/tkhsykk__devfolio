@@ -14,6 +14,8 @@ import cleanCSS from 'gulp-clean-css';
 import htmlmin from 'gulp-htmlmin';
 import { build as esbuild } from 'esbuild';
 import browserSync from 'browser-sync';
+import plumber from 'gulp-plumber';
+import notify from 'gulp-notify';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -21,6 +23,18 @@ const sass = gulpSass(dartSass);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+/**
+ * エラーハンドリング設定
+ * plumberでエラー時にストリームを継続し、notifyでポップアップ通知
+ */
+const plumberOptions = {
+	errorHandler: notify.onError({
+		title: 'Gulp Error',
+		message: '<%= error.message %>',
+		sound: false,
+	}),
+};
 
 const srcDir = join(__dirname, 'src');
 const distDir = join(__dirname, 'site');
@@ -53,7 +67,10 @@ const paths = {
  * HTMLファイルをコピー
  */
 export function html() {
-	return gulp.src(paths.html.src).pipe(gulp.dest(paths.html.dist));
+	return gulp
+		.src(paths.html.src)
+		.pipe(plumber(plumberOptions))
+		.pipe(gulp.dest(paths.html.dist));
 }
 
 /**
@@ -63,6 +80,7 @@ export function html() {
 export function styles() {
 	return gulp
 		.src(paths.scss.src)
+		.pipe(plumber(plumberOptions))
 		.pipe(sourcemaps.init())
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
@@ -95,7 +113,15 @@ export async function scripts() {
 		format: 'esm',
 		sourcemap: true,
 		minify: false,
-	}).catch(() => process.exit(1));
+	}).catch((error) => {
+		notify.onError({
+			title: 'JavaScript Build Error',
+			message: error.message || 'JavaScriptのビルドに失敗しました',
+			sound: false,
+		})();
+		console.error('JavaScriptビルドエラー:', error);
+		process.exit(1);
+	});
 }
 
 /**
@@ -105,6 +131,7 @@ export async function scripts() {
 export function copyAssets() {
 	return gulp
 		.src(paths.assets.src, { allowEmpty: true })
+		.pipe(plumber(plumberOptions))
 		.pipe(gulp.dest(paths.assets.dist));
 }
 
@@ -132,6 +159,7 @@ export function serve() {
 export function buildProd() {
 	return gulp
 		.src(paths.html.src)
+		.pipe(plumber(plumberOptions))
 		.pipe(
 			htmlmin({
 				collapseWhitespace: true,
@@ -148,6 +176,7 @@ export function buildProd() {
 export function stylesProd() {
 	return gulp
 		.src(paths.scss.src)
+		.pipe(plumber(plumberOptions))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
 		.pipe(cleanCSS())

@@ -26,6 +26,8 @@
 		"gulp-clean-css": "^4.3.0",
 		"gulp-ejs": "^5.1.0",
 		"gulp-htmlmin": "^5.0.1",
+		"gulp-notify": "^5.0.0",
+		"gulp-plumber": "^1.2.1",
 		"gulp-postcss": "^10.0.0",
 		"gulp-sass": "^5.1.0",
 		"gulp-sourcemaps": "^2.6.5",
