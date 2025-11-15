@@ -1,0 +1,154 @@
+/**************************\
+	Basic Modal Styles
+\**************************/
+
+@use '../foundation' as *;
+
+.modal {
+	font-family: $font-family-base;
+}
+
+.modal__overlay {
+	position: fixed;
+	z-index: 51;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba($color-text, 0.6);
+	backdrop-filter: blur(14px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+}
+
+.modal__container {
+	background-color: $color-white;
+	padding: $spacing-4;
+	max-width: 500px;
+	max-height: 100vh;
+	border-radius: $border-radius-sm;
+	overflow-y: auto;
+	box-sizing: border-box;
+	cursor: default;
+}
+
+.modal__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.modal__title {
+	margin-top: 0;
+	margin-bottom: 0;
+	font-weight: $font-weight-semibold;
+	font-size: $font-size-lg;
+	line-height: $line-height-tight;
+	color: $color-primary;
+	box-sizing: border-box;
+}
+
+.modal__close {
+	background: transparent;
+	border: 0;
+}
+
+.modal__header .modal__close:before { content: "\2715"; }
+
+.modal__content {
+	margin-top: $spacing-8;
+	margin-bottom: $spacing-8;
+	line-height: $line-height-relaxed;
+	color: rgba($color-text, 0.85);
+}
+
+.modal__btn {
+	font-size: $font-size-xs;
+	padding: $spacing-2 $spacing-4;
+	background-color: $color-bg-lighter;
+	color: rgba($color-text, 0.9);
+	border-radius: $border-radius-sm;
+	border-style: none;
+	border-width: 0;
+	cursor: pointer;
+	-webkit-appearance: button;
+	text-transform: none;
+	overflow: visible;
+	line-height: 1.15;
+	margin: 0;
+	will-change: transform;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+	transition: -webkit-transform $transition-base;
+	transition: transform $transition-base;
+	transition: transform $transition-base,-webkit-transform $transition-base;
+}
+
+.modal__btn:focus, .modal__btn:hover {
+	-webkit-transform: scale(1.05);
+	transform: scale(1.05);
+}
+
+.modal__btn-primary {
+	background-color: $color-primary;
+	color: $color-white;
+}
+
+
+
+/**************************\
+	Demo Animation Style
+\**************************/
+@keyframes mmfadeIn {
+		from { opacity: 0; }
+			to { opacity: 1; }
+}
+
+@keyframes mmfadeOut {
+		from { opacity: 1; }
+			to { opacity: 0; }
+}
+
+@keyframes mmslideIn {
+	from { transform: translateY(15%); }
+		to { transform: translateY(0); }
+}
+
+@keyframes mmslideOut {
+		from { transform: translateY(0); }
+		to { transform: translateY(-10%); }
+}
+
+.micromodal-slide {
+	display: none;
+}
+
+.micromodal-slide.is-open {
+	display: block;
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__overlay {
+	animation: mmfadeIn .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+.micromodal-slide[aria-hidden="false"] .modal__container {
+	animation: mmslideIn .3s cubic-bezier(0, 0, .2, 1);
+}
+
+.micromodal-slide[aria-hidden="true"] .modal__overlay {
+	animation: mmfadeOut .3s cubic-bezier(0.0, 0.0, 0.2, 1);
+}
+
+.micromodal-slide[aria-hidden="true"] .modal__container {
+	animation: mmslideOut .3s cubic-bezier(0, 0, .2, 1);
+}
+
+.micromodal-slide .modal__container,
+.micromodal-slide .modal__overlay {
+	will-change: transform;
+}
