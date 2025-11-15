@@ -5,6 +5,7 @@
 
 @use '../foundation' as *;
 @use '../component' as *;
+@use 'sass:color';
 
 .p-portfolio {
 	min-height: 100vh;
@@ -100,17 +101,24 @@
 		font-weight: $font-weight-bold;
 		margin-bottom: $spacing-4;
 		text-align: center;
+		position: relative;
 
 		@include mq(md) {
 			font-size: $font-size-4xl;
 		}
+
+		&::after {
+			content: '';
+			display: block;
+			width: 4rem;
+			height: 0.25rem;
+			background-color: $color-primary;
+			margin: $spacing-4 auto 0;
+		}
 	}
 
 	&__section-divider {
-		width: 4rem;
-		height: 0.25rem;
-		background-color: $color-primary;
-		margin: 0 auto;
+		display: none;
 	}
 
 	// スキルセクション
@@ -186,6 +194,83 @@
 	&__work-summary {
 		font-size: $font-size-sm;
 		opacity: 0.6;
+		margin-bottom: $spacing-4;
+	}
+
+	// 課題 → 解決方法ブロック
+	&__work-solution {
+		margin-top: $spacing-6;
+		padding-top: $spacing-6;
+		border-top: 1px solid $color-border;
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-4;
+		align-items: flex-start;
+
+		@include mq(sm) {
+			flex-direction: row;
+			align-items: center;
+		}
+	}
+
+	&__work-problem {
+		flex: 1;
+		background-color: rgba($color-error, 0.05);
+		border-left: 3px solid $color-error;
+		padding: $spacing-3 $spacing-4;
+		border-radius: $border-radius-sm;
+	}
+
+	&__work-problem-title {
+		font-size: $font-size-xs;
+		font-weight: $font-weight-semibold;
+		color: $color-error;
+		margin-bottom: $spacing-1;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	&__work-problem-text {
+		font-size: $font-size-xs;
+		line-height: $line-height-relaxed;
+		color: $color-text;
+		opacity: 0.8;
+	}
+
+	&__work-arrow {
+		flex-shrink: 0;
+		font-size: $font-size-lg;
+		color: $color-primary;
+		font-weight: $font-weight-bold;
+		padding: 0 $spacing-2;
+
+		@include mq(sm) {
+			font-size: $font-size-xl;
+		}
+	}
+
+	&__work-solution-content {
+		flex: 1;
+		background-color: rgba($color-primary, 0.05);
+		border-left: 3px solid $color-primary;
+		padding: $spacing-3 $spacing-4;
+		border-radius: $border-radius-sm;
+	}
+
+	&__work-solution-title {
+		font-size: $font-size-xs;
+		font-weight: $font-weight-semibold;
+		color: $color-primary;
+		margin-bottom: $spacing-1;
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+	}
+
+	&__work-solution-text {
+		font-size: $font-size-xs;
+		line-height: $line-height-relaxed;
+		color: $color-text;
+		opacity: 0.8;
 	}
 
 	&__work-image {
@@ -238,6 +323,96 @@
 	// ノートセクション
 	&__notes {
 		background-color: $color-bg-lighter;
+	}
+
+	// 制作フローセクション
+	&__flow {
+		background-color: $color-white;
+	}
+
+	&__flow-list {
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-8;
+		max-width: 48rem;
+		margin: 0 auto;
+		counter-reset: flow-counter;
+	}
+
+	&__flow-item {
+		display: flex;
+		align-items: flex-start;
+		padding: $spacing-6;
+		padding-left: calc(3rem + #{$spacing-6} + #{$spacing-6});
+		border-left: 3px solid $color-primary;
+		background-color: $color-bg-light;
+		border-radius: $border-radius-md;
+		counter-increment: flow-counter;
+		position: relative;
+		@include transition();
+
+		&:hover {
+			background-color: $color-bg-lighter;
+			box-shadow: $shadow-md;
+		}
+
+		&::before {
+			content: counter(flow-counter, decimal-leading-zero);
+			position: absolute;
+			left: $spacing-6;
+			top: $spacing-6;
+			flex-shrink: 0;
+			width: 3rem;
+			height: 3rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: linear-gradient(to bottom right, $color-primary, color.scale($color-primary, $lightness: -10%));
+			color: $color-white;
+			font-weight: $font-weight-bold;
+			font-size: $font-size-lg;
+			border-radius: $border-radius-full;
+			box-shadow: $shadow-sm;
+		}
+
+		@include mq(md) {
+			padding: $spacing-8;
+			padding-left: calc(4rem + #{$spacing-8} + #{$spacing-6});
+
+			&::before {
+				width: 4rem;
+				height: 4rem;
+				font-size: $font-size-xl;
+				left: $spacing-8;
+				top: $spacing-8;
+			}
+		}
+	}
+
+	&__flow-number {
+		display: none;
+	}
+
+	&__flow-content {
+		flex: 1;
+	}
+
+	&__flow-title {
+		font-size: $font-size-lg;
+		font-weight: $font-weight-semibold;
+		margin-bottom: $spacing-3;
+		color: $color-text;
+
+		@include mq(md) {
+			font-size: $font-size-xl;
+		}
+	}
+
+	&__flow-text {
+		font-size: $font-size-base;
+		line-height: $line-height-relaxed;
+		opacity: 0.8;
+		color: $color-text;
 	}
 
 	&__note-card {
@@ -346,14 +521,18 @@
 		display: flex;
 		align-items: center;
 		opacity: 0.7;
-	}
+		position: relative;
+		padding-left: calc(0.5rem + #{$spacing-3});
 
-	&__about-dot {
-		width: 0.5rem;
-		height: 0.5rem;
-		background-color: $color-primary;
-		border-radius: $border-radius-full;
-		margin-right: $spacing-3;
+		&::before {
+			content: '';
+			position: absolute;
+			left: 0;
+			width: 0.5rem;
+			height: 0.5rem;
+			background-color: $color-primary;
+			border-radius: $border-radius-full;
+		}
 	}
 
 	// コンタクトセクション
