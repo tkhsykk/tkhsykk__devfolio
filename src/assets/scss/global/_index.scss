@@ -1,8 +1,9 @@
 /**
  * グローバルレイヤー
- * 変数とミックスインを公開
+ * リセットとベーススタイル
  */
 
-@forward 'variables';
-@forward 'mixins';
+@forward 'destyle';
+@forward 'fonts';
+
 

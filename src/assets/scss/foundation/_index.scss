@@ -1,9 +1,9 @@
 /**
  * ファウンデーションレイヤー
- * リセットとベーススタイル
+ * 変数とミックスイン
  */
 
-@use '../global' as *;
 
-@forward 'reset';
-
+@forward 'variables';
+@forward 'mixins';
+@forward 'functions';

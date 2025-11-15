@@ -3,7 +3,7 @@
  * ページ固有のスタイル
  */
 
-@use '../global' as *;
+@use '../foundation' as *;
 @use '../component' as *;
 
 @forward 'portfolio';

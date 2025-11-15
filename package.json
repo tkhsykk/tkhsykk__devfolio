@@ -13,6 +13,10 @@
 		"url": "https://github.com/tkhsykk/tkhsykk__devfolio/issues"
 	},
 	"homepage": "https://github.com/tkhsykk/tkhsykk__devfolio#readme",
+	"volta": {
+		"node": "20.17.0",
+		"npm": "10.8.2"
+	},
 	"scripts": {
 		"dev": "gulp dev",
 		"build": "gulp build"

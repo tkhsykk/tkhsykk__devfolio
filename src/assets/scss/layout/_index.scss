@@ -3,7 +3,7 @@
  * サイト全体の骨組みを定義
  */
 
-@use '../global' as *;
+@use '../foundation' as *;
 
 @forward 'container';
 @forward 'grid';
