@@ -4,6 +4,16 @@
 
 Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDFLOCSS) + EJS + CSV への移行プロジェクト。
 
+### devfolio開発フロー
+1. ChatGPTに開発の流れを相談、ポートフォリオに必要な項目を挙げてもらう
+2. ChatGPTに書いてもらったプロンプトを調整、それを元に[Anything](https://www.createanything.com/)でざっくりしたデザインを生成
+3. Anythingで生成されたReact+Vite+Tailwind CSSのソースをダウンロード
+4. ローカルでビルドできるよう調整
+5. 自分で作ったCursor用汎用指示書mdcを設置し、ChatGPTと相談して一連の開発計画とチェックリストを作成（@gulp-scss-ejs-csv.plan.md）。以降はこのチェックリストに沿って開発
+6. Cursor ProでReact->HTML+CSS+JSへ変換
+7. Cursor ProでTailwindを剥がしてPDFLOCSS形式へ変換
+8. 
+
 ## 技術スタック
 
 ### ビルドツール
@@ -33,38 +43,20 @@ Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDF
 
 ### CSS設計
 
-**PDFLOCSS形式**を採用。レイヤー構造は以下の通り：
+**PDFLOCSS形式**を採用。
 
-```
-src/assets/scss/
-├─ global/          # 変数・ミックスイン
-│  ├─ _variables.scss
-│  ├─ _mixins.scss
-│  └─ _index.scss
-├─ foundation/      # リセット・ベーススタイル
-│  ├─ _reset.scss
-│  └─ _index.scss
-├─ layout/         # レイアウトクラス（.l-*）
-│  ├─ _container.scss
-│  ├─ _grid.scss
-│  └─ _index.scss
-├─ component/      # コンポーネントクラス（.c-*）
-│  ├─ _card.scss
-│  ├─ _badge.scss
-│  ├─ _button.scss
-│  └─ _index.scss
-├─ utility/        # ユーティリティクラス（.u-*）
-│  └─ _index.scss
-├─ project/        # プロジェクト固有スタイル（.p-*）
-│  ├─ _portfolio.scss
-│  └─ _index.scss
-└─ style.scss      # エントリーポイント
-```
 
 ### ディレクトリ構造
 
 ```
 リポジトリルート/
+├─ .cursor/                # Git管理外
+│  └─ rules/               # Cursor AI指示ファイル
+│     ├─ 00_rule.mdc                    # 基本ルール・コーディング規約（常時適用）
+│     ├─ 10_pdfcss-quickref.mdc         # PDFLOCSS運用サマリ（レイヤー構成・Sass運用）
+│     ├─ 20_wordpress-production-guide.mdc  # WordPressプロダクションガイド（PHP/テーマ/プラグイン開発）
+│     ├─ 70_review-checklist.mdc       # コードレビュー確認表（Sass・一般チェックリスト）
+│     └─ 99_local-notes.mdc            # ローカルメモ（プロジェクト固有の注意点）
 ├─ src/                    # ソースファイル
 │  ├─ index.html          # メインHTML（完成形）
 │  └─ assets/
@@ -83,43 +75,6 @@ src/assets/scss/
 └─ package.json
 ```
 
-### ディレクトリ説明
-
-#### ルートディレクトリ
-
-- **`src/`** - ソースファイルのルート。開発時に編集するファイルを配置
-- **`site/`** - ビルド出力先。Gulpが生成したファイルが配置され、Netlifyで公開される
-- **`notes/`** - プロジェクトのドキュメント（計画書、技術メモなど）
-- **`create-anything/`** - 元のAnythingプロジェクト（移行元、一度TypeScriptを静的HTMLにしたら使わない）
-
-#### `src/` 配下
-
-- **`src/index.html`** - メインのHTMLファイル。完成形のマークアップ
-- **`src/assets/scss/`** - SCSSソースファイル（PDFLOCSS形式）
-  - `global/` - 変数、ミックスインなどグローバル設定
-  - `foundation/` - リセットCSS、ベーススタイル
-  - `layout/` - レイアウト関連のクラス（`.l-*`）
-  - `component/` - 再利用可能なコンポーネント（`.c-*`）
-  - `utility/` - ユーティリティクラス（`.u-*`）
-  - `project/` - プロジェクト固有のスタイル（`.p-*`）
-  - `style.scss` - エントリーポイント（全レイヤーをインポート）
-- **`src/assets/js/`** - JavaScriptソースファイル（esbuildでバンドル）
-
-#### `site/` 配下
-
-- **`site/index.html`** - ビルド後のHTML（minify済み）
-- **`site/css/`** - コンパイル済みCSS
-  - `style.css` - 本番用CSS（minify済み）
-  - `style.css.map` - ソースマップ（開発時のみ）
-- **`site/js/`** - バンドル済みJavaScriptファイル
-- **`site/assets/`** - 静的アセット（画像、フォントなど）
-  - 注意: SCSS/JSのソースファイルは含まれない（バンドル後のファイルのみ）
-
-#### その他
-
-- **`gulpfile.js`** - Gulpのタスク定義ファイル
-- **`package.json`** - プロジェクトの依存関係とスクリプト定義
-
 ### 命名規則
 
 - **レイアウト**: `.l-*` (例: `.l-container`, `.l-grid`)
@@ -127,19 +82,6 @@ src/assets/scss/
 - **ユーティリティ**: `.u-*` (例: `.u-text-center`, `.u-mb-4`)
 - **プロジェクト**: `.p-*` (例: `.p-portfolio`, `.p-portfolio__nav`)
 
-## 進捗状況
-
-### ✅ フェーズ0: 素材抽出（完了）
-
-- [x] `build/client/index.html` を `src/` にコピー
-- [x] `build/client/assets/` を `src/assets/` にコピー
-- [x] React Router の `<script>`・`<link rel="modulepreload">` などを削除
-- [x] SSRコメント（`<!--$!-->` など）を削除
-- [x] 純静的HTMLにする（JavaScript依存ゼロ）
-
-**成果**: 
-- React Router v7 と Tailwind CSS の残骸を完全除去し、純粋な素材HTMLを作成
-- Viteで生成されたJS/CSSファイル（`src/vendor/`配下）は不要のため削除済み
 
 ## 主な実装内容
 
@@ -163,53 +105,7 @@ npm run build
   - JS: esbuildでバンドル
   - アセット: 画像・フォントなどをコピー（SCSS/JSソースは除外）
 
-### ビルド出力の特徴
 
-- **SCSS/JSのソースファイルはコピーしない**: `copyAssets`タスクで除外
-- **バンドル後のファイルのみ配置**: `site/css/style.css`、`site/js/`など
-
-### エラーハンドリング
-
-- **gulp-plumber**: エラー発生時にストリームを継続し、watchタスクが停止しないようにする
-- **gulp-notify**: エラー発生時にデスクトップ通知（ポップアップ）を表示
-- すべてのGulpタスク（HTML、SCSS、アセットコピー）に`plumber()`を適用
-- JavaScriptビルド（esbuild）のエラー時も通知を表示
-- **ソースマップ生成**: 開発時のデバッグ用（本番ビルドではminify）
-
-### 変数・ミックスイン
-
-#### カラーパレット
-```scss
-$color-white: #fff;
-$color-primary: #ff006c;
-$color-text: #494b67;
-$color-bg-light: #d5f7ff;
-$color-bg-lighter: #ecebff;
-$color-border: #ecebff;
-```
-
-#### スペーシング（Tailwind準拠）
-```scss
-$spacing-1: 0.25rem;  // 4px
-$spacing-2: 0.5rem;   // 8px
-$spacing-4: 1rem;     // 16px
-$spacing-6: 1.5rem;   // 24px
-$spacing-8: 2rem;     // 32px
-// ... など
-```
-
-#### メディアクエリミックスイン
-```scss
-@include mq(md) {
-  // 768px以上
-}
-```
-
-## 今後の予定
-
-1. **フェーズ2**: HTMLをEJSテンプレートに分割
-2. **フェーズ3**: CSVからデータを読み込んで動的生成
-3. **フェーズ4**: Netlifyにデプロイ
 
 ## 参考資料
 
