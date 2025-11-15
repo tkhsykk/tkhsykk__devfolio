@@ -6,7 +6,9 @@
 import gulp from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
-import autoprefixer from 'gulp-autoprefixer';
+import postcss from 'gulp-postcss';
+import autoprefixer from 'autoprefixer';
+import combineMediaQuery from 'postcss-combine-media-query';
 import sourcemaps from 'gulp-sourcemaps';
 import cleanCSS from 'gulp-clean-css';
 import htmlmin from 'gulp-htmlmin';
@@ -56,13 +58,14 @@ export function html() {
 
 /**
  * SCSSコンパイル（dart-sass版）
+ * PostCSSでautoprefixerとメディアクエリ結合を実行
  */
 export function styles() {
 	return gulp
 		.src(paths.scss.src)
 		.pipe(sourcemaps.init())
 		.pipe(sass().on('error', sass.logError))
-		.pipe(autoprefixer())
+		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
 		.pipe(sourcemaps.write('.'))
 		.pipe(gulp.dest(paths.scss.dist))
 		.pipe(browserSync.stream());
@@ -140,12 +143,13 @@ export function buildProd() {
 
 /**
  * CSS minify（本番用）
+ * PostCSSでautoprefixerとメディアクエリ結合を実行
  */
 export function stylesProd() {
 	return gulp
 		.src(paths.scss.src)
 		.pipe(sass().on('error', sass.logError))
-		.pipe(autoprefixer())
+		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
 		.pipe(cleanCSS())
 		.pipe(gulp.dest(paths.scss.dist));
 }
