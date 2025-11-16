@@ -6,14 +6,18 @@
 @use '../foundation' as *;
 
 .c-button {
+	$this: &;
 	display: inline-flex;
 	align-items: center;
 	padding: $spacing-3 $spacing-8;
 	border: 3px solid $color-primary;
 	border-radius: $border-radius-lg;
 	font-weight: $font-weight-semibold;
-	@include transition();
-		border: 3px solid $color-primary;
+	border: 3px solid $color-primary;
+
+	@media (hover: hover) {
+		@include transition();
+	}
 
 	&--primary {
 		background-color: $color-primary;
@@ -23,16 +27,38 @@
 			background-color: $color-text;
 			border-color: $color-text;
 		}
-	}
 
-	&--outline {
-		//border: 3px solid $color-primary;
-		color: $color-primary;
+		&#{$this}--outline {
+			//border: 3px solid $color-primary;
+			color: $color-primary;
 
-		&:hover {
-			background-color: $color-primary;
-			color: $color-white;
+			&:hover {
+				background-color: $color-primary;
+				color: $color-white;
+			}
 		}
 	}
+
+	&--secondary {
+		background-color: $color-text;
+		color: $color-white;
+
+		&:hover {
+			background-color: $color-text;
+			border-color: $color-text;
+		}
+
+		&#{$this}--outline {
+			border: 3px solid $color-text;
+			//color: $color-text;
+
+			&:hover {
+				background-color: $color-white;
+				color: $color-text;
+			}
+		}
+	}
+
+
 }
 
