@@ -19,6 +19,16 @@
 		@include transition();
 	}
 
+	&#{$this}--outline {
+		//border: 3px solid $color-primary;
+		color: $color-primary;
+
+		&:hover {
+			background-color: $color-primary;
+			color: $color-white;
+		}
+	}
+
 	&--primary {
 		background-color: $color-primary;
 		color: $color-white;

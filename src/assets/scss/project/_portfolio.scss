@@ -13,16 +13,13 @@
 	color: $color-text;
 	font-family: $font-family-base;
 
-	a{
-		color: $color-primary;
-		text-decoration: underline;
-		text-underline-offset: 6px;
-		text-decoration-thickness: 2px;
-		text-decoration-color: $color-primary;
-
-		&:hover {
-			color: rgba($color-primary, 0.6);
-			text-decoration: none;
+	p{
+		a{
+			color: $color-primary;
+			text-decoration: underline;
+			text-underline-offset: 6px;
+			text-decoration-thickness: 2px;
+			text-decoration-color: $color-primary;
 		}
 	}
 
