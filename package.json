@@ -40,6 +40,7 @@
 		"sass": "^1.83.0"
 	},
 	"dependencies": {
+		"@oddbird/popover-polyfill": "^0.6.1",
 		"micromodal": "^0.6.1"
 	}
 }
