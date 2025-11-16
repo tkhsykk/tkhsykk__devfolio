@@ -5,14 +5,21 @@
 Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDFLOCSS) + EJS + CSV への移行プロジェクト。
 
 ### devfolio開発フロー
-1. ChatGPTに開発の流れを相談、ポートフォリオに必要な項目を挙げてもらう
-2. ChatGPTに書いてもらったプロンプトを調整、それを元に[Anything](https://www.createanything.com/)でざっくりしたデザインを生成
-3. Anythingで生成されたReact+Vite+Tailwind CSSのソースをダウンロード
-4. ローカルでビルドできるよう調整
-5. 自分で作ったCursor用汎用指示書mdcを設置し、ChatGPTと相談して一連の開発計画とチェックリストを作成（@gulp-scss-ejs-csv.plan.md）。以降はこのチェックリストに沿って開発
-6. Cursor ProでReact->HTML+CSS+JSへ変換
-7. Cursor ProでTailwindを剥がしてPDFLOCSS形式へ変換
-8. 
+
+01. ChatGPTに開発の流れを相談、ポートフォリオに必要な項目を挙げてもらう
+03. ChatGPTに書いてもらったプロンプトを調整、それを元に[Anything](https://www.createanything.com/)でざっくりしたデザインを生成
+04. Anythingで生成されたReact+Vite+Tailwind CSSのソースをダウンロード
+05. ローカルでビルドできるよう調整
+06. 自分で作ったCursor用汎用指示書mdcを設置し、ChatGPTと相談して一連の開発計画とチェックリストを作成（@gulp-scss-ejs-csv.plan.md）。以降はこのチェックリストに沿って開発
+07. Cursor ProでReact->HTML+CSS+JSへ変換、Tailwindを剥がしてPDFLOCSS形式へ変換
+09. Gulp + SCSS の開発環境構築（watch + BrowserSync。スタイル変更はリロードではなくStream形式）
+10. EJS化：HTMLをパーシャルに分割（_header.ejs、_footer.ejs等）- gulp-ejs使用
+11. CSV化：Githubに公開するにあたり、公開したくない個人情報やコンテンツデータを外部化し、EJSに読み込み - papaparse使用
+12. アクセシビリティチェック（WAI-ARIA、キーボード操作、Lighthouse）- 手動チェック
+13. パフォーマンス最適化（Lighthouse、クリティカルCSS、フォント最適化）- 手動最適化
+15. デプロイ前チェック（ビルド確認、リンク切れ、クロスブラウザテスト）- 手動チェック
+16. Netlifyデプロイ設定（netlify.toml、ビルドコマンド）
+17. 本番環境での動作確認と最終調整
 
 ## 技術スタック
 
