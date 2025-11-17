@@ -1,9 +1,307 @@
+var __defProp = Object.defineProperty;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __esm = (fn, res) => function __init() {
+  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+};
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+
+// src/assets/js/slider.js
+var slider_exports = {};
+__export(slider_exports, {
+  ImageSlider: () => ImageSlider,
+  initSliders: () => initSliders,
+  setupModalSliders: () => setupModalSliders,
+  sliderInstances: () => sliderInstances
+});
+function ensureSliderInstance(element, options) {
+  if (!sliderInstances.has(element)) {
+    sliderInstances.set(element, new ImageSlider(element, options));
+  }
+  return sliderInstances.get(element);
+}
+function initSliders(root = document) {
+  const scope = root instanceof HTMLElement ? root : document;
+  scope.querySelectorAll("[data-slider]").forEach((slider) => ensureSliderInstance(slider));
+}
+function setupModalSliders(micromodal = typeof window !== "undefined" ? window.MicroModal : void 0) {
+  if (!micromodal || modalPatched) {
+    return;
+  }
+  const originalShow = micromodal.show.bind(micromodal);
+  micromodal.show = (modalId, options = {}) => {
+    originalShow(modalId, options);
+    const modalElement = document.getElementById(modalId);
+    if (!modalElement) {
+      return;
+    }
+    modalElement.querySelectorAll("[data-slider]").forEach((slider) => {
+      const instance = sliderInstances.get(slider);
+      if (instance) {
+        instance.reset();
+      } else {
+        ensureSliderInstance(slider);
+      }
+    });
+  };
+  modalPatched = true;
+}
+function observeDynamicSliders(target = document.body) {
+  if (typeof MutationObserver === "undefined" || !target) {
+    return;
+  }
+  if (sliderObserver) {
+    sliderObserver.disconnect();
+  }
+  sliderObserver = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (!(node instanceof HTMLElement)) {
+          return;
+        }
+        if (typeof node.matches === "function" && node.matches("[data-slider]")) {
+          ensureSliderInstance(node);
+        }
+        node.querySelectorAll?.("[data-slider]").forEach((child) => ensureSliderInstance(child));
+      });
+    });
+  });
+  sliderObserver.observe(target, {
+    childList: true,
+    subtree: true
+  });
+}
+function bootstrapSliders() {
+  initSliders();
+  setupModalSliders();
+  observeDynamicSliders();
+}
+var SLIDER_DEFAULTS, KEYBOARD, ImageSlider, sliderInstances, modalPatched, sliderObserver;
+var init_slider = __esm({
+  "src/assets/js/slider.js"() {
+    SLIDER_DEFAULTS = {
+      trackSelector: ".c-slider__track",
+      slideSelector: ".c-slider__slide",
+      prevSelector: "[data-slider-prev]",
+      nextSelector: "[data-slider-next]",
+      paginationSelector: ".c-slider__pagination",
+      swipeThreshold: 40
+    };
+    KEYBOARD = {
+      prev: ["ArrowLeft", "Left"],
+      next: ["ArrowRight", "Right"]
+    };
+    ImageSlider = class {
+      constructor(element, options = {}) {
+        this.root = element;
+        this.options = { ...SLIDER_DEFAULTS, ...options };
+        this.track = element.querySelector(this.options.trackSelector);
+        this.slides = Array.from(element.querySelectorAll(this.options.slideSelector));
+        this.prevButton = element.querySelector(this.options.prevSelector);
+        this.nextButton = element.querySelector(this.options.nextSelector);
+        this.pagination = element.querySelector(this.options.paginationSelector);
+        this.paginationButtons = [];
+        this.currentIndex = 0;
+        this.touchStartX = null;
+        this.touchEndX = null;
+        this.handlePrev = this.goToPrev.bind(this);
+        this.handleNext = this.goToNext.bind(this);
+        this.handleKeydown = this.handleKeydown.bind(this);
+        this.handleTouchStart = this.handleTouchStart.bind(this);
+        this.handleTouchEnd = this.handleTouchEnd.bind(this);
+        this.init();
+      }
+      init() {
+        if (!this.track || this.slides.length === 0) {
+          return;
+        }
+        if (!this.root.hasAttribute("tabindex")) {
+          this.root.setAttribute("tabindex", "0");
+        }
+        this.root.setAttribute("role", "region");
+        this.root.setAttribute("aria-roledescription", "carousel");
+        this.bindEvents();
+        if (this.slides.length <= 1) {
+          this.toggleControls(false);
+          this.updateSlides();
+          return;
+        }
+        this.toggleControls(true);
+        this.renderPagination();
+        this.updateSlides();
+      }
+      bindEvents() {
+        if (this.prevButton) {
+          this.prevButton.addEventListener("click", this.handlePrev);
+        }
+        if (this.nextButton) {
+          this.nextButton.addEventListener("click", this.handleNext);
+        }
+        this.root.addEventListener("keydown", this.handleKeydown);
+        if (this.track) {
+          this.track.addEventListener("touchstart", this.handleTouchStart, { passive: true });
+          this.track.addEventListener("touchend", this.handleTouchEnd, { passive: true });
+        }
+      }
+      renderPagination() {
+        if (!this.pagination) {
+          return;
+        }
+        this.pagination.innerHTML = "";
+        this.paginationButtons = [];
+        const fragment = document.createDocumentFragment();
+        this.slides.forEach((_, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "c-slider__pagination-button";
+          button.setAttribute("aria-label", `\u30B9\u30E9\u30A4\u30C9${index + 1}\u306B\u79FB\u52D5`);
+          button.dataset.sliderIndex = String(index);
+          button.addEventListener("click", () => this.goToSlide(index));
+          this.paginationButtons.push(button);
+          fragment.appendChild(button);
+        });
+        this.pagination.appendChild(fragment);
+      }
+      updateSlides() {
+        const translateX = -this.currentIndex * 100;
+        this.track.style.transform = `translateX(${translateX}%)`;
+        this.slides.forEach((slide, index) => {
+          const isActive = index === this.currentIndex;
+          slide.setAttribute("aria-hidden", isActive ? "false" : "true");
+          slide.classList.toggle("is-active", isActive);
+        });
+        this.updatePagination();
+        this.updateControlState();
+      }
+      goToPrev() {
+        if (this.slides.length <= 1) {
+          return;
+        }
+        if (this.currentIndex > 0) {
+          this.currentIndex -= 1;
+        } else {
+          this.currentIndex = this.slides.length - 1;
+        }
+        this.updateSlides();
+      }
+      goToNext() {
+        if (this.slides.length <= 1) {
+          return;
+        }
+        if (this.currentIndex < this.slides.length - 1) {
+          this.currentIndex += 1;
+        } else {
+          this.currentIndex = 0;
+        }
+        this.updateSlides();
+      }
+      goToSlide(index) {
+        if (index < 0 || index >= this.slides.length) {
+          return;
+        }
+        this.currentIndex = index;
+        this.updateSlides();
+      }
+      handleKeydown(event) {
+        if (KEYBOARD.prev.includes(event.key)) {
+          event.preventDefault();
+          this.goToPrev();
+          return;
+        }
+        if (KEYBOARD.next.includes(event.key)) {
+          event.preventDefault();
+          this.goToNext();
+        }
+      }
+      handleTouchStart(event) {
+        this.touchStartX = event.changedTouches[0].clientX;
+      }
+      handleTouchEnd(event) {
+        this.touchEndX = event.changedTouches[0].clientX;
+        if (this.touchStartX === null || this.touchEndX === null) {
+          return;
+        }
+        const deltaX = this.touchStartX - this.touchEndX;
+        this.touchStartX = null;
+        this.touchEndX = null;
+        if (Math.abs(deltaX) < this.options.swipeThreshold) {
+          return;
+        }
+        if (deltaX > 0) {
+          this.goToNext();
+        } else {
+          this.goToPrev();
+        }
+      }
+      updatePagination() {
+        if (!this.paginationButtons.length) {
+          return;
+        }
+        this.paginationButtons.forEach((button, index) => {
+          const isActive = index === this.currentIndex;
+          button.classList.toggle("is-active", isActive);
+          if (isActive) {
+            button.setAttribute("aria-current", "true");
+          } else {
+            button.removeAttribute("aria-current");
+          }
+        });
+      }
+      updateControlState() {
+        const atStart = this.currentIndex === 0;
+        const atEnd = this.currentIndex === this.slides.length - 1;
+        const multipleSlides = this.slides.length > 1;
+        if (this.prevButton) {
+          this.prevButton.disabled = !multipleSlides || atStart;
+        }
+        if (this.nextButton) {
+          this.nextButton.disabled = !multipleSlides || atEnd;
+        }
+      }
+      toggleControls(shouldShow) {
+        const display = shouldShow ? "" : "none";
+        [this.prevButton, this.nextButton, this.pagination].forEach((element) => {
+          if (element) {
+            element.style.display = display;
+          }
+        });
+      }
+      reset() {
+        this.currentIndex = 0;
+        this.updateSlides();
+      }
+      destroy() {
+        if (this.prevButton) {
+          this.prevButton.removeEventListener("click", this.handlePrev);
+        }
+        if (this.nextButton) {
+          this.nextButton.removeEventListener("click", this.handleNext);
+        }
+        if (this.track) {
+          this.track.removeEventListener("touchstart", this.handleTouchStart);
+          this.track.removeEventListener("touchend", this.handleTouchEnd);
+        }
+        this.root.removeEventListener("keydown", this.handleKeydown);
+      }
+    };
+    sliderInstances = /* @__PURE__ */ new Map();
+    modalPatched = false;
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bootstrapSliders);
+    } else {
+      bootstrapSliders();
+    }
+  }
+});
+
 // node_modules/@oddbird/popover-polyfill/dist/popover.js
 var ToggleEvent = class extends Event {
   oldState;
   newState;
-  constructor(type, { oldState = "", newState = "", ...init } = {}) {
-    super(type, init);
+  constructor(type, { oldState = "", newState = "", ...init2 } = {}) {
+    super(type, init2);
     this.oldState = String(oldState || "");
     this.newState = String(newState || "");
   }
@@ -935,6 +1233,450 @@ var l = (n = ["a[href]", "area[href]", 'input:not([disabled]):not([type="hidden"
 } });
 "undefined" != typeof window && (window.MicroModal = l);
 var micromodal_es_default = l;
+
+// src/assets/js/main.js
+init_slider();
+
+// src/assets/js/details.js
+var WorkDetails = class {
+  /**
+   * @constructor
+   */
+  constructor() {
+    this.worksSection = document.querySelector(".p-portfolio__works");
+    this.workList = document.querySelector(".p-portfolio__work-list");
+    this.workCards = document.querySelectorAll(".p-portfolio__work-card");
+    this.currentCard = null;
+    this.detailsBlock = null;
+    this.workData = [];
+    this.scrollHandler = null;
+    this.resizeHandler = null;
+    this.detailsHeight = null;
+    this.nextRowStartCard = null;
+    console.log("WorkDetails: \u30B3\u30F3\u30B9\u30C8\u30E9\u30AF\u30BF\u5B9F\u884C", {
+      worksSection: !!this.worksSection,
+      workList: !!this.workList,
+      workCardsCount: this.workCards.length
+    });
+    if (!this.worksSection || !this.workList) {
+      console.error("WorkDetails: \u5FC5\u8981\u306A\u8981\u7D20\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093", {
+        worksSection: !!this.worksSection,
+        workList: !!this.workList
+      });
+      return;
+    }
+    this.init();
+  }
+  /**
+   * 初期化
+   * @private
+   */
+  init() {
+    console.log("WorkDetails: \u521D\u671F\u5316\u958B\u59CB", {
+      worksSection: !!this.worksSection,
+      workList: !!this.workList,
+      workCardsCount: this.workCards.length
+    });
+    this.extractWorkData();
+    console.log("WorkDetails: \u30C7\u30FC\u30BF\u62BD\u51FA\u5B8C\u4E86", { workDataCount: this.workData.length });
+    this.workCards.forEach((card, index) => {
+      const trigger = card.querySelector(".p-portfolio__work-trigger");
+      if (trigger) {
+        trigger.addEventListener("click", (e2) => {
+          e2.preventDefault();
+          e2.stopPropagation();
+          console.log("WorkDetails: \u30AB\u30FC\u30C9\u304C\u30AF\u30EA\u30C3\u30AF\u3055\u308C\u307E\u3057\u305F", { index, card });
+          this.toggleDetails(index, card);
+        });
+      } else {
+        console.warn("WorkDetails: \u30C8\u30EA\u30AC\u30FC\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093", { index, card });
+      }
+    });
+    this.escapeHandler = (e2) => {
+      if (e2.key === "Escape" && this.currentCard !== null) {
+        this.close();
+      }
+    };
+    document.addEventListener("keydown", this.escapeHandler);
+  }
+  /**
+   * 各カードからデータを抽出
+   * @private
+   */
+  extractWorkData() {
+    this.workCards.forEach((card) => {
+      const img = card.querySelector(".p-portfolio__work-trigger img");
+      const title = card.querySelector(".p-portfolio__work-title");
+      if (img && title) {
+        const meta = card.dataset.workMeta || "";
+        const tagsJson = card.dataset.workTags || "[]";
+        const tags = JSON.parse(tagsJson);
+        const summary = card.dataset.workSummary || "";
+        const description = card.dataset.workDescription || "";
+        const imagesJson = card.dataset.workImages || "[]";
+        const images = JSON.parse(imagesJson);
+        this.workData.push({
+          image: img.src,
+          alt: img.alt,
+          title: title.textContent,
+          meta,
+          tags,
+          summary,
+          description,
+          images: images.length > 0 ? images : [img.src]
+        });
+      }
+    });
+  }
+  /**
+   * 詳細ブロックをトグル
+   * @param {number} index - ワークのインデックス
+   * @param {HTMLElement} card - クリックされたカード要素
+   * @private
+   */
+  toggleDetails(index, card) {
+    console.log("WorkDetails: toggleDetails\u547C\u3073\u51FA\u3057", { index, card, currentCard: this.currentCard });
+    if (this.currentCard === card && this.detailsBlock) {
+      console.log("WorkDetails: \u65E2\u306B\u958B\u3044\u3066\u3044\u308B\u306E\u3067\u9589\u3058\u307E\u3059");
+      this.close();
+      return;
+    }
+    this.removeDetailsBlock();
+    console.log("WorkDetails: \u8A73\u7D30\u30D6\u30ED\u30C3\u30AF\u3092\u633F\u5165\u3057\u307E\u3059");
+    this.insertDetailsBlock(index, card);
+  }
+  /**
+   * グリッドの列数を取得
+   * @returns {number} 列数
+   * @private
+   */
+  getGridColumnCount() {
+    const computedStyle = window.getComputedStyle(this.workList);
+    const gridTemplateColumns = computedStyle.gridTemplateColumns;
+    const repeatMatch = gridTemplateColumns.match(/repeat\((\d+)/);
+    if (repeatMatch) {
+      return parseInt(repeatMatch[1], 10);
+    }
+    const viewportWidth = window.innerWidth;
+    if (viewportWidth >= 1024) {
+      return 3;
+    } else if (viewportWidth >= 768) {
+      return 2;
+    }
+    return 1;
+  }
+  /**
+   * 行番号を計算
+   * @param {number} cardIndex - カードのインデックス
+   * @param {number} columnCount - グリッドの列数
+   * @returns {number} 行番号（0始まり）
+   * @private
+   */
+  getRowNumber(cardIndex, columnCount) {
+    return Math.floor(cardIndex / columnCount);
+  }
+  /**
+   * 次の行の開始位置（カードのインデックス）を取得
+   * @param {number} rowNumber - 現在の行番号
+   * @param {number} columnCount - グリッドの列数
+   * @returns {number} 次の行の開始位置のカードインデックス
+   * @private
+   */
+  getNextRowStartCardIndex(rowNumber, columnCount) {
+    const nextRowStart = (rowNumber + 1) * columnCount;
+    const totalCards = this.workCards.length;
+    return nextRowStart >= totalCards ? totalCards - 1 : nextRowStart;
+  }
+  /**
+   * 詳細ブロック要素を作成して高さを取得
+   * @param {string} detailsHTML - 詳細ブロックのHTML
+   * @returns {{element: HTMLElement, height: number}} 詳細ブロック要素と高さ
+   * @private
+   */
+  createDetailsElementWithHeight(detailsHTML) {
+    const detailsElement = document.createElement("div");
+    detailsElement.className = "p-portfolio__work-details-block";
+    detailsElement.innerHTML = detailsHTML;
+    detailsElement.style.visibility = "hidden";
+    detailsElement.style.position = "absolute";
+    detailsElement.style.top = "-9999px";
+    this.worksSection.appendChild(detailsElement);
+    const height = detailsElement.offsetHeight;
+    detailsElement.style.visibility = "";
+    detailsElement.style.position = "";
+    detailsElement.style.top = "";
+    return { element: detailsElement, height };
+  }
+  /**
+   * 次の行の開始位置のカードを取得
+   * @param {number} cardIndex - クリックされたカードのインデックス
+   * @returns {HTMLElement} 次の行の開始位置のカード要素
+   * @private
+   */
+  getNextRowStartCard(cardIndex) {
+    const columnCount = this.getGridColumnCount();
+    const rowNumber = this.getRowNumber(cardIndex, columnCount);
+    const nextRowStartIndex = this.getNextRowStartCardIndex(rowNumber, columnCount);
+    return this.workCards[nextRowStartIndex] || this.workCards[this.workCards.length - 1];
+  }
+  /**
+   * 詳細ブロックを挿入
+   * @param {number} index - ワークのインデックス
+   * @param {HTMLElement} card - クリックされたカード要素
+   * @private
+   */
+  insertDetailsBlock(index, card) {
+    console.log("WorkDetails: insertDetailsBlock\u958B\u59CB", { index, workDataLength: this.workData.length });
+    const work = this.workData[index];
+    if (!work) {
+      console.error("WorkDetails: \u30EF\u30FC\u30AF\u30C7\u30FC\u30BF\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093", { index });
+      return;
+    }
+    console.log("WorkDetails: \u30EF\u30FC\u30AF\u30C7\u30FC\u30BF\u53D6\u5F97\u5B8C\u4E86", { work });
+    const detailsHTML = this.createDetailsHTML(work, index);
+    console.log("WorkDetails: HTML\u751F\u6210\u5B8C\u4E86");
+    const { element: detailsElement, height: detailsHeight } = this.createDetailsElementWithHeight(detailsHTML);
+    console.log("WorkDetails: \u8A73\u7D30\u30D6\u30ED\u30C3\u30AF\u8981\u7D20\u4F5C\u6210\u5B8C\u4E86", { height: detailsHeight });
+    const nextRowStartCard = this.getNextRowStartCard(index);
+    console.log("WorkDetails: \u6B21\u306E\u884C\u306E\u958B\u59CB\u4F4D\u7F6E\u306E\u30AB\u30FC\u30C9\u53D6\u5F97\u5B8C\u4E86", { nextRowStartCard });
+    this.positionDetailsBlock(detailsElement, nextRowStartCard, detailsHeight);
+    console.log("WorkDetails: \u4F4D\u7F6E\u8A2D\u5B9A\u5B8C\u4E86");
+    this.currentCard = card;
+    this.detailsBlock = detailsElement;
+    this.detailsHeight = detailsHeight;
+    this.setupDetailsBlockEvents(detailsElement, work, index);
+    console.log("WorkDetails: \u30A4\u30D9\u30F3\u30C8\u8A2D\u5B9A\u5B8C\u4E86");
+  }
+  /**
+   * 詳細ブロックのイベントリスナーとスライダーを設定
+   * @param {HTMLElement} detailsElement - 詳細ブロック要素
+   * @param {Object} work - ワークデータ
+   * @param {number} index - ワークのインデックス
+   * @private
+   */
+  setupDetailsBlockEvents(detailsElement, work, index) {
+    const closeButton = detailsElement.querySelector(".p-portfolio__work-close");
+    if (closeButton) {
+      closeButton.addEventListener("click", () => {
+        this.close();
+      });
+    }
+    if (work.images.length > 1) {
+      this.initSlider(detailsElement);
+    }
+    this.scrollToDetails(detailsElement);
+  }
+  /**
+   * 詳細ブロックの位置を計算して設定
+   * @param {HTMLElement} detailsElement - 詳細ブロック要素
+   * @param {HTMLElement} nextRowStartCard - 次の行の開始位置のカード要素
+   * @param {number} detailsHeight - 詳細ブロックの高さ
+   * @private
+   */
+  positionDetailsBlock(detailsElement, nextRowStartCard, detailsHeight) {
+    this.nextRowStartCard = nextRowStartCard;
+    this.detailsHeight = detailsHeight;
+    this.updatePosition(detailsElement, nextRowStartCard);
+    this.scrollHandler = () => {
+      if (this.detailsBlock && this.nextRowStartCard) {
+        this.updatePosition(this.detailsBlock, this.nextRowStartCard);
+      }
+    };
+    this.resizeHandler = () => {
+      if (this.detailsBlock && this.currentCard) {
+        const columnCount = this.getGridColumnCount();
+        const cardIndex = Array.from(this.workCards).indexOf(this.currentCard);
+        const rowNumber = this.getRowNumber(cardIndex, columnCount);
+        const nextRowStartIndex = this.getNextRowStartCardIndex(rowNumber, columnCount);
+        const nextRowStartCard2 = this.workCards[nextRowStartIndex] || this.workCards[this.workCards.length - 1];
+        this.nextRowStartCard = nextRowStartCard2;
+        this.updatePosition(this.detailsBlock, nextRowStartCard2);
+      }
+    };
+    window.addEventListener("scroll", this.scrollHandler, { passive: true });
+    window.addEventListener("resize", this.resizeHandler, { passive: true });
+  }
+  /**
+   * 詳細ブロックの位置を更新
+   * @param {HTMLElement} detailsElement - 詳細ブロック要素
+   * @param {HTMLElement} nextRowStartCard - 次の行の開始位置のカード要素
+   * @private
+   */
+  updatePosition(detailsElement, nextRowStartCard) {
+    const cardRect = nextRowStartCard.getBoundingClientRect();
+    const worksSectionRect = this.worksSection.getBoundingClientRect();
+    const top = cardRect.bottom - worksSectionRect.top + 24;
+    detailsElement.style.top = `${top}px`;
+    console.log("WorkDetails: \u4F4D\u7F6E\u66F4\u65B0", { top, cardBottom: cardRect.bottom, sectionTop: worksSectionRect.top });
+  }
+  /**
+   * 詳細ブロックのHTMLを生成
+   * @param {Object} work - ワークデータ
+   * @param {number} index - ワークのインデックス
+   * @returns {string} HTML文字列
+   * @private
+   */
+  createDetailsHTML(work, index) {
+    const sliderHTML = work.images.length > 1 ? `
+			<div class="c-slider" data-slider="work-details-${index}">
+				<div class="c-slider__viewport">
+					<div class="c-slider__track">
+						${work.images.map((imgSrc, imgIndex) => `
+							<div class="c-slider__slide">
+								<img src="${imgSrc}" alt="${work.alt} - \u753B\u50CF${imgIndex + 1}" />
+							</div>
+						`).join("")}
+					</div>
+				</div>
+				<button class="c-slider__button c-slider__button--prev" aria-label="\u524D\u306E\u753B\u50CF" data-slider-prev>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="15 18 9 12 15 6"></polyline>
+					</svg>
+				</button>
+				<button class="c-slider__button c-slider__button--next" aria-label="\u6B21\u306E\u753B\u50CF" data-slider-next>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<polyline points="9 18 15 12 9 6"></polyline>
+					</svg>
+				</button>
+				<div class="c-slider__pagination" aria-label="\u30B9\u30E9\u30A4\u30C0\u30FC\u306E\u30DA\u30FC\u30B8\u30CD\u30FC\u30B7\u30E7\u30F3"></div>
+			</div>
+		` : `
+			<div class="p-portfolio__work-details-image">
+				<img src="${work.images[0]}" alt="${work.alt}" />
+			</div>
+		`;
+    return `
+			<div class="p-portfolio__work-details-content">
+				<button class="p-portfolio__work-close" aria-label="\u8A73\u7D30\u3092\u9589\u3058\u308B">
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+				<div class="p-portfolio__work-details-inner">
+					<div class="p-portfolio__work-details-grid">
+						${sliderHTML}
+						<div class="p-portfolio__work-details-text">
+							<h2 class="p-portfolio__work-details-title">${work.title}</h2>
+							<hr class="p-portfolio__work-details-divider" />
+							${work.meta ? `<p class="p-portfolio__work-details-meta">${work.meta}</p>` : ""}
+							${work.tags.length > 0 ? `
+								<div class="p-portfolio__work-details-tags">
+									${work.tags.map((tag) => `<span class="c-badge c-badge--small">${tag}</span>`).join("")}
+								</div>
+							` : ""}
+							${work.summary ? `<p class="p-portfolio__work-details-summary">${work.summary}</p>` : ""}
+							${work.description ? `<p class="p-portfolio__work-details-description">${work.description}</p>` : ""}
+						</div>
+					</div>
+				</div>
+			</div>
+		`;
+  }
+  /**
+   * スライダーを初期化
+   * @param {HTMLElement} container - コンテナ要素
+   * @private
+   */
+  initSlider(container) {
+    const sliderElement = container.querySelector("[data-slider]");
+    if (!sliderElement) return;
+    Promise.resolve().then(() => (init_slider(), slider_exports)).then(({ ImageSlider: ImageSlider2, sliderInstances: sliderInstances2 }) => {
+      setTimeout(() => {
+        if (!sliderInstances2.has(sliderElement)) {
+          const instance = new ImageSlider2(sliderElement);
+          sliderInstances2.set(sliderElement, instance);
+        }
+      }, 0);
+    });
+  }
+  /**
+   * 詳細ブロックまでスクロール
+   * @param {HTMLElement} element - 詳細ブロック要素
+   * @private
+   */
+  scrollToDetails(element) {
+    const worksSectionRect = this.worksSection.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const elementRect = element.getBoundingClientRect();
+    const targetY = scrollTop + worksSectionRect.top + parseFloat(element.style.top) - 20;
+    console.log("WorkDetails: \u30B9\u30AF\u30ED\u30FC\u30EB\u4F4D\u7F6E\u8A08\u7B97", {
+      scrollTop,
+      sectionTop: worksSectionRect.top,
+      elementTop: element.style.top,
+      targetY
+    });
+    window.scrollTo({
+      top: targetY,
+      behavior: "smooth"
+    });
+  }
+  /**
+   * 既存の詳細ブロックを削除
+   * @private
+   */
+  removeDetailsBlock() {
+    if (this.detailsBlock) {
+      this.detailsBlock.remove();
+      this.detailsBlock = null;
+    }
+    this.currentCard = null;
+    this.nextRowStartCard = null;
+    this.detailsHeight = null;
+    this.removeEventListeners();
+  }
+  /**
+   * 閉じる
+   * @public
+   */
+  close() {
+    this.removeDetailsBlock();
+  }
+  /**
+   * イベントリスナーを削除
+   * @private
+   */
+  removeEventListeners() {
+    if (this.scrollHandler) {
+      window.removeEventListener("scroll", this.scrollHandler);
+      this.scrollHandler = null;
+    }
+    if (this.resizeHandler) {
+      window.removeEventListener("resize", this.resizeHandler);
+      this.resizeHandler = null;
+    }
+  }
+  /**
+   * クリーンアップ
+   * @public
+   */
+  destroy() {
+    this.close();
+    this.removeEventListeners();
+    document.removeEventListener("keydown", this.escapeHandler);
+  }
+};
+function initWorkDetails() {
+  console.log("WorkDetails: initWorkDetails\u547C\u3073\u51FA\u3057");
+  const workList = document.querySelector(".p-portfolio__work-list");
+  if (!workList) {
+    console.error("WorkDetails: workList\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093");
+    return;
+  }
+  console.log("WorkDetails: WorkDetails\u30A4\u30F3\u30B9\u30BF\u30F3\u30B9\u3092\u4F5C\u6210\u3057\u307E\u3059");
+  new WorkDetails();
+}
+function init() {
+  console.log("WorkDetails: init\u95A2\u6570\u5B9F\u884C", { readyState: document.readyState });
+  if (document.readyState === "loading") {
+    console.log("WorkDetails: DOMContentLoaded\u3092\u5F85\u6A5F\u3057\u307E\u3059");
+    document.addEventListener("DOMContentLoaded", initWorkDetails);
+  } else {
+    console.log("WorkDetails: \u5373\u5EA7\u306B\u521D\u671F\u5316\u3057\u307E\u3059");
+    setTimeout(initWorkDetails, 0);
+  }
+}
+init();
 
 // src/assets/js/main.js
 micromodal_es_default.init({

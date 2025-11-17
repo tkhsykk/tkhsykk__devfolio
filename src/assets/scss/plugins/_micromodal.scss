@@ -26,12 +26,17 @@
 .modal__container {
 	background-color: $color-white;
 	padding: $spacing-4;
-	max-width: 500px;
+	max-width: 800px;
 	max-height: 100vh;
 	border-radius: $border-radius-sm;
 	overflow-y: auto;
 	box-sizing: border-box;
 	cursor: default;
+
+	@include mq(sm) {
+		max-width: 900px;
+		padding: $spacing-6;
+	}
 }
 
 .modal__header {

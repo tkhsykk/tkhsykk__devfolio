@@ -1,0 +1,142 @@
+/**
+ * スライダーコンポーネント
+ *
+ * 概要:
+ * 画像スライダーコンポーネントのスタイル定義
+ *
+ * 主な仕様:
+ * - 横スクロール型のスライダー
+ * - 前へ/次へボタンによる操作
+ * - ページネーション表示
+ * - レスポンシブ対応
+ *
+ * 制限事項:
+ * - スライドは横方向のみ対応
+ */
+
+@use '../foundation' as *;
+
+.c-slider {
+	position: relative;
+	width: 100%;
+	margin-bottom: $spacing-4;
+}
+
+.c-slider__viewport {
+	position: relative;
+	width: 100%;
+	overflow: hidden;
+	border-radius: $border-radius-sm;
+}
+
+.c-slider__track {
+	display: flex;
+	transition: transform 0.3s ease-in-out;
+	will-change: transform;
+}
+
+.c-slider__slide {
+	flex: 0 0 100%;
+	width: 100%;
+	position: relative;
+
+	img {
+		width: 100%;
+		height: auto;
+		display: block;
+		object-fit: cover;
+	}
+}
+
+.c-slider__button {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	z-index: 2;
+	background-color: rgba($color-white, 0.9);
+	border: 1px solid rgba($color-text, 0.1);
+	border-radius: 50%;
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	padding: 0;
+	transition: background-color $transition-base, border-color $transition-base;
+
+	&:hover,
+	&:focus-visible {
+		background-color: $color-white;
+		border-color: rgba($color-text, 0.2);
+		outline: 2px solid $color-primary;
+		outline-offset: 2px;
+	}
+
+	&:active {
+		background-color: rgba($color-white, 0.8);
+	}
+
+	svg {
+		width: 24px;
+		height: 24px;
+		color: $color-text;
+		pointer-events: none;
+	}
+
+	&--prev {
+		left: $spacing-2;
+	}
+
+	&--next {
+		right: $spacing-2;
+	}
+
+	@include mq(sm) {
+		width: 56px;
+		height: 56px;
+
+		svg {
+			width: 28px;
+			height: 28px;
+		}
+	}
+}
+
+.c-slider__pagination {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: $spacing-2;
+	margin-top: $spacing-4;
+	flex-wrap: wrap;
+}
+
+.c-slider__pagination-button {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	border: none;
+	background-color: rgba($color-text, 0.3);
+	cursor: pointer;
+	padding: 0;
+	transition: background-color $transition-base, transform $transition-base;
+
+	&:hover,
+	&:focus-visible {
+		background-color: rgba($color-text, 0.5);
+		outline: 2px solid $color-primary;
+		outline-offset: 2px;
+		transform: scale(1.2);
+	}
+
+	&.is-active {
+		background-color: $color-primary;
+		transform: scale(1.2);
+	}
+
+	&:active {
+		transform: scale(1.1);
+	}
+}
+

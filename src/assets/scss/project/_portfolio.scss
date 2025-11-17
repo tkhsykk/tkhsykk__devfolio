@@ -226,13 +226,16 @@
 	}
 
 	// ワークスセクション
-	&__works ul.l-grid.l-grid--cols-3{
+	&__works {
 		position: relative;
+
+		ul.l-grid.l-grid--cols-3 {
+			position: relative;
+		}
 	}
+
 	&__work-card {
-		//position: relative;
 		@extend .c-card;
-		//overflow: hidden;
 		cursor: pointer;
 		display: flex;
 		flex-direction: column;
@@ -253,17 +256,31 @@
 		}
 	}
 
+	// 詳細ブロック（絶対配置でグリッドの外に配置）
+	&__work-details-block {
+		position: absolute;
+		left: 0;
+		right: 0;
+		width: 100vw;
+		max-width: 100vw;
+		margin-left: calc(50% - 50vw);
+		margin-right: calc(50% - 50vw);
+		padding: 0;
+		box-sizing: border-box;
+		z-index: 10;
+	}
+
 	&__work-content {
-		padding: $spacing-4 0;
+		padding: $spacing-4;
 		display: flex;
 		flex-direction: column;
-		flex: 1;
 	}
 
 	&__work-title {
 		font-size: $font-size-lg;
 		font-weight: $font-weight-semibold;
-		margin-bottom: $spacing-2;
+		margin: 0;
+		text-align: center;
 	}
 
 	&__work-meta {
@@ -371,11 +388,38 @@
 	&__work-image {
 		aspect-ratio: 16 / 9;
 		overflow: hidden;
+		position: relative;
+		width: 100%;
+		padding: 0;
+		border: none;
+		background: transparent;
+		cursor: pointer;
+
+		&::after {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background-color: rgba($color-primary, 0);
+			transition: background-color $transition-base;
+			pointer-events: none;
+		}
+
+		&:hover::after,
+		&:focus-visible::after {
+			background-color: rgba($color-primary, 0.1);
+		}
+
+		&:focus-visible {
+			outline: 2px solid $color-primary;
+			outline-offset: 2px;
+		}
 
 		img {
 			width: 100%;
 			height: 100%;
 			object-fit: cover;
+			display: block;
+			pointer-events: none;
 
 			@media (hover: hover) {
 				@include transition();
@@ -387,43 +431,160 @@
 		}
 	}
 
-	&__work-overlay {
-		position: absolute;
-		inset: 0;
-		background-color: rgba($color-white, 0.6);
-		backdrop-filter: blur(14px);
-		box-shadow: $shadow-lg;
-		padding: $spacing-6;
-		display: flex;
-		flex-direction: column;
-		border-radius: $border-radius-lg;
-		//justify-content: center;
-		opacity: 0;
-		pointer-events: none;
+	&__work-trigger {
+		@extend .p-portfolio__work-image;
+	}
 
-		@media (hover: hover) {
-			@include transition();
+	&__work-modal-content {
+		margin-top: $spacing-6;
+
+		.p-portfolio__work-meta {
+			margin-bottom: $spacing-4;
 		}
 
-		.p-portfolio__work-card:hover & {
-			opacity: 1;
-			pointer-events: auto;
-			z-index: 1;
-			width: fit-content;
-			margin: 0 auto;
+		.p-portfolio__work-tags {
+			margin-bottom: $spacing-4;
+		}
+
+		.p-portfolio__work-summary {
+			margin-bottom: $spacing-6;
+		}
+
+		.p-portfolio__work-solution {
+			margin-bottom: $spacing-6;
+		}
+
+		.p-portfolio__work-overlay-text {
+			margin-top: $spacing-6;
+			line-height: $line-height-relaxed;
 		}
 	}
 
-	&__work-overlay-title {
+	// 詳細ブロックのコンテンツ
+	&__work-details-content {
+		position: relative;
+		background-color: $color-bg-lighter;
+		border-radius: $border-radius-lg;
+		padding: $spacing-6;
+		margin: $spacing-6 $spacing-6 0;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	&__work-close {
+		position: absolute;
+		top: $spacing-4;
+		right: $spacing-4;
+		z-index: 10;
+		width: 2.5rem;
+		height: 2.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border: none;
+		background-color: rgba($color-white, 0.9);
+		border-radius: $border-radius-full;
+		cursor: pointer;
+		color: $color-text;
+		box-shadow: $shadow-md;
+		transition: background-color $transition-base, transform $transition-base;
+
+		&:hover,
+		&:focus-visible {
+			background-color: $color-white;
+			transform: scale(1.1);
+		}
+
+		&:focus-visible {
+			outline: 2px solid $color-primary;
+			outline-offset: 2px;
+		}
+
+		svg {
+			width: 1.25rem;
+			height: 1.25rem;
+		}
+	}
+
+	&__work-details-inner {
+		padding: $spacing-6;
+		min-height: 400px;
+		background-color: $color-white;
+		border-radius: $border-radius-md;
+	}
+
+	&__work-details-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: $spacing-8;
+
+		@include mq(md) {
+			//grid-template-columns: 1fr;
+		}
+	}
+
+	&__work-details-image {
+		img {
+			width: 100%;
+			height: auto;
+			object-fit: cover;
+			border-radius: $border-radius-md;
+		}
+	}
+
+	// 詳細パネル内のスライダー
+	&__work-details-grid {
+		.c-slider {
+			width: 100%;
+		}
+	}
+
+	&__work-details-text {
+		display: flex;
+		flex-direction: column;
+		gap: $spacing-4;
+		padding-left: $spacing-4;
+
+		@include mq(md) {
+			padding-left: 0;
+		}
+	}
+
+	&__work-details-title {
+		font-size: $font-size-2xl;
 		font-weight: $font-weight-semibold;
-		font-size: $font-size-lg;
-		margin-bottom: $spacing-3;
+		margin: 0;
 		color: $color-primary;
 	}
 
-	&__work-overlay-text {
+	&__work-details-divider {
+		border: none;
+		border-top: 2px solid $color-border;
+		margin: 0;
+	}
+
+	&__work-details-meta {
 		font-size: $font-size-sm;
+		opacity: 0.7;
+		margin: 0;
+	}
+
+	&__work-details-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: $spacing-2;
+	}
+
+	&__work-details-summary {
+		font-size: $font-size-sm;
+		opacity: 0.8;
+		margin: 0;
+	}
+
+	&__work-details-description {
+		font-size: $font-size-base;
 		line-height: $line-height-relaxed;
+		margin: 0;
 	}
 
 	// ノートセクション
