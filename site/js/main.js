@@ -1249,20 +1249,7 @@ var WorkDetails = class {
     this.currentCard = null;
     this.detailsBlock = null;
     this.workData = [];
-    this.scrollHandler = null;
-    this.resizeHandler = null;
-    this.detailsHeight = null;
-    this.nextRowStartCard = null;
-    console.log("WorkDetails: \u30B3\u30F3\u30B9\u30C8\u30E9\u30AF\u30BF\u5B9F\u884C", {
-      worksSection: !!this.worksSection,
-      workList: !!this.workList,
-      workCardsCount: this.workCards.length
-    });
     if (!this.worksSection || !this.workList) {
-      console.error("WorkDetails: \u5FC5\u8981\u306A\u8981\u7D20\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093", {
-        worksSection: !!this.worksSection,
-        workList: !!this.workList
-      });
       return;
     }
     this.init();
@@ -1272,24 +1259,15 @@ var WorkDetails = class {
    * @private
    */
   init() {
-    console.log("WorkDetails: \u521D\u671F\u5316\u958B\u59CB", {
-      worksSection: !!this.worksSection,
-      workList: !!this.workList,
-      workCardsCount: this.workCards.length
-    });
     this.extractWorkData();
-    console.log("WorkDetails: \u30C7\u30FC\u30BF\u62BD\u51FA\u5B8C\u4E86", { workDataCount: this.workData.length });
     this.workCards.forEach((card, index) => {
       const trigger = card.querySelector(".p-portfolio__work-trigger");
       if (trigger) {
         trigger.addEventListener("click", (e2) => {
           e2.preventDefault();
           e2.stopPropagation();
-          console.log("WorkDetails: \u30AB\u30FC\u30C9\u304C\u30AF\u30EA\u30C3\u30AF\u3055\u308C\u307E\u3057\u305F", { index, card });
           this.toggleDetails(index, card);
         });
-      } else {
-        console.warn("WorkDetails: \u30C8\u30EA\u30AC\u30FC\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093", { index, card });
       }
     });
     this.escapeHandler = (e2) => {
@@ -1335,14 +1313,11 @@ var WorkDetails = class {
    * @private
    */
   toggleDetails(index, card) {
-    console.log("WorkDetails: toggleDetails\u547C\u3073\u51FA\u3057", { index, card, currentCard: this.currentCard });
     if (this.currentCard === card && this.detailsBlock) {
-      console.log("WorkDetails: \u65E2\u306B\u958B\u3044\u3066\u3044\u308B\u306E\u3067\u9589\u3058\u307E\u3059");
       this.close();
       return;
     }
     this.removeDetailsBlock();
-    console.log("WorkDetails: \u8A73\u7D30\u30D6\u30ED\u30C3\u30AF\u3092\u633F\u5165\u3057\u307E\u3059");
     this.insertDetailsBlock(index, card);
   }
   /**
@@ -1388,36 +1363,30 @@ var WorkDetails = class {
     return nextRowStart >= totalCards ? totalCards - 1 : nextRowStart;
   }
   /**
-   * 詳細ブロック要素を作成して高さを取得
+   * 詳細ブロック要素を作成
    * @param {string} detailsHTML - 詳細ブロックのHTML
-   * @returns {{element: HTMLElement, height: number}} 詳細ブロック要素と高さ
+   * @returns {HTMLElement} 詳細ブロック要素
    * @private
    */
-  createDetailsElementWithHeight(detailsHTML) {
-    const detailsElement = document.createElement("div");
+  createDetailsElement(detailsHTML) {
+    const detailsElement = document.createElement("li");
     detailsElement.className = "p-portfolio__work-details-block";
     detailsElement.innerHTML = detailsHTML;
-    detailsElement.style.visibility = "hidden";
-    detailsElement.style.position = "absolute";
-    detailsElement.style.top = "-9999px";
-    this.worksSection.appendChild(detailsElement);
-    const height = detailsElement.offsetHeight;
-    detailsElement.style.visibility = "";
-    detailsElement.style.position = "";
-    detailsElement.style.top = "";
-    return { element: detailsElement, height };
+    return detailsElement;
   }
   /**
-   * 次の行の開始位置のカードを取得
+   * 現在の行の最後のカードを取得
    * @param {number} cardIndex - クリックされたカードのインデックス
-   * @returns {HTMLElement} 次の行の開始位置のカード要素
+   * @returns {HTMLElement} 現在の行の最後のカード要素
    * @private
    */
-  getNextRowStartCard(cardIndex) {
+  getCurrentRowLastCard(cardIndex) {
     const columnCount = this.getGridColumnCount();
     const rowNumber = this.getRowNumber(cardIndex, columnCount);
-    const nextRowStartIndex = this.getNextRowStartCardIndex(rowNumber, columnCount);
-    return this.workCards[nextRowStartIndex] || this.workCards[this.workCards.length - 1];
+    const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
+    const totalCards = this.workCards.length;
+    const lastCardIndex = currentRowLastIndex >= totalCards ? totalCards - 1 : currentRowLastIndex;
+    return this.workCards[lastCardIndex];
   }
   /**
    * 詳細ブロックを挿入
@@ -1426,26 +1395,17 @@ var WorkDetails = class {
    * @private
    */
   insertDetailsBlock(index, card) {
-    console.log("WorkDetails: insertDetailsBlock\u958B\u59CB", { index, workDataLength: this.workData.length });
     const work = this.workData[index];
     if (!work) {
-      console.error("WorkDetails: \u30EF\u30FC\u30AF\u30C7\u30FC\u30BF\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093", { index });
       return;
     }
-    console.log("WorkDetails: \u30EF\u30FC\u30AF\u30C7\u30FC\u30BF\u53D6\u5F97\u5B8C\u4E86", { work });
     const detailsHTML = this.createDetailsHTML(work, index);
-    console.log("WorkDetails: HTML\u751F\u6210\u5B8C\u4E86");
-    const { element: detailsElement, height: detailsHeight } = this.createDetailsElementWithHeight(detailsHTML);
-    console.log("WorkDetails: \u8A73\u7D30\u30D6\u30ED\u30C3\u30AF\u8981\u7D20\u4F5C\u6210\u5B8C\u4E86", { height: detailsHeight });
-    const nextRowStartCard = this.getNextRowStartCard(index);
-    console.log("WorkDetails: \u6B21\u306E\u884C\u306E\u958B\u59CB\u4F4D\u7F6E\u306E\u30AB\u30FC\u30C9\u53D6\u5F97\u5B8C\u4E86", { nextRowStartCard });
-    this.positionDetailsBlock(detailsElement, nextRowStartCard, detailsHeight);
-    console.log("WorkDetails: \u4F4D\u7F6E\u8A2D\u5B9A\u5B8C\u4E86");
+    const detailsElement = this.createDetailsElement(detailsHTML);
+    const currentRowLastCard = this.getCurrentRowLastCard(index);
+    currentRowLastCard.insertAdjacentElement("afterend", detailsElement);
     this.currentCard = card;
     this.detailsBlock = detailsElement;
-    this.detailsHeight = detailsHeight;
     this.setupDetailsBlockEvents(detailsElement, work, index);
-    console.log("WorkDetails: \u30A4\u30D9\u30F3\u30C8\u8A2D\u5B9A\u5B8C\u4E86");
   }
   /**
    * 詳細ブロックのイベントリスナーとスライダーを設定
@@ -1464,50 +1424,6 @@ var WorkDetails = class {
     if (work.images.length > 1) {
       this.initSlider(detailsElement);
     }
-    this.scrollToDetails(detailsElement);
-  }
-  /**
-   * 詳細ブロックの位置を計算して設定
-   * @param {HTMLElement} detailsElement - 詳細ブロック要素
-   * @param {HTMLElement} nextRowStartCard - 次の行の開始位置のカード要素
-   * @param {number} detailsHeight - 詳細ブロックの高さ
-   * @private
-   */
-  positionDetailsBlock(detailsElement, nextRowStartCard, detailsHeight) {
-    this.nextRowStartCard = nextRowStartCard;
-    this.detailsHeight = detailsHeight;
-    this.updatePosition(detailsElement, nextRowStartCard);
-    this.scrollHandler = () => {
-      if (this.detailsBlock && this.nextRowStartCard) {
-        this.updatePosition(this.detailsBlock, this.nextRowStartCard);
-      }
-    };
-    this.resizeHandler = () => {
-      if (this.detailsBlock && this.currentCard) {
-        const columnCount = this.getGridColumnCount();
-        const cardIndex = Array.from(this.workCards).indexOf(this.currentCard);
-        const rowNumber = this.getRowNumber(cardIndex, columnCount);
-        const nextRowStartIndex = this.getNextRowStartCardIndex(rowNumber, columnCount);
-        const nextRowStartCard2 = this.workCards[nextRowStartIndex] || this.workCards[this.workCards.length - 1];
-        this.nextRowStartCard = nextRowStartCard2;
-        this.updatePosition(this.detailsBlock, nextRowStartCard2);
-      }
-    };
-    window.addEventListener("scroll", this.scrollHandler, { passive: true });
-    window.addEventListener("resize", this.resizeHandler, { passive: true });
-  }
-  /**
-   * 詳細ブロックの位置を更新
-   * @param {HTMLElement} detailsElement - 詳細ブロック要素
-   * @param {HTMLElement} nextRowStartCard - 次の行の開始位置のカード要素
-   * @private
-   */
-  updatePosition(detailsElement, nextRowStartCard) {
-    const cardRect = nextRowStartCard.getBoundingClientRect();
-    const worksSectionRect = this.worksSection.getBoundingClientRect();
-    const top = cardRect.bottom - worksSectionRect.top + 24;
-    detailsElement.style.top = `${top}px`;
-    console.log("WorkDetails: \u4F4D\u7F6E\u66F4\u65B0", { top, cardBottom: cardRect.bottom, sectionTop: worksSectionRect.top });
   }
   /**
    * 詳細ブロックのHTMLを生成
@@ -1596,16 +1512,9 @@ var WorkDetails = class {
    * @private
    */
   scrollToDetails(element) {
-    const worksSectionRect = this.worksSection.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const elementRect = element.getBoundingClientRect();
-    const targetY = scrollTop + worksSectionRect.top + parseFloat(element.style.top) - 20;
-    console.log("WorkDetails: \u30B9\u30AF\u30ED\u30FC\u30EB\u4F4D\u7F6E\u8A08\u7B97", {
-      scrollTop,
-      sectionTop: worksSectionRect.top,
-      elementTop: element.style.top,
-      targetY
-    });
+    const targetY = scrollTop + rect.top - 20;
     window.scrollTo({
       top: targetY,
       behavior: "smooth"
@@ -1621,9 +1530,6 @@ var WorkDetails = class {
       this.detailsBlock = null;
     }
     this.currentCard = null;
-    this.nextRowStartCard = null;
-    this.detailsHeight = null;
-    this.removeEventListeners();
   }
   /**
    * 閉じる
@@ -1633,46 +1539,25 @@ var WorkDetails = class {
     this.removeDetailsBlock();
   }
   /**
-   * イベントリスナーを削除
-   * @private
-   */
-  removeEventListeners() {
-    if (this.scrollHandler) {
-      window.removeEventListener("scroll", this.scrollHandler);
-      this.scrollHandler = null;
-    }
-    if (this.resizeHandler) {
-      window.removeEventListener("resize", this.resizeHandler);
-      this.resizeHandler = null;
-    }
-  }
-  /**
    * クリーンアップ
    * @public
    */
   destroy() {
     this.close();
-    this.removeEventListeners();
     document.removeEventListener("keydown", this.escapeHandler);
   }
 };
 function initWorkDetails() {
-  console.log("WorkDetails: initWorkDetails\u547C\u3073\u51FA\u3057");
   const workList = document.querySelector(".p-portfolio__work-list");
   if (!workList) {
-    console.error("WorkDetails: workList\u304C\u898B\u3064\u304B\u308A\u307E\u305B\u3093");
     return;
   }
-  console.log("WorkDetails: WorkDetails\u30A4\u30F3\u30B9\u30BF\u30F3\u30B9\u3092\u4F5C\u6210\u3057\u307E\u3059");
   new WorkDetails();
 }
 function init() {
-  console.log("WorkDetails: init\u95A2\u6570\u5B9F\u884C", { readyState: document.readyState });
   if (document.readyState === "loading") {
-    console.log("WorkDetails: DOMContentLoaded\u3092\u5F85\u6A5F\u3057\u307E\u3059");
     document.addEventListener("DOMContentLoaded", initWorkDetails);
   } else {
-    console.log("WorkDetails: \u5373\u5EA7\u306B\u521D\u671F\u5316\u3057\u307E\u3059");
     setTimeout(initWorkDetails, 0);
   }
 }

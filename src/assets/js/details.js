@@ -4,14 +4,14 @@
  *
  * 概要:
  * - ワークカードをクリックすると、クリックしたカードの次の行の開始位置に詳細ブロックを表示
- * - 詳細ブロックは幅100vwで全幅表示
+ * - 詳細ブロックはグリッドアイテムとして挿入され、全幅表示
  * - 同じカードを再度クリックすると詳細ブロックを閉じる（トグル）
  *
  * 主な仕様:
  * - グリッドの列数を動的に取得（getComputedStyleでgrid-template-columnsを解析）
- * - クリックしたカードの行番号を計算し、次の行の開始位置に詳細ブロックを配置
- * - 詳細ブロックの高さを事前に取得してから表示
- * - レスポンシブ対応（リサイズ時に列数を再取得して位置を再計算）
+ * - クリックしたカードの行番号を計算し、次の行の開始位置に詳細ブロックを挿入
+ * - 詳細ブロックは`<li>`要素として作成し、グリッドアイテムとして自然に配置
+ * - `grid-column: 1 / -1`で全幅表示
  * - アクセシビリティ対応（aria-expanded属性の管理）
  * - キーボード操作対応（ESCキー）
  *
@@ -34,22 +34,8 @@ class WorkDetails {
 		this.currentCard = null;
 		this.detailsBlock = null;
 		this.workData = [];
-		this.scrollHandler = null;
-		this.resizeHandler = null;
-		this.detailsHeight = null;
-		this.nextRowStartCard = null;
-
-		console.log('WorkDetails: コンストラクタ実行', {
-			worksSection: !!this.worksSection,
-			workList: !!this.workList,
-			workCardsCount: this.workCards.length
-		});
 
 		if (!this.worksSection || !this.workList) {
-			console.error('WorkDetails: 必要な要素が見つかりません', {
-				worksSection: !!this.worksSection,
-				workList: !!this.workList
-			});
 			return;
 		}
 
@@ -61,15 +47,8 @@ class WorkDetails {
 	 * @private
 	 */
 	init() {
-		console.log('WorkDetails: 初期化開始', {
-			worksSection: !!this.worksSection,
-			workList: !!this.workList,
-			workCardsCount: this.workCards.length
-		});
-
 		// 各カードからデータを抽出
 		this.extractWorkData();
-		console.log('WorkDetails: データ抽出完了', { workDataCount: this.workData.length });
 
 		// 各カードにクリックイベントを設定
 		this.workCards.forEach((card, index) => {
@@ -78,11 +57,8 @@ class WorkDetails {
 				trigger.addEventListener('click', (e) => {
 					e.preventDefault();
 					e.stopPropagation();
-					console.log('WorkDetails: カードがクリックされました', { index, card });
 					this.toggleDetails(index, card);
 				});
-			} else {
-				console.warn('WorkDetails: トリガーが見つかりません', { index, card });
 			}
 		});
 
@@ -134,11 +110,8 @@ class WorkDetails {
 	 * @private
 	 */
 	toggleDetails(index, card) {
-		console.log('WorkDetails: toggleDetails呼び出し', { index, card, currentCard: this.currentCard });
-
 		// 同じカードが既に開いている場合は閉じる
 		if (this.currentCard === card && this.detailsBlock) {
-			console.log('WorkDetails: 既に開いているので閉じます');
 			this.close();
 			return;
 		}
@@ -147,7 +120,6 @@ class WorkDetails {
 		this.removeDetailsBlock();
 
 		// 新しい詳細ブロックを挿入
-		console.log('WorkDetails: 詳細ブロックを挿入します');
 		this.insertDetailsBlock(index, card);
 	}
 
@@ -203,44 +175,38 @@ class WorkDetails {
 	}
 
 	/**
-	 * 詳細ブロック要素を作成して高さを取得
+	 * 詳細ブロック要素を作成
 	 * @param {string} detailsHTML - 詳細ブロックのHTML
-	 * @returns {{element: HTMLElement, height: number}} 詳細ブロック要素と高さ
+	 * @returns {HTMLElement} 詳細ブロック要素
 	 * @private
 	 */
-	createDetailsElementWithHeight(detailsHTML) {
-		const detailsElement = document.createElement('div');
+	createDetailsElement(detailsHTML) {
+		// <li>要素として作成（グリッドアイテムとして挿入）
+		const detailsElement = document.createElement('li');
 		detailsElement.className = 'p-portfolio__work-details-block';
 		detailsElement.innerHTML = detailsHTML;
 
-		// 一時的に非表示でDOMに追加して高さを取得
-		detailsElement.style.visibility = 'hidden';
-		detailsElement.style.position = 'absolute';
-		detailsElement.style.top = '-9999px';
-		this.worksSection.appendChild(detailsElement);
-
-		const height = detailsElement.offsetHeight;
-
-		// 非表示を解除
-		detailsElement.style.visibility = '';
-		detailsElement.style.position = '';
-		detailsElement.style.top = '';
-
-		return { element: detailsElement, height };
+		return detailsElement;
 	}
 
 	/**
-	 * 次の行の開始位置のカードを取得
+	 * 現在の行の最後のカードを取得
 	 * @param {number} cardIndex - クリックされたカードのインデックス
-	 * @returns {HTMLElement} 次の行の開始位置のカード要素
+	 * @returns {HTMLElement} 現在の行の最後のカード要素
 	 * @private
 	 */
-	getNextRowStartCard(cardIndex) {
+	getCurrentRowLastCard(cardIndex) {
 		const columnCount = this.getGridColumnCount();
 		const rowNumber = this.getRowNumber(cardIndex, columnCount);
-		const nextRowStartIndex = this.getNextRowStartCardIndex(rowNumber, columnCount);
 
-		return this.workCards[nextRowStartIndex] || this.workCards[this.workCards.length - 1];
+		// 現在の行の最後のカードのインデックスを計算
+		const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
+		const totalCards = this.workCards.length;
+
+		// 最後の行を超える場合は、最後のカードを返す
+		const lastCardIndex = currentRowLastIndex >= totalCards ? totalCards - 1 : currentRowLastIndex;
+
+		return this.workCards[lastCardIndex];
 	}
 
 	/**
@@ -250,39 +216,28 @@ class WorkDetails {
 	 * @private
 	 */
 	insertDetailsBlock(index, card) {
-		console.log('WorkDetails: insertDetailsBlock開始', { index, workDataLength: this.workData.length });
-
 		const work = this.workData[index];
 		if (!work) {
-			console.error('WorkDetails: ワークデータが見つかりません', { index });
 			return;
 		}
 
-		console.log('WorkDetails: ワークデータ取得完了', { work });
-
 		// 詳細ブロックのHTMLを生成
 		const detailsHTML = this.createDetailsHTML(work, index);
-		console.log('WorkDetails: HTML生成完了');
 
-		// 詳細ブロック要素を作成して高さを取得
-		const { element: detailsElement, height: detailsHeight } = this.createDetailsElementWithHeight(detailsHTML);
-		console.log('WorkDetails: 詳細ブロック要素作成完了', { height: detailsHeight });
+		// 詳細ブロック要素を作成（<li>要素として）
+		const detailsElement = this.createDetailsElement(detailsHTML);
 
-		// 次の行の開始位置のカードを取得
-		const nextRowStartCard = this.getNextRowStartCard(index);
-		console.log('WorkDetails: 次の行の開始位置のカード取得完了', { nextRowStartCard });
+		// 現在の行の最後のカードを取得
+		const currentRowLastCard = this.getCurrentRowLastCard(index);
 
-		// 位置を計算して設定
-		this.positionDetailsBlock(detailsElement, nextRowStartCard, detailsHeight);
-		console.log('WorkDetails: 位置設定完了');
+		// 現在の行の最後のカードの次に挿入（次の行の開始位置の前に挿入）
+		currentRowLastCard.insertAdjacentElement('afterend', detailsElement);
 
 		this.currentCard = card;
 		this.detailsBlock = detailsElement;
-		this.detailsHeight = detailsHeight;
 
 		// イベントリスナーとスライダーの初期化
 		this.setupDetailsBlockEvents(detailsElement, work, index);
-		console.log('WorkDetails: イベント設定完了');
 	}
 
 	/**
@@ -306,64 +261,10 @@ class WorkDetails {
 			this.initSlider(detailsElement);
 		}
 
-		// スクロール位置を調整
-		this.scrollToDetails(detailsElement);
+		// スクロール位置を調整（一時的に無効化）
+		// this.scrollToDetails(detailsElement);
 	}
 
-	/**
-	 * 詳細ブロックの位置を計算して設定
-	 * @param {HTMLElement} detailsElement - 詳細ブロック要素
-	 * @param {HTMLElement} nextRowStartCard - 次の行の開始位置のカード要素
-	 * @param {number} detailsHeight - 詳細ブロックの高さ
-	 * @private
-	 */
-	positionDetailsBlock(detailsElement, nextRowStartCard, detailsHeight) {
-		this.nextRowStartCard = nextRowStartCard;
-		this.detailsHeight = detailsHeight;
-		this.updatePosition(detailsElement, nextRowStartCard);
-
-		// スクロールとリサイズ時に位置を再計算
-		this.scrollHandler = () => {
-			if (this.detailsBlock && this.nextRowStartCard) {
-				this.updatePosition(this.detailsBlock, this.nextRowStartCard);
-			}
-		};
-
-		this.resizeHandler = () => {
-			if (this.detailsBlock && this.currentCard) {
-				// リサイズ時は列数を再取得して位置を再計算
-				const columnCount = this.getGridColumnCount();
-				const cardIndex = Array.from(this.workCards).indexOf(this.currentCard);
-				const rowNumber = this.getRowNumber(cardIndex, columnCount);
-				const nextRowStartIndex = this.getNextRowStartCardIndex(rowNumber, columnCount);
-				const nextRowStartCard = this.workCards[nextRowStartIndex] || this.workCards[this.workCards.length - 1];
-
-				this.nextRowStartCard = nextRowStartCard;
-				this.updatePosition(this.detailsBlock, nextRowStartCard);
-			}
-		};
-
-		window.addEventListener('scroll', this.scrollHandler, { passive: true });
-		window.addEventListener('resize', this.resizeHandler, { passive: true });
-	}
-
-	/**
-	 * 詳細ブロックの位置を更新
-	 * @param {HTMLElement} detailsElement - 詳細ブロック要素
-	 * @param {HTMLElement} nextRowStartCard - 次の行の開始位置のカード要素
-	 * @private
-	 */
-	updatePosition(detailsElement, nextRowStartCard) {
-		const cardRect = nextRowStartCard.getBoundingClientRect();
-		const worksSectionRect = this.worksSection.getBoundingClientRect();
-
-		// 次の行の開始位置のカードの下に詳細ブロックを配置
-		// worksSectionがposition: relativeなので、worksSectionからの相対位置を計算
-		const top = cardRect.bottom - worksSectionRect.top + 24; // 24pxはgap分
-
-		detailsElement.style.top = `${top}px`;
-		console.log('WorkDetails: 位置更新', { top, cardBottom: cardRect.bottom, sectionTop: worksSectionRect.top });
-	}
 
 	/**
 	 * 詳細ブロックのHTMLを生成
@@ -456,20 +357,9 @@ class WorkDetails {
 	 * @private
 	 */
 	scrollToDetails(element) {
-		// 詳細ブロックの位置を取得（worksSectionからの相対位置 + worksSectionの絶対位置）
-		const worksSectionRect = this.worksSection.getBoundingClientRect();
+		const rect = element.getBoundingClientRect();
 		const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-		const elementRect = element.getBoundingClientRect();
-
-		// worksSectionの上端からの相対位置 + スクロール位置 - 余白
-		const targetY = scrollTop + worksSectionRect.top + parseFloat(element.style.top) - 20;
-
-		console.log('WorkDetails: スクロール位置計算', {
-			scrollTop,
-			sectionTop: worksSectionRect.top,
-			elementTop: element.style.top,
-			targetY
-		});
+		const targetY = scrollTop + rect.top - 20; // 上部に20pxの余白
 
 		window.scrollTo({
 			top: targetY,
@@ -487,9 +377,6 @@ class WorkDetails {
 			this.detailsBlock = null;
 		}
 		this.currentCard = null;
-		this.nextRowStartCard = null;
-		this.detailsHeight = null;
-		this.removeEventListeners();
 	}
 
 	/**
@@ -501,27 +388,11 @@ class WorkDetails {
 	}
 
 	/**
-	 * イベントリスナーを削除
-	 * @private
-	 */
-	removeEventListeners() {
-		if (this.scrollHandler) {
-			window.removeEventListener('scroll', this.scrollHandler);
-			this.scrollHandler = null;
-		}
-		if (this.resizeHandler) {
-			window.removeEventListener('resize', this.resizeHandler);
-			this.resizeHandler = null;
-		}
-	}
-
-	/**
 	 * クリーンアップ
 	 * @public
 	 */
 	destroy() {
 		this.close();
-		this.removeEventListeners();
 		document.removeEventListener('keydown', this.escapeHandler);
 	}
 }
@@ -531,25 +402,19 @@ class WorkDetails {
  * @description ページ内のワークセクションを初期化
  */
 function initWorkDetails() {
-	console.log('WorkDetails: initWorkDetails呼び出し');
 	const workList = document.querySelector('.p-portfolio__work-list');
 	if (!workList) {
-		console.error('WorkDetails: workListが見つかりません');
 		return;
 	}
 
-	console.log('WorkDetails: WorkDetailsインスタンスを作成します');
 	new WorkDetails();
 }
 
 // 初期化
 function init() {
-	console.log('WorkDetails: init関数実行', { readyState: document.readyState });
 	if (document.readyState === 'loading') {
-		console.log('WorkDetails: DOMContentLoadedを待機します');
 		document.addEventListener('DOMContentLoaded', initWorkDetails);
 	} else {
-		console.log('WorkDetails: 即座に初期化します');
 		setTimeout(initWorkDetails, 0);
 	}
 }

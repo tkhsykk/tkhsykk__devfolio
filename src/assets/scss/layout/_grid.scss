@@ -20,6 +20,8 @@
 	}
 
 	&--cols-3 {
+		// フォールバック：grid
+		display: grid;
 		grid-template-columns: 1fr;
 
 		@include mq(md) {
@@ -28,6 +30,20 @@
 
 		@include mq(lg) {
 			grid-template-columns: repeat(3, 1fr);
+		}
+
+		// Masonryレイアウト（Chrome/Edge: display: masonry、Safari/Firefox: grid-template-rows: masonry）
+		// Chrome/Edge用：display: masonry（列数はgrid-template-columnsで指定）
+		@supports (display: masonry) {
+			display: masonry;
+			masonry-auto-flow: next;
+			// 列数はgrid-template-columnsで指定（既に上で指定済み）
+		}
+
+		// Safari/Firefox用：grid-template-rows: masonry（Grid統合型）
+		@supports (grid-template-rows: masonry) {
+			grid-template-rows: masonry;
+			// 列数はgrid-template-columnsで指定（既に上で指定済み）
 		}
 	}
 }
