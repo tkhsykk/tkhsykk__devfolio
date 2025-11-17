@@ -112,7 +112,7 @@ export async function scripts() {
 		outfile: join(paths.js.dist, 'main.js'),
 		format: 'esm',
 		sourcemap: true,
-		minify: false,
+		minify: true,
 	}).catch((error) => {
 		notify.onError({
 			title: 'JavaScript Build Error',
