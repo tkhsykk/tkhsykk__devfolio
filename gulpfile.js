@@ -101,25 +101,15 @@ export function styles() {
 
 /**
  * JSバンドル（esbuild）
+ * main.jsをエントリーポイントとして、すべてのJSを1つのファイルにバンドル
  */
 export async function scripts() {
-	const fs = await import('fs');
-
-	// JSファイル探索
-	const jsFiles = fs
-		.readdirSync(join(srcDir, 'assets/js'), { recursive: true })
-		.filter((file) => file.endsWith('.js'))
-		.map((file) => join(srcDir, 'assets/js', file));
-
-	if (jsFiles.length === 0) {
-		console.log('JavaScriptファイルが見つかりません。スキップします。');
-		return Promise.resolve();
-	}
+	const mainJsPath = join(srcDir, 'assets/js/main.js');
 
 	return esbuild({
-		entryPoints: jsFiles,
+		entryPoints: [mainJsPath],
 		bundle: true,
-		outdir: paths.js.dist,
+		outfile: join(paths.js.dist, 'main.js'),
 		format: 'esm',
 		sourcemap: true,
 		minify: false,
