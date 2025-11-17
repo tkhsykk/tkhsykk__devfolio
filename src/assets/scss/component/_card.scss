@@ -8,7 +8,7 @@
 .c-card {
 	background-color: $color-white;
 	padding: $spacing-6;
-	border-radius: $border-radius-xl;
+	border-radius: $border-radius-md;
 	box-shadow: $shadow-sm;
 	border: 1px solid $color-border;
 	@include transition();

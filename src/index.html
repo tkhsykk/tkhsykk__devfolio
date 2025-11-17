@@ -14,7 +14,7 @@
 		<div class="p-portfolio">
 			<nav class="p-portfolio__nav" aria-label="メインナビゲーション">
 				<div class="l-container p-portfolio__nav-inner">
-					<strong class="p-portfolio__nav-logo u-font-en">devfolio</strong>
+					<h1 class="p-portfolio__nav-logo u-font-en">devfolio</h1>
 					<ul class="p-portfolio__nav-links">
 						<li><a href="#hero" class="p-portfolio__nav-link">Top</a></li>
 						<li><a href="#skills" class="p-portfolio__nav-link">Skills</a></li>
@@ -28,29 +28,29 @@
 
 			<header id="hero" class="p-portfolio__hero">
 				<div class="l-container l-container--narrow u-text-center">
-					<h1 class="p-portfolio__hero-title">
-						Webエンジニア<br />
-						<span class="u-text-primary">（WordPress特化）</span>
-					</h1>
-					<p class="p-portfolio__hero-subtitle">HTML／SCSS設計からCMS構築・環境構築・デプロイまで</p>
+					<h2 class="p-portfolio__hero-title">
+						About devfolio
+					</h2>
+					<p class="p-portfolio__hero-description">
+						そうだ、AIでサイトを作ってみようか。
+					</p>
+					<dl class="p-portfolio__hero-concepts">
+						<div class="p-portfolio__hero-concept">
+							<dt class="p-portfolio__hero-concept-title">コンセプト</dt>
+							<dd class="p-portfolio__hero-concept-description">
+								これからの時代、WEBエンジニアの仕事もAIとは切り離せないのはほぼ確実。<br>
+								アプリやシステム開発のようにAIでコーディング→リファクタリング→テスト→プルリク→テスト…を繰り返すような開発は現時点ではまだ難しいが、いい機会なので今どこまでAIに任せて開発ができるかをポートフォリオサイトで試してみた。
+							</dd>
+						</div>
+						<div class="p-portfolio__hero-concept">
+							<dt class="p-portfolio__hero-concept-title">開発フロー</dt>
+							<dd class="p-portfolio__hero-concept-description">
+								詳細は<span class="u-font-en"><a href="#flow">How I Built “devfolio"</a></span>をご覧いただくとして、
+							</dd>
+						</div>
+					</dl>
 				</div>
 			</header>
-
-
-
-			<button data-micromodal-trigger="modal-1" class="c-button c-button--primary">Open modal</button>
-
-			<div class="modal a micromodal-slide" id="modal-1" aria-hidden="true">
-				<div class="modal__overlay" tabindex="-1" data-micromodal-close>
-					<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title">
-						<button class="modal__close" aria-label="Close modal" data-micromodal-close>X</button>
-						<h2 class="modal__title" id="modal-1-title">Modal title</h2>
-						<p class="modal__content">Modal body text.</p>
-					</div>
-				</div>
-			</div>
-
-
 
 			<section id="skills" class="p-portfolio__section p-portfolio__skills">
 				<div class="l-container">
@@ -69,10 +69,10 @@
 								</div>
 								<div class="p-portfolio__skill-tags">
 									<span class="c-badge">HTML5</span>
-									<span class="c-badge">SCSS(Sass)</span>
-									<span class="c-badge">BEM</span>
-									<span class="c-badge">セマンティックHTML</span>
-									<span class="c-badge">アクセシビリティ対応(WCAG)</span>
+									<span class="c-badge">SCSS</span>
+									<span class="c-badge">PDFLOCSS</span>
+									<span class="c-badge">セマンティックなHTML</span>
+									<span class="c-badge">アクセシビリティ対応</span>
 								</div>
 							</article>
 						</li>
@@ -88,7 +88,11 @@
 								<div class="p-portfolio__skill-tags">
 									<span class="c-badge">Gulp</span>
 									<span class="c-badge">Webpack</span>
-									<span class="c-badge">Vite</span>
+									<span class="c-badge">esbuild</span>
+									<button class="c-badge" popovertarget="popover-vite">Vite</button>
+									<div class="popover" id="popover-vite" popover>
+										Viteは、モダンなフロントエンド開発環境を提供する高速なビルドツールです。ESMベースの開発サーバーと最適化された本番ビルドを提供します。
+									</div>
 								</div>
 							</article>
 						</li>
@@ -103,8 +107,10 @@
 									<h3 class="p-portfolio__skill-title">CMS / Backend</h3>
 								</div>
 								<div class="p-portfolio__skill-tags">
-									<span class="c-badge">WordPress（テーマ／ブロック／プラグイン）</span>
+									<span class="c-badge">WordPress（テーマ/ブロック/プラグイン）</span>
+									<span class="c-badge">ACFを使用した複雑なカスタムフィールド設計</span>
 									<span class="c-badge">PHP</span>
+									<span class="c-badge">Laravelへの組み込み</span>
 								</div>
 							</article>
 						</li>
@@ -116,12 +122,14 @@
 										<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
 										<path d="M2 12h20"></path>
 									</svg>
-									<h3 class="p-portfolio__skill-title">Environment</h3>
+									<h3 class="p-portfolio__skill-title">Environment / LLMs</h3>
 								</div>
 								<div class="p-portfolio__skill-tags">
 									<span class="c-badge">Docker</span>
 									<span class="c-badge">XAMPP</span>
 									<span class="c-badge">VSCode</span>
+									<span class="c-badge">ChatGPT Teams/Free</span>
+									<span class="c-badge">Cursor Pro</span>
 								</div>
 							</article>
 						</li>
@@ -139,9 +147,9 @@
 								<div class="p-portfolio__skill-tags">
 									<span class="c-badge">Git</span>
 									<span class="c-badge">GitHub</span>
+									<span class="c-badge">SVN</span>
 									<span class="c-badge">SSH</span>
-									<span class="c-badge">VPS構築</span>
-									<span class="c-badge">自動デプロイ設定</span>
+									<span class="c-badge">自動デプロイ</span>
 								</div>
 							</article>
 						</li>
@@ -158,7 +166,6 @@
 									<span class="c-badge">Core Web Vitals</span>
 									<span class="c-badge">構造化データ</span>
 									<span class="c-badge">メタ最適化</span>
-									<span class="c-badge">画像圧縮</span>
 								</div>
 							</article>
 						</li>
@@ -174,9 +181,24 @@
 									<span class="c-badge">WordPress静的化</span>
 									<span class="c-badge">記事ライティング</span>
 									<span class="c-badge">VSCode拡張機能作成</span>
-									<span class="c-badge">AI向け汎用MDC作成</span>
-									<span class="c-badge">EJSメルマガ生成ツール</span>
+									<span class="c-badge">メルマガ生成ツール</span>
 									<span class="c-badge">HTMLメール</span>
+								</div>
+							</article>
+						</li>
+						<li class="p-portfolio__skill-card">
+							<article>
+								<div class="p-portfolio__skill-header">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
+										<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+									</svg>
+									<h3 class="p-portfolio__skill-title">Personal Projects</h3>
+								</div>
+								<div class="p-portfolio__skill-tags">
+									<span class="c-badge">「<span class="u-font-en u-text-primary">devfolio</span>」</span>
+									<span class="c-badge">マネーフォワード自動登録ツール</span>
+									<span class="c-badge">Text->Epub変換ツール</span>
+									<span class="c-badge">LLM向け汎用指示書作成</span>
 								</div>
 							</article>
 						</li>
@@ -445,25 +467,33 @@
 									WordPressを軸に、HTML／SCSSの構造設計・テーマ開発・静的化・運用改善のための自動化ツール整備まで、マークアップ中心のフロントエンド実装を担当しています。<br>
 									セマンティックな構造と再現性を重視し、複数人で回す運用・改修案件でも維持しやすいコードとワークフローを設計しています。<br>
 									運用作業や開発プロセスの無駄を減らすことを意識し、必要なツールを適宜作りながら環境を整えることが多いです。<br>
-									ビルド環境からデプロイフローまで含め、長期運用に耐える制作基盤の構築に取り組んでいます。
+									ビルド環境からデプロイフローまで含め、長期運用に耐える制作基盤の構築を常に意識しています。
 								</p>
 							</div>
 
 							<ul class="p-portfolio__about-list">
 								<li class="p-portfolio__about-item">
-									<span>フロントエンド開発 5年</span>
+									<span>Web制作会社での開発年数 15年</span>
 								</li>
 
 								<li class="p-portfolio__about-item">
-									<span>WordPress開発 4年</span>
+									<span>WordPress開発 11年</span>
 								</li>
 
 								<li class="p-portfolio__about-item">
-									<span>インフラ構築 3年</span>
+									<span>SVN/Githubでのバージョン管理 8年</span>
 								</li>
 
 								<li class="p-portfolio__about-item">
-									<span>アクセシビリティ対応</span>
+									<span>アクセシビリティ対応可</span>
+								</li>
+
+								<li class="p-portfolio__about-item">
+									<span>HTML/CSS 25年</span>
+								</li>
+
+								<li class="p-portfolio__about-item">
+									<span>インターネット歴 25年</span>
 								</li>
 							</ul>
 
@@ -474,8 +504,9 @@
 
 			<section id="contact" class="p-portfolio__section p-portfolio__contact">
 				<div class="l-container l-container--narrow u-text-center">
-					<h2 class="p-portfolio__section-title">Let's Connect</h2>
-					<p class="p-portfolio__contact-text">新しいプロジェクトやご相談がございましたら、お気軽にお声がけください。<br />より良いWeb体験の創造に向けて、一緒に取り組みましょう。</p>
+					<div class="u-mb-16">
+						<h2 class="p-portfolio__section-title">Connect</h2>
+					</div>
 					<div class="p-portfolio__contact-buttons">
 						<a href="mailto:contact@example.com" class="c-button c-button--primary u-font-en">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
@@ -484,7 +515,7 @@
 							</svg>
 							<span>Email</span>
 						</a>
-						<a href="https://github.com/username" target="_blank" rel="noopener noreferrer" class="c-button c-button--outline u-font-en">
+						<a href="https://github.com/tkhsykk/tkhsykk__devfolio" target="_blank" rel="noopener noreferrer" class="c-button c-button--outline u-font-en">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
 							<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
 								<path d="M9 18c-4.51 2-5-2-7-2"></path>

@@ -12,11 +12,17 @@
 	color: $color-text;
 	font-size: $font-size-sm;
 	border-radius: $border-radius-full;
+	line-height: 1.25;
 	@include transition();
 
-	&:hover {
+	&:is(button):hover {
 		background-color: $color-primary;
 		color: $color-white;
+	}
+
+	// popover トリガーとして機能する場合
+	&[popovertarget] {
+		cursor: pointer;
 	}
 }
 
