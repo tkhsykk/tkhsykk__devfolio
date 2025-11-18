@@ -54,8 +54,8 @@
 		transform: translateY(-50%);
 		z-index: 2;
 		background-color: rgba($color-white, 0.9);
-		border: 1px solid rgba($color-text, 0.1);
-		border-radius: 50%;
+		//border: 1px solid rgba($color-text, 0.1);
+		//border-radius: 50%;
 		width: 48px;
 		height: 48px;
 		display: flex;
@@ -70,7 +70,7 @@
 			background-color: $color-white;
 			border-color: rgba($color-text, 0.2);
 			outline: 2px solid $color-primary;
-			outline-offset: 2px;
+			outline-offset: 0;
 		}
 
 		&:active {
@@ -90,20 +90,20 @@
 		}
 
 		&--prev {
-			left: $spacing-2;
+			left: 0;
 		}
 
 		&--next {
-			right: $spacing-2;
+			right: 0;
 		}
 
 		@include mq(sm) {
-			width: 56px;
-			height: 56px;
+			width: 30px;
+			height: 30px;
 
 			svg {
-				width: 28px;
-				height: 28px;
+				width: 24px;
+				height: 24px;
 			}
 		}
 	}
@@ -122,14 +122,14 @@
 		height: 8px;
 		border-radius: 50%;
 		border: none;
-		background-color: rgba($color-text, 0.3);
+		background-color: rgba($color-white, 0.3);
 		cursor: pointer;
 		padding: 0;
 		transition: background-color $transition-base, transform $transition-base;
 
 		&:hover,
 		&:focus-visible {
-			background-color: rgba($color-text, 0.5);
+			background-color: rgba($color-white, 0.5);
 			outline: 2px solid $color-primary;
 			outline-offset: 2px;
 			transform: scale(1.2);
