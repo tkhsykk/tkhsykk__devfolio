@@ -12,16 +12,52 @@
 }
 
 *::backdrop {
-	//background-color: rgba(0, 0, 0, 0.3);
+	//background-color: rgba(0, 0, 0, 0.1);
+	//backdrop-filter: blur(1px);
 }
 
-.popover {
+.c-popbox {
 	inset: unset;
-	background: $color-primary;
+	background: rgba($color-primary, 0.8);
+	//backdrop-filter: blur(4px);
 	border: none;
 	color: $color-white;
+	box-shadow: $shadow-lg;
 	position-area: top span-right;
 	margin: 0.5em 0;
-	border-radius: $border-radius-md;
+	//border-radius: $border-radius-md;
 	padding: 0.8em;
+	margin: .75em 1em;
+	position: relative;
+	max-width: rem(600);
+
+	&:popover-open{}
+
+	a{
+		text-decoration: underline;
+		text-underline-offset: .4em;
+		text-decoration-thickness: 2px;
+		text-decoration-color: $color-white;
+
+		@media (hover: hover) {
+			@include transition(all, .2s ease);
+		}
+
+		&:hover{
+			//color: rgba($color-white, 0.8);
+			text-decoration-color: transparent;
+		}
+	}
+}
+
+.c-badge--popover:has(+ .c-popbox:popover-open)::before {
+	content: "";
+	position: absolute;
+	right: .5em;
+	top: -1.1em;
+	clip-path: polygon(0 0, 100% 0%, 50% 100%);
+	background: rgba($color-primary, 0.8);
+	display: block;
+	width: 1.5em;
+	height: 1em;
 }
