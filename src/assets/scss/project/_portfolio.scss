@@ -71,513 +71,517 @@
 		padding-bottom: $spacing-24;
 		padding-left: $spacing-6;
 		padding-right: $spacing-6;
-	}
-
-	&__hero-title {
-		font-family: $font-family-en;
-		font-size: $font-size-4xl;
-		font-weight: $font-weight-medium;
-		line-height: $line-height-tight;
-		margin-bottom: $spacing-8;
-		color: $color-text;
-
-		@include mq(md) {
-			//font-size: $font-size-4xl;
-		}
-
-		.u-text-primary {
-			font-size: $font-size-2xl;
-		}
-	}
-
-	&__hero-description {
-		font-size: $font-size-lg;
-		width: min(42rem, 80vw);
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: $spacing-6;
-		line-height: $line-height-relaxed;
-		opacity: 0.7;
-	}
-
-	&__hero-concepts {
-		display: flex;
-		flex-direction: column;
-		gap: $spacing-6;
-		width: min(42rem, 80vw);
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	&__hero-concept {
-		display: flex;
-		gap: $spacing-6;
 
 		&-title {
-			font-size: $font-size-base;
-			font-weight: $font-weight-semibold;
-			margin-bottom: $spacing-2;
-			color: $color-primary;
-			flex-shrink: 0;
+			font-family: $font-family-en;
+			font-size: $font-size-4xl;
+			font-weight: $font-weight-medium;
+			line-height: $line-height-tight;
+			margin-bottom: $spacing-8;
+			color: $color-text;
+
+			@include mq(md) {
+				//font-size: $font-size-4xl;
+			}
+
+			.u-text-primary {
+				font-size: $font-size-2xl;
+			}
 		}
 
 		&-description {
-			font-size: $font-size-base;
+			font-size: $font-size-lg;
+			width: min(42rem, 80vw);
+			margin-left: auto;
+			margin-right: auto;
+			margin-bottom: $spacing-6;
 			line-height: $line-height-relaxed;
-			opacity: 0.8;
-			text-align: left;
+			opacity: 0.7;
+		}
+
+		&-concepts {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-6;
+			width: min(42rem, 80vw);
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		&-concept {
+			display: flex;
+			gap: $spacing-6;
+
+			&-title {
+				font-size: $font-size-base;
+				font-weight: $font-weight-semibold;
+				margin-bottom: $spacing-2;
+				color: $color-primary;
+				flex-shrink: 0;
+			}
+
+			&-description {
+				font-size: $font-size-base;
+				line-height: $line-height-relaxed;
+				opacity: 0.8;
+				text-align: left;
+			}
 		}
 	}
+
 
 	// セクション共通
 	&__section {
 		padding: $spacing-20 $spacing-6;
 		scroll-margin-top: 80px;
-	}
 
-	&__section-title {
-		font-size: $font-size-4xl;
-		font-weight: $font-weight-medium;
-		font-family: $font-family-en;
-		margin-bottom: $spacing-4;
-		text-align: center;
-		position: relative;
+		&-title {
+			font-size: $font-size-4xl;
+			font-weight: $font-weight-medium;
+			font-family: $font-family-en;
+			margin-bottom: $spacing-4;
+			text-align: center;
+			position: relative;
 
-		@include mq(md) {
-			//font-size: $font-size-4xl;
+			@include mq(md) {
+				//font-size: $font-size-4xl;
+			}
+
+			&::after {
+				content: '';
+				display: block;
+				width: 4rem;
+				height: 0.25rem;
+				background-color: $color-primary;
+				margin: $spacing-2 auto 0;
+			}
 		}
 
-		&::after {
-			content: '';
-			display: block;
-			width: 4rem;
-			height: 0.25rem;
-			background-color: $color-primary;
-			margin: $spacing-2 auto 0;
+		&-divider {
+			display: none;
 		}
-	}
-
-	&__section-divider {
-		display: none;
 	}
 
 	// スキルセクション
-	&__skills {
+	&__skill {
 		background-color: $color-bg-light;
-	}
 
-	&__skill-card {
-		@extend .c-card;
-		//margin-bottom: $spacing-6;
-		border: none;
-	}
+		&-card {
+			@extend .c-card;
+			//margin-bottom: $spacing-6;
+			border: none;
+		}
 
-	&__skill-header {
-		display: flex;
-		align-items: center;
-		margin-bottom: $spacing-6;
-	}
+		&-header {
+			display: flex;
+			align-items: center;
+			margin-bottom: $spacing-6;
+		}
 
-	&__skill-icon {
-		width: 1.5em;
-		height: 1.5em;
-		color: $color-primary;
-	}
+		&-icon {
+			width: 1.5em;
+			height: 1.5em;
+			color: $color-primary;
+		}
 
-	&__skill-title {
-		font-weight: $font-weight-semibold;
-		font-size: $font-size-lg;
-		margin-left: $spacing-3;
-	}
+		&-title {
+			font-weight: $font-weight-semibold;
+			font-size: $font-size-lg;
+			margin-left: $spacing-3;
+		}
 
-	&__skill-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: $spacing-3 $spacing-2;
+		&-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: $spacing-3 $spacing-2;
 
-		.c-badge{
-			&:not([popovertarget]) {
-				cursor: default;
-			}
+			.c-badge{
+				&:not([popovertarget]) {
+					cursor: default;
+				}
 
-			&[popovertarget] {
-				position: relative;
-				padding-right: 2em;
-				&:after{
-					content: '?';
-					display: inline-block;
-					text-align: center;
-					position: absolute;
-					top: 0;
-					bottom: 0;
-					margin-top: auto;
-					margin-bottom: auto;
-					width: 1.25em;
-					height: 1.25em;
-					line-height: 1.25;
-					background-color: $color-text;
-					border-radius: $border-radius-full;
-					font-family: $font-family-en;
-					color: $color-white;
-					margin-left: .25em;
+				&[popovertarget] {
+					position: relative;
+					padding-right: 2em;
+					&:after{
+						content: '?';
+						display: inline-block;
+						text-align: center;
+						position: absolute;
+						top: 0;
+						bottom: 0;
+						margin-top: auto;
+						margin-bottom: auto;
+						width: 1.25em;
+						height: 1.25em;
+						line-height: 1.25;
+						background-color: $color-text;
+						border-radius: $border-radius-full;
+						font-family: $font-family-en;
+						color: $color-white;
+						margin-left: .25em;
+					}
 				}
 			}
 		}
 	}
 
+
 	// ワークスセクション
-	&__works {
+	&__work {
 		position: relative;
 
 		ul.l-grid.l-grid--cols-3 {
 			position: relative;
 		}
-	}
 
-	&__work-card {
-		@extend .c-card;
-		cursor: pointer;
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-
-		@media (hover: hover) {
-			@include transition();
-		}
-
-		&:hover {
-			box-shadow: $shadow-lg;
-		}
-
-		> article {
+		&-card {
+			@extend .c-card;
+			cursor: pointer;
 			display: flex;
 			flex-direction: column;
 			height: 100%;
-		}
-	}
-
-	// 詳細ブロック（グリッドアイテムとして全幅表示）
-	&__work-details-block {
-		grid-column: 1 / -1;
-		width: 100vw;
-		max-width: 100vw;
-		margin-left: calc(50% - 50vw);
-		margin-right: calc(50% - 50vw);
-	}
-
-	&__work-content {
-		padding: $spacing-4;
-		display: flex;
-		flex-direction: column;
-	}
-
-	&__work-title {
-		font-size: $font-size-lg;
-		font-weight: $font-weight-semibold;
-		margin: 0;
-		text-align: center;
-	}
-
-	&__work-meta {
-		font-size: $font-size-sm;
-		opacity: 0.7;
-		margin-bottom: $spacing-3;
-	}
-
-	&__work-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: $spacing-2;
-		margin-bottom: $spacing-3;
-	}
-
-	&__work-summary {
-		font-size: $font-size-sm;
-		opacity: 0.6;
-		margin-bottom: $spacing-4;
-	}
-
-	// 課題 → 解決方法ブロック
-	&__work-solution {
-		margin-top: auto;
-		padding-top: $spacing-6;
-		border-top: 1px solid $color-border;
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-	}
-
-	&__work-problem {
-		flex: 1;
-		//background-color: rgba($color-primary, 0.5);
-		background-color: $color-bg-light;
-		padding: $spacing-3 $spacing-4;
-		position: relative;
-
-		&::before {
-			content: '';
-			position: absolute;
-			bottom: -19px;
-			left: 0;
-			width: 100%;
-			height: 20px;
-			//aspect-ratio: 2;
-			clip-path: polygon(50% 100%,100% 0,0 0);
-			//background: linear-gradient(0deg,rgba($color-text, 0.01),$color-bg-light);
-			background-color: $color-bg-light;
-		}
-	}
-
-	&__work-problem-title {
-		//font-size: $font-size-xs;
-		font-weight: $font-weight-semibold;
-		color: $color-primary;
-		margin-bottom: $spacing-1;
-		letter-spacing: 0.1em;
-	}
-
-	&__work-problem-text {
-		//font-size: $font-size-xs;
-		line-height: $line-height-relaxed;
-		color: $color-text;
-		opacity: 0.8;
-	}
-
-	&__work-arrow {
-		flex-shrink: 0;
-		font-size: $font-size-lg;
-		color: $color-primary;
-		font-weight: $font-weight-bold;
-		padding: 0 $spacing-2;
-
-		@include mq(sm) {
-			font-size: $font-size-xl;
-		}
-	}
-
-	&__work-solution-content {
-		flex: 1;
-		background-color: $color-white;
-		border: 2px solid $color-bg-light;
-		border-top: none;
-		padding: $spacing-6 $spacing-4 $spacing-3;
-		//border-radius: $border-radius-sm;
-		background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, $color-bg-light 10px, $color-bg-light 12px );
-	}
-
-	&__work-solution-title {
-		//font-size: $font-size-xs;
-		font-weight: $font-weight-semibold;
-		color: $color-primary;
-		margin-bottom: $spacing-1;
-		letter-spacing: 0.1em;
-		opacity: 0.7;
-	}
-
-	&__work-solution-text {
-		//font-size: $font-size-xs;
-		line-height: $line-height-relaxed;
-		color: $color-text;
-	}
-
-	&__work-image {
-		aspect-ratio: 16 / 9;
-		overflow: hidden;
-		position: relative;
-		width: 100%;
-		background: transparent;
-		cursor: pointer;
-
-		&::after {
-			content: '';
-			position: absolute;
-			inset: 0;
-			background-color: rgba($color-primary, 0);
-			transition: background-color $transition-base;
-			pointer-events: none;
-		}
-
-		&:hover::after,
-		&:focus-visible::after {
-			background-color: rgba($color-primary, 0.1);
-		}
-
-		&:focus-visible {
-			outline: 2px solid $color-primary;
-			outline-offset: 2px;
-		}
-
-		img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			display: block;
-			pointer-events: none;
 
 			@media (hover: hover) {
 				@include transition();
 			}
 
-			.p-portfolio__work-card:hover & {
-				transform: scale(1.05);
+			&:hover {
+				box-shadow: $shadow-lg;
+			}
+
+			> article {
+				display: flex;
+				flex-direction: column;
+				height: 100%;
 			}
 		}
-	}
 
-	&__work-trigger {
-		@extend .p-portfolio__work-image;
-	}
+		// 詳細ブロック（グリッドアイテムとして全幅表示）
+		&-details-block {
+			grid-column: 1 / -1;
+			width: 100vw;
+			max-width: 100vw;
+			margin-left: calc(50% - 50vw);
+			margin-right: calc(50% - 50vw);
+		}
 
-	&__work-modal-content {
-		margin-top: $spacing-6;
+		&-content {
+			padding: $spacing-4;
+			display: flex;
+			flex-direction: column;
+		}
 
-		.p-portfolio__work-meta {
+		&-title {
+			font-size: $font-size-lg;
+			font-weight: $font-weight-semibold;
+			margin: 0;
+			text-align: center;
+		}
+
+		&-meta {
+			font-size: $font-size-sm;
+			opacity: 0.7;
+			margin-bottom: $spacing-3;
+		}
+
+		&-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: $spacing-2;
+			margin-bottom: $spacing-3;
+		}
+
+		&-summary {
+			font-size: $font-size-sm;
+			opacity: 0.6;
 			margin-bottom: $spacing-4;
 		}
 
-		.p-portfolio__work-tags {
-			margin-bottom: $spacing-4;
+		// 課題 → 解決方法ブロック
+		&-solution {
+			margin-top: auto;
+			padding-top: $spacing-6;
+			border-top: 1px solid $color-border;
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
 		}
 
-		.p-portfolio__work-summary {
-			margin-bottom: $spacing-6;
+		&-problem {
+			flex: 1;
+			//background-color: rgba($color-primary, 0.5);
+			background-color: $color-bg-light;
+			padding: $spacing-3 $spacing-4;
+			position: relative;
+
+			&::before {
+				content: '';
+				position: absolute;
+				bottom: -19px;
+				left: 0;
+				width: 100%;
+				height: 20px;
+				//aspect-ratio: 2;
+				clip-path: polygon(50% 100%,100% 0,0 0);
+				//background: linear-gradient(0deg,rgba($color-text, 0.01),$color-bg-light);
+				background-color: $color-bg-light;
+			}
 		}
 
-		.p-portfolio__work-solution {
-			margin-bottom: $spacing-6;
+		&-problem-title {
+			//font-size: $font-size-xs;
+			font-weight: $font-weight-semibold;
+			color: $color-primary;
+			margin-bottom: $spacing-1;
+			letter-spacing: 0.1em;
 		}
 
-		.p-portfolio__work-overlay-text {
-			margin-top: $spacing-6;
+		&-problem-text {
+			//font-size: $font-size-xs;
 			line-height: $line-height-relaxed;
+			color: $color-text;
+			opacity: 0.8;
 		}
-	}
 
-	// 詳細ブロックのコンテンツ
-	&__work-details-content {
-		position: relative;
-		background-color: $color-bg-lighter;
-		border-radius: $border-radius-lg;
-		padding: $spacing-6;
-		margin: $spacing-6 $spacing-6 0;
-		max-width: 100%;
-	}
+		&-arrow {
+			flex-shrink: 0;
+			font-size: $font-size-lg;
+			color: $color-primary;
+			font-weight: $font-weight-bold;
+			padding: 0 $spacing-2;
 
-	&__work-close {
-		position: absolute;
-		top: $spacing-4;
-		right: $spacing-4;
-		z-index: 10;
-		width: 2.5rem;
-		height: 2.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border: none;
-		background-color: rgba($color-white, 0.9);
-		border-radius: $border-radius-full;
-		cursor: pointer;
-		color: $color-text;
-		box-shadow: $shadow-md;
-		transition: background-color $transition-base, transform $transition-base;
+			@include mq(sm) {
+				font-size: $font-size-xl;
+			}
+		}
 
-		&:hover,
-		&:focus-visible {
+		&-solution-content {
+			flex: 1;
 			background-color: $color-white;
-			transform: scale(1.1);
+			border: 2px solid $color-bg-light;
+			border-top: none;
+			padding: $spacing-6 $spacing-4 $spacing-3;
+			//border-radius: $border-radius-sm;
+			background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, $color-bg-light 10px, $color-bg-light 12px );
 		}
 
-		&:focus-visible {
-			outline: 2px solid $color-primary;
-			outline-offset: 2px;
+		&-solution-title {
+			//font-size: $font-size-xs;
+			font-weight: $font-weight-semibold;
+			color: $color-primary;
+			margin-bottom: $spacing-1;
+			letter-spacing: 0.1em;
+			opacity: 0.7;
 		}
 
-		svg {
-			width: 1.25rem;
-			height: 1.25rem;
+		&-solution-text {
+			//font-size: $font-size-xs;
+			line-height: $line-height-relaxed;
+			color: $color-text;
 		}
-	}
 
-	&__work-details-inner {
-		padding: $spacing-6;
-		min-height: 400px;
-		background-color: $color-white;
-		border-radius: $border-radius-md;
-	}
-
-	&__work-details-grid {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: $spacing-8;
-
-		@include mq(md) {
-			//grid-template-columns: 1fr;
-		}
-	}
-
-	&__work-details-image {
-		img {
+		&-image {
+			aspect-ratio: 16 / 9;
+			overflow: hidden;
+			position: relative;
 			width: 100%;
-			height: auto;
-			object-fit: cover;
+			background: transparent;
+			cursor: pointer;
+
+			&::after {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background-color: rgba($color-primary, 0);
+				transition: background-color $transition-base;
+				pointer-events: none;
+			}
+
+			&:hover::after,
+			&:focus-visible::after {
+				background-color: rgba($color-primary, 0.1);
+			}
+
+			&:focus-visible {
+				outline: 2px solid $color-primary;
+				outline-offset: 2px;
+			}
+
+			img {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				display: block;
+				pointer-events: none;
+
+				@media (hover: hover) {
+					@include transition();
+				}
+
+				.p-portfolio__work-card:hover & {
+					transform: scale(1.05);
+				}
+			}
+		}
+
+		&-trigger {
+			@extend .p-portfolio__work-image;
+		}
+
+		&-modal-content {
+			margin-top: $spacing-6;
+
+			.p-portfolio__work-meta {
+				margin-bottom: $spacing-4;
+			}
+
+			.p-portfolio__work-tags {
+				margin-bottom: $spacing-4;
+			}
+
+			.p-portfolio__work-summary {
+				margin-bottom: $spacing-6;
+			}
+
+			.p-portfolio__work-solution {
+				margin-bottom: $spacing-6;
+			}
+
+			.p-portfolio__work-overlay-text {
+				margin-top: $spacing-6;
+				line-height: $line-height-relaxed;
+			}
+		}
+
+		// 詳細ブロックのコンテンツ
+		&-details-content {
+			position: relative;
+			background-color: $color-bg-lighter;
+			//border-radius: $border-radius-lg;
+			//padding: $spacing-6;
+			margin: $spacing-6 $spacing-6 0;
+			width: 100%;
+		}
+
+		&-close {
+			position: absolute;
+			top: $spacing-4;
+			right: $spacing-4;
+			z-index: 10;
+			width: 2.5rem;
+			height: 2.5rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border: none;
+			background-color: rgba($color-white, 0.9);
+			border-radius: $border-radius-full;
+			cursor: pointer;
+			color: $color-text;
+			box-shadow: $shadow-md;
+			transition: background-color $transition-base, transform $transition-base;
+
+			&:hover,
+			&:focus-visible {
+				background-color: $color-white;
+				transform: scale(1.1);
+			}
+
+			&:focus-visible {
+				outline: 2px solid $color-primary;
+				outline-offset: 2px;
+			}
+
+			svg {
+				width: 1.25rem;
+				height: 1.25rem;
+			}
+		}
+
+		&-details-inner {
+			padding: $spacing-6;
+			min-height: 400px;
+			background-color: $color-white;
 			border-radius: $border-radius-md;
 		}
-	}
 
-	// 詳細パネル内のスライダー
-	&__work-details-grid {
-		.c-slider {
-			width: 100%;
+		&-details-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: $spacing-8;
+
+			@include mq(md) {
+				//grid-template-columns: 1fr;
+			}
 		}
-	}
 
-	&__work-details-text {
-		display: flex;
-		flex-direction: column;
-		gap: $spacing-4;
-		padding-left: $spacing-4;
-
-		@include mq(md) {
-			padding-left: 0;
+		&-details-image {
+			img {
+				width: 100%;
+				height: auto;
+				object-fit: cover;
+				border-radius: $border-radius-md;
+			}
 		}
+
+		// 詳細パネル内のスライダー
+		&-details-grid {
+			.c-slider {
+				width: 100%;
+			}
+		}
+
+		&-details-text {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-4;
+			padding-left: $spacing-4;
+
+			@include mq(md) {
+				padding-left: 0;
+			}
+		}
+
+		&-details-title {
+			font-size: $font-size-2xl;
+			font-weight: $font-weight-semibold;
+			margin: 0;
+			color: $color-primary;
+		}
+
+		&-details-divider {
+			border: none;
+			border-top: 2px solid $color-border;
+			margin: 0;
+		}
+
+		&-details-meta {
+			font-size: $font-size-sm;
+			opacity: 0.7;
+			margin: 0;
+		}
+
+		&-details-tags {
+			display: flex;
+			flex-wrap: wrap;
+			gap: $spacing-2;
+		}
+
+		&-details-summary {
+			font-size: $font-size-sm;
+			opacity: 0.8;
+			margin: 0;
+		}
+
+		&-details-description {
+			font-size: $font-size-base;
+			line-height: $line-height-relaxed;
+			margin: 0;
+		}
+
 	}
 
-	&__work-details-title {
-		font-size: $font-size-2xl;
-		font-weight: $font-weight-semibold;
-		margin: 0;
-		color: $color-primary;
-	}
-
-	&__work-details-divider {
-		border: none;
-		border-top: 2px solid $color-border;
-		margin: 0;
-	}
-
-	&__work-details-meta {
-		font-size: $font-size-sm;
-		opacity: 0.7;
-		margin: 0;
-	}
-
-	&__work-details-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: $spacing-2;
-	}
-
-	&__work-details-summary {
-		font-size: $font-size-sm;
-		opacity: 0.8;
-		margin: 0;
-	}
-
-	&__work-details-description {
-		font-size: $font-size-base;
-		line-height: $line-height-relaxed;
-		margin: 0;
-	}
 
 	// ノートセクション
 	&__notes {
@@ -587,249 +591,247 @@
 	// 制作フローセクション
 	&__flow {
 		background-color: $color-white;
-	}
 
-	&__flow-list {
-		display: flex;
-		flex-direction: column;
-		gap: $spacing-8;
-		max-width: 48rem;
-		margin: 0 auto;
-		counter-reset: flow-counter;
-	}
-
-	&__flow-item {
-		display: flex;
-		align-items: flex-start;
-		padding: $spacing-6;
-		padding-left: calc(3rem + #{$spacing-6} + #{$spacing-6});
-		background-size: auto auto;
-		background-color: rgba(255, 255, 255, 1);
-		background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, $color-bg-light 10px, $color-bg-light 12px );
-		counter-increment: flow-counter;
-		position: relative;
-
-		//@media (hover: hover) {
-		//	@include transition();
-		//}
-
-		//&:hover {
-		//	background-color: $color-bg-light;
-		//	//box-shadow: $shadow-md;
-		//}
-
-		&::before {
-			content: counter(flow-counter, decimal-leading-zero);
-			position: absolute;
-			left: $spacing-6;
-			top: $spacing-6;
-			flex-shrink: 0;
-			width: 3rem;
-			height: 3rem;
+		&-list {
 			display: flex;
-			align-items: center;
-			justify-content: center;
-			background: linear-gradient(to bottom right, $color-primary, color.scale($color-primary, $lightness: -10%));
-			color: $color-white;
-			font-weight: $font-weight-semibold;
-			font-family: $font-family-en;
-			font-size: $font-size-lg;
-			border-radius: $border-radius-full;
-			box-shadow: $shadow-sm;
+			flex-direction: column;
+			gap: $spacing-8;
+			max-width: 48rem;
+			margin: 0 auto;
+			counter-reset: flow-counter;
 		}
 
-		@include mq(md) {
-			padding: $spacing-8;
-			padding-left: calc(4rem + #{$spacing-8} + #{$spacing-6});
+		&-item {
+			display: flex;
+			align-items: flex-start;
+			padding: $spacing-6;
+			padding-left: calc(3rem + #{$spacing-6} + #{$spacing-6});
+			background-size: auto auto;
+			background-color: rgba(255, 255, 255, 1);
+			background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, $color-bg-light 10px, $color-bg-light 12px );
+			counter-increment: flow-counter;
+			position: relative;
 
 			&::before {
-				width: 4rem;
-				height: 4rem;
-				font-size: $font-size-xl;
-				left: $spacing-8;
-				top: $spacing-8;
+				content: counter(flow-counter, decimal-leading-zero);
+				position: absolute;
+				left: $spacing-6;
+				top: $spacing-6;
+				flex-shrink: 0;
+				width: 3rem;
+				height: 3rem;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				background: linear-gradient(to bottom right, $color-primary, color.scale($color-primary, $lightness: -10%));
+				color: $color-white;
+				font-weight: $font-weight-semibold;
+				font-family: $font-family-en;
+				font-size: $font-size-lg;
+				border-radius: $border-radius-full;
+				box-shadow: $shadow-sm;
+			}
+
+			@include mq(md) {
+				padding: $spacing-8;
+				padding-left: calc(4rem + #{$spacing-8} + #{$spacing-6});
+
+				&::before {
+					width: 4rem;
+					height: 4rem;
+					font-size: $font-size-xl;
+					left: $spacing-8;
+					top: $spacing-8;
+				}
 			}
 		}
-	}
 
-	&__flow-number {
-		display: none;
-	}
+		&-number {
+			display: none;
+		}
 
-	&__flow-content {
-		flex: 1;
-	}
+		&-content {
+			flex: 1;
+		}
 
-	&__flow-title {
-		font-size: $font-size-lg;
-		font-weight: $font-weight-semibold;
-		margin-bottom: $spacing-3;
-		color: $color-text;
+		&-title {
+			font-size: $font-size-lg;
+			font-weight: $font-weight-semibold;
+			margin-bottom: $spacing-3;
+			color: $color-text;
 
-		@include mq(md) {
-			font-size: $font-size-xl;
+			@include mq(md) {
+				font-size: $font-size-xl;
+			}
+		}
+
+		&-text {
+			font-size: $font-size-base;
+			line-height: $line-height-relaxed;
+			opacity: 0.8;
+			color: $color-text;
 		}
 	}
 
-	&__flow-text {
-		font-size: $font-size-base;
-		line-height: $line-height-relaxed;
-		opacity: 0.8;
-		color: $color-text;
-	}
 
-	&__note-card {
-		@extend .c-card;
-		border-color: $color-bg-lighter;
-		border-width: 3px;
-		cursor: pointer;
-		box-shadow: none;
+	&__note{
+		&-card {
+			@extend .c-card;
+			border-color: $color-bg-lighter;
+			border-width: 3px;
+			cursor: pointer;
+			box-shadow: none;
 
-		&:hover {
-			border-color: $color-primary;
+			&:hover {
+				border-color: $color-primary;
+			}
+		}
+
+		&-header {
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-start;
+			margin-bottom: $spacing-3;
+		}
+
+		&-date {
+			font-size: $font-size-xs;
+			font-weight: $font-weight-medium;
+			opacity: 0.5;
+		}
+
+		&-icon {
+			width: 1rem;
+			height: 1rem;
+			opacity: 0.5;
+		}
+
+		&-title {
+			font-size: $font-size-lg;
+			font-weight: $font-weight-semibold;
+			margin-bottom: $spacing-2;
+		}
+
+		&-text {
+			font-size: $font-size-sm;
+			opacity: 0.7;
+			line-height: $line-height-relaxed;
 		}
 	}
 
-	&__note-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		margin-bottom: $spacing-3;
-	}
-
-	&__note-date {
-		font-size: $font-size-xs;
-		font-weight: $font-weight-medium;
-		opacity: 0.5;
-	}
-
-	&__note-icon {
-		width: 1rem;
-		height: 1rem;
-		opacity: 0.5;
-	}
-
-	&__note-title {
-		font-size: $font-size-lg;
-		font-weight: $font-weight-semibold;
-		margin-bottom: $spacing-2;
-	}
-
-	&__note-text {
-		font-size: $font-size-sm;
-		opacity: 0.7;
-		line-height: $line-height-relaxed;
-	}
 
 	// アバウトセクション
 	&__about {
 		background-color: $color-bg-light;
-	}
 
-	&__about-grid {
-		display: grid;
-		gap: $spacing-8;
-		grid-template-columns: 1fr;
+		&-grid {
+			display: grid;
+			gap: $spacing-8;
+			grid-template-columns: 1fr;
 
-		@include mq(lg) {
-			grid-template-columns: 1fr 2fr;
-			align-items: center;
+			@include mq(lg) {
+				grid-template-columns: 1fr 2fr;
+				align-items: center;
+			}
 		}
-	}
 
-	&__about-visual {
-		display: flex;
-		justify-content: center;
-	}
-
-	&__about-content {
-		display: flex;
-		flex-direction: column;
-		gap: $spacing-6;
-	}
-
-	&__about-avatar {
-		width: 12rem;
-		height: 12rem;
-		color: $color-white;
-		background: linear-gradient(to bottom right, $color-primary, $color-text);
-		border-radius: $border-radius-full;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	&__about-name {
-		font-size: $font-size-xl;
-		font-weight: $font-weight-semibold;
-		margin-bottom: $spacing-2;
-	}
-
-	&__about-role {
-		color: $color-primary;
-		font-weight: $font-weight-semibold;
-		margin-bottom: $spacing-4;
-	}
-
-	&__about-text {
-		opacity: 0.8;
-		line-height: $line-height-relaxed;
-	}
-
-	&__about-list {
-		display: grid;
-		grid-template-columns: repeat(1, 1fr);
-		gap: $spacing-4;
-		font-size: $font-size-sm;
-
-		@include mq(sm) {
-			grid-template-columns: repeat(2, 1fr);
+		&-visual {
+			display: flex;
+			justify-content: center;
 		}
-	}
 
-	&__about-item {
-		display: flex;
-		align-items: center;
-		opacity: 0.7;
-		position: relative;
-		padding-left: calc(0.5rem + #{$spacing-3});
+		&-content {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-6;
+		}
 
-		&::before {
-			content: '';
-			position: absolute;
-			left: 0;
-			width: 0.5rem;
-			height: 0.5rem;
-			background-color: $color-primary;
+		&-avatar {
+			width: 12rem;
+			height: 12rem;
+			color: $color-white;
+			background: linear-gradient(to bottom right, $color-primary, $color-text);
 			border-radius: $border-radius-full;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		&-name {
+			font-size: $font-size-xl;
+			font-weight: $font-weight-semibold;
+			margin-bottom: $spacing-2;
+		}
+
+		&-role {
+			color: $color-primary;
+			font-weight: $font-weight-semibold;
+			margin-bottom: $spacing-4;
+		}
+
+		&-text {
+			opacity: 0.8;
+			line-height: $line-height-relaxed;
+		}
+
+		&-list {
+			display: grid;
+			grid-template-columns: repeat(1, 1fr);
+			gap: $spacing-4;
+			font-size: $font-size-sm;
+
+			@include mq(sm) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+
+		&-item {
+			display: flex;
+			align-items: center;
+			opacity: 0.7;
+			position: relative;
+			padding-left: calc(0.5rem + #{$spacing-3});
+
+			&::before {
+				content: '';
+				position: absolute;
+				left: 0;
+				width: 0.5rem;
+				height: 0.5rem;
+				background-color: $color-primary;
+				border-radius: $border-radius-full;
+			}
 		}
 	}
+
 
 	// コンタクトセクション
 	&__contact {
 		//background-color: $color-bg-light;
-	}
 
-	&__contact-text {
-		opacity: 0.8;
-		margin-bottom: $spacing-12;
-		line-height: $line-height-relaxed;
-	}
 
-	&__contact-buttons {
-		display: flex;
-		flex-direction: column;
-		gap: $spacing-6;
-		align-items: center;
-		justify-content: center;
-
-		@include mq(sm) {
-			flex-direction: row;
+		&-text {
+			opacity: 0.8;
+			margin-bottom: $spacing-12;
+			line-height: $line-height-relaxed;
 		}
 
-		.c-button {
-			font-size: $font-size-lg;
+		&-buttons {
+			display: flex;
+			flex-direction: column;
+			gap: $spacing-6;
+			align-items: center;
+			justify-content: center;
+
+			@include mq(sm) {
+				flex-direction: row;
+			}
+
+			.c-button {
+				font-size: $font-size-lg;
+			}
 		}
+
 	}
 
 	// フッター
@@ -837,14 +839,16 @@
 		padding: $spacing-8 $spacing-6;
 		//border-top: 1px solid $color-border;
 		background-color: $color-text;
+
+		&-text {
+			font-size: $font-size-sm;
+			font-family: $font-family-en;
+			color: $color-white;
+			opacity: 0.8;
+			text-align: center;
+			letter-spacing: 0.1em;
+		}
 	}
 
-	&__footer-text {
-		font-size: $font-size-sm;
-		font-family: $font-family-en;
-		color: $color-white;
-		opacity: 0.8;
-		text-align: center;
-		letter-spacing: 0.1em;
-	}
+
 }

@@ -28,7 +28,7 @@ class WorkDetails {
 	 * @constructor
 	 */
 	constructor() {
-		this.worksSection = document.querySelector('.p-portfolio__works');
+		this.worksSection = document.querySelector('.p-portfolio__work');
 		this.workList = document.querySelector('.p-portfolio__work-list');
 		this.workCards = document.querySelectorAll('.p-portfolio__work-card');
 		this.currentCard = null;
