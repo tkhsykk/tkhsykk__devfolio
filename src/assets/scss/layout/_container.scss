@@ -17,9 +17,9 @@
 		padding-left: $spacing-6;
 		padding-right: $spacing-6;
 	}
-}
 
-.l-container--narrow {
-	max-width: 64rem; // max-w-4xl (1024px)
-}
 
+	&--narrow {
+		max-width: 64rem; // max-w-4xl (1024px)
+	}
+}

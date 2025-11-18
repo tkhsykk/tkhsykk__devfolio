@@ -143,24 +143,20 @@
 			text-align: center;
 			position: relative;
 
-			@include mq(md) {
-				//font-size: $font-size-4xl;
-			}
-
-			&::after {
-				content: '';
-				display: block;
-				width: 4rem;
-				height: 0.25rem;
-				background-color: $color-primary;
-				margin: $spacing-2 auto 0;
-			}
+		@include mq(md) {
+			//font-size: $font-size-4xl;
 		}
 
-		&-divider {
-			display: none;
+		&::after {
+			content: '';
+			display: block;
+			width: 4rem;
+			height: 0.25rem;
+			background-color: $color-primary;
+			margin: $spacing-2 auto 0;
 		}
 	}
+}
 
 	// スキルセクション
 	&__skill {
@@ -342,18 +338,6 @@
 			line-height: $line-height-relaxed;
 			color: $color-text;
 			opacity: 0.8;
-		}
-
-		&-arrow {
-			flex-shrink: 0;
-			font-size: $font-size-lg;
-			color: $color-primary;
-			font-weight: $font-weight-bold;
-			padding: 0 $spacing-2;
-
-			@include mq(sm) {
-				font-size: $font-size-xl;
-			}
 		}
 
 		&-solution-content {
@@ -644,32 +628,28 @@
 					top: $spacing-8;
 				}
 			}
-		}
 
-		&-number {
-			display: none;
-		}
-
-		&-content {
-			flex: 1;
-		}
-
-		&-title {
-			font-size: $font-size-lg;
-			font-weight: $font-weight-semibold;
-			margin-bottom: $spacing-3;
-			color: $color-text;
-
-			@include mq(md) {
-				font-size: $font-size-xl;
+			&-content {
+				flex: 1;
 			}
-		}
 
-		&-text {
-			font-size: $font-size-base;
-			line-height: $line-height-relaxed;
-			opacity: 0.8;
-			color: $color-text;
+			&-title {
+				font-size: $font-size-lg;
+				font-weight: $font-weight-semibold;
+				margin-bottom: $spacing-3;
+				color: $color-text;
+
+				@include mq(md) {
+					font-size: $font-size-xl;
+				}
+			}
+
+			&-text {
+				font-size: $font-size-base;
+				line-height: $line-height-relaxed;
+				opacity: 0.8;
+				color: $color-text;
+			}
 		}
 	}
 
@@ -685,25 +665,6 @@
 			&:hover {
 				border-color: $color-primary;
 			}
-		}
-
-		&-header {
-			display: flex;
-			justify-content: space-between;
-			align-items: flex-start;
-			margin-bottom: $spacing-3;
-		}
-
-		&-date {
-			font-size: $font-size-xs;
-			font-weight: $font-weight-medium;
-			opacity: 0.5;
-		}
-
-		&-icon {
-			width: 1rem;
-			height: 1rem;
-			opacity: 0.5;
 		}
 
 		&-title {
@@ -808,13 +769,6 @@
 	// コンタクトセクション
 	&__contact {
 		//background-color: $color-bg-light;
-
-
-		&-text {
-			opacity: 0.8;
-			margin-bottom: $spacing-12;
-			line-height: $line-height-relaxed;
-		}
 
 		&-buttons {
 			display: flex;

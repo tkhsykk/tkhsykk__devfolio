@@ -24,11 +24,13 @@
 	&[popovertarget] {
 		cursor: pointer;
 	}
-}
 
-.c-badge--small {
-	padding: $spacing-1 $spacing-2;
-	font-size: $font-size-xs;
-	//border-radius: $border-radius-md;
+
+	&--small {
+		padding: $spacing-1 $spacing-2;
+		font-size: $font-size-xs;
+		//border-radius: $border-radius-md;
+	}
+
 }
 
