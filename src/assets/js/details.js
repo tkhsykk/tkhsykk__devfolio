@@ -109,15 +109,15 @@ class WorkDetails {
 	 * @param {HTMLElement} card - クリックされたカード要素
 	 * @private
 	 */
-	toggleDetails(index, card) {
+	async toggleDetails(index, card) {
 		// 同じカードが既に開いている場合は閉じる
 		if (this.currentCard === card && this.detailsBlock) {
-			this.close();
+			await this.close();
 			return;
 		}
 
-		// 既存の詳細ブロックを削除
-		this.removeDetailsBlock();
+		// 既存の詳細ブロックを削除（transition完了を待つ）
+		await this.removeDetailsBlock();
 
 		// 新しい詳細ブロックを挿入
 		this.insertDetailsBlock(index, card);
@@ -235,6 +235,9 @@ class WorkDetails {
 
 		this.currentCard = card;
 		this.detailsBlock = detailsElement;
+
+		// 高さを0から実際の高さまでtransition
+		this.openDetailsBlock(detailsElement);
 
 		// イベントリスナーとスライダーの初期化
 		this.setupDetailsBlockEvents(detailsElement, work, index);
@@ -368,11 +371,63 @@ class WorkDetails {
 	}
 
 	/**
+	 * 詳細ブロックを開く（高さのtransition）
+	 * @param {HTMLElement} detailsElement - 詳細ブロック要素
+	 * @private
+	 */
+	openDetailsBlock(detailsElement) {
+		// 一旦高さを0に設定（初期状態）
+		detailsElement.style.height = '0px';
+
+		// DOMの再計算を待つため、複数のフレームを待つ
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				// 一時的に高さをautoにして実際の高さを取得
+				detailsElement.style.height = 'auto';
+				const targetHeight = detailsElement.scrollHeight;
+				detailsElement.style.height = '0px';
+
+				// 次のフレームでtransition開始
+				requestAnimationFrame(() => {
+					detailsElement.style.height = `${targetHeight}px`;
+				});
+			});
+		});
+	}
+
+	/**
+	 * 詳細ブロックを閉じる（高さのtransition）
+	 * @param {HTMLElement} detailsElement - 詳細ブロック要素
+	 * @private
+	 */
+	closeDetailsBlock(detailsElement) {
+		return new Promise((resolve) => {
+			// 現在の高さを取得
+			const currentHeight = detailsElement.scrollHeight;
+			detailsElement.style.height = `${currentHeight}px`;
+
+			// 次のフレームで高さを0に
+			requestAnimationFrame(() => {
+				detailsElement.style.height = '0px';
+
+				// transition完了を待つ
+				const handleTransitionEnd = () => {
+					detailsElement.removeEventListener('transitionend', handleTransitionEnd);
+					resolve();
+				};
+				detailsElement.addEventListener('transitionend', handleTransitionEnd);
+			});
+		});
+	}
+
+	/**
 	 * 既存の詳細ブロックを削除
 	 * @private
 	 */
-	removeDetailsBlock() {
+	async removeDetailsBlock() {
 		if (this.detailsBlock) {
+			// 高さを0に戻してから削除
+			await this.closeDetailsBlock(this.detailsBlock);
 			this.detailsBlock.remove();
 			this.detailsBlock = null;
 		}
@@ -383,8 +438,8 @@ class WorkDetails {
 	 * 閉じる
 	 * @public
 	 */
-	close() {
-		this.removeDetailsBlock();
+	async close() {
+		await this.removeDetailsBlock();
 	}
 
 	/**
