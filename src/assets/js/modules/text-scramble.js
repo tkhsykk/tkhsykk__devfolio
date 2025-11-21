@@ -17,8 +17,8 @@ class TextScramble {
 		for (let i = 0; i < length; i++) {
 			const from = oldText[i] || '';
 			const to = newText[i] || '';
-			const start = Math.floor(Math.random() * 15);
-			const end = start + Math.floor(Math.random() * 15);
+			const start = Math.floor(Math.random() * 30);
+			const end = start + Math.floor(Math.random() * 30);
 			this.queue.push({
 				from,
 				to,
@@ -84,13 +84,29 @@ export default class TextScrambleController {
 				if (entry.isIntersecting) {
 					const el = entry.target;
 					const text = el.getAttribute('data-text') || el.innerText;
+					const htmlReplace = el.getAttribute('data-html-replace'); // HTML置換パターン
 					const scramble = new TextScramble(el);
 
 					// 一度空にしてからアニメーション開始
 					// el.innerText = '';
 					// 既存のテキストから遷移させるため、空にはしない
 
-					scramble.setText(text);
+					scramble.setText(text).then(() => {
+						// スクランブル完了後にHTML置換を実行
+						if (htmlReplace) {
+							try {
+								const replaceMap = JSON.parse(htmlReplace);
+								let html = el.innerHTML;
+								Object.keys(replaceMap).forEach((key) => {
+									const regex = new RegExp(key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+									html = html.replace(regex, replaceMap[key]);
+								});
+								el.innerHTML = html;
+							} catch (e) {
+								console.warn('Failed to parse data-html-replace:', e);
+							}
+						}
+					});
 					observer.unobserve(el);
 				}
 			});
