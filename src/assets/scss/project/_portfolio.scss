@@ -24,18 +24,18 @@
 	}
 
 	// 背景
-	&__bg {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		z-index: -1;
-		pointer-events: none; // マウスイベントを通過させる（JSで別途取得するため）
-		canvas {
-			display: block;
-		}
-	}
+	//&__bg {
+	//	position: fixed;
+	//	top: 0;
+	//	left: 0;
+	//	width: 100%;
+	//	height: 100%;
+	//	z-index: 0;
+	//	pointer-events: none; // マウスイベントを通過させる（JSで別途取得するため）
+	//	canvas {
+	//		display: block;
+	//	}
+	//}
 
 	// スクロールアニメーション
 	.js-scroll-trigger {

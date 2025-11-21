@@ -33,8 +33,8 @@ import ThemeToggle from './modules/theme-toggle.js';
 new ThemeToggle();
 
 /* 7. WebGL背景 */
-import WebGLBackground from './modules/webgl-background.js';
-new WebGLBackground();
+//import WebGLBackground from './modules/webgl-background.js';
+//new WebGLBackground();
 
 /* 8. スクロールアニメーション */
 import ScrollAnimation from './modules/scroll-animation.js';
@@ -48,6 +48,3 @@ new Cursor();
 import TextScramble from './modules/text-scramble.js';
 new TextScramble();
 
-/* 11. ページ遷移 */
-import PageTransition from './modules/page-transition.js';
-new PageTransition();

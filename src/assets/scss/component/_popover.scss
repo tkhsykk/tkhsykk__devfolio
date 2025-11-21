@@ -20,18 +20,18 @@
 	width: max-content;
 
 	// デザイン（グラスモーフィズム）
-	background-color: rgba(20, 20, 30, 0.85); // ダークな半透明背景
+	background-color: rgba(20, 20, 30, 0.75); // ダークな半透明背景
 	backdrop-filter: blur(12px);
 	-webkit-backdrop-filter: blur(12px);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: $border-radius-md;
+	border: 1px solid $color-white;
+	border-radius: $border-radius-sm;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
 	0 2px 4px -1px rgba(0, 0, 0, 0.06),
 	0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 
 	// テキスト
 	color: $color-white;
-	padding: $spacing-4;
+	padding: $spacing-2;
 	font-size: $font-size-sm;
 	line-height: $line-height-relaxed;
 	letter-spacing: 0.02em;

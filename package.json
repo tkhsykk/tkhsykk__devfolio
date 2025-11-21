@@ -40,7 +40,6 @@
 		"sass": "^1.83.0"
 	},
 	"dependencies": {
-		"@barba/core": "^2.10.3",
 		"@oddbird/popover-polyfill": "^0.6.1",
 		"gsap": "^3.13.0",
 		"micromodal": "^0.6.1",
