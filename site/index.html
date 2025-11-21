@@ -1,1 +1,809 @@
-<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet"><link rel="stylesheet" href="./css/style.css"><title>devfolio</title></head><body><div class="p-portfolio"><nav class="p-portfolio__nav" aria-label="メインナビゲーション"><div class="l-container p-portfolio__nav-inner"><h1 class="p-portfolio__nav-logo u-font-en">devfolio</h1><ul class="p-portfolio__nav-links"><li><a href="#hero" class="p-portfolio__nav-link">Top</a></li><li><a href="#skills" class="p-portfolio__nav-link">Skills</a></li><li><a href="#works" class="p-portfolio__nav-link">Works</a></li><li><a href="#notes" class="p-portfolio__nav-link">Notes</a></li><li><a href="#about" class="p-portfolio__nav-link">About</a></li><li><a href="#contact" class="p-portfolio__nav-link">Contact</a></li></ul></div></nav><header id="hero" class="p-portfolio__hero"><div class="l-container l-container--narrow u-text-center"><h2 class="p-portfolio__hero-title">About devfolio</h2><p class="p-portfolio__hero-description">そうだ、AIでサイトを作ってみようか。</p><dl class="p-portfolio__hero-concepts"><div class="p-portfolio__hero-concept"><dt class="p-portfolio__hero-concept-title">コンセプト</dt><dd class="p-portfolio__hero-concept-description">これからの時代、WEBエンジニアの仕事もAIとは切り離せないのはほぼ確実。<br>アプリやシステム開発のようにAIでコーディング→リファクタリング→テスト→プルリク→テスト…を繰り返すような開発は現時点ではまだ難しいが、いい機会なので今どこまでAIに任せて開発ができるかをポートフォリオサイトで試してみた。</dd></div><div class="p-portfolio__hero-concept"><dt class="p-portfolio__hero-concept-title">開発フロー</dt><dd class="p-portfolio__hero-concept-description">詳細は<span class="u-font-en"><a href="#flow">How I Built “devfolio"</a></span>をご覧いただくとして、</dd></div><div class="p-portfolio__hero-concept"><dt class="p-portfolio__hero-concept-title">なぜAIなのか</dt><dd class="p-portfolio__hero-concept-description">人工知能の発展でエンジニアの仕事がなくなるかもしれないと言われて結構経つ。私は父に15年以上前から脅され続けてきた。それでも大好きなインターネットとHTMLに関わる仕事を続けている。<br>100年後とかはさすがに仕事がなくなっているかもしれないが、この先数十年、AIと共に働くことを前提に、人間がやるべき・伸ばすべきスキルとより良い答えと知識を得るためのAIの使い方はどんなものかを考え続けた2025年だった。このポートフォリオは図らずもそんな2025年の集大成になりそうで今から少しワクワクしている。<br></dd></div></dl></div></header><section id="skills" class="p-portfolio__section p-portfolio__skill"><div class="l-container"><div class="u-text-center u-mb-16"><h2 class="p-portfolio__section-title">Skills</h2></div><ul class="l-grid l-grid--cols-3"><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg><h3 class="p-portfolio__skill-title">Markup / Style</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">HTML5</span> <span class="c-badge">SCSS</span> <span class="c-badge">PDFLOCSS</span> <span class="c-badge">セマンティックなHTML</span> <span class="c-badge">アクセシビリティ対応</span></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg><h3 class="p-portfolio__skill-title">Build / Tools</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">Gulp</span> <span class="c-badge">Webpack</span> <span class="c-badge">esbuild</span> <button class="c-badge c-badge--popover" popovertarget="popover-vite">Vite</button><div class="c-popbox" id="popover-vite" popover>Vite+wp-env+DockerでのWordPressの開発環境構築。</div></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5V19A9 3 0 0 0 21 19V5"></path><path d="M3 12A9 3 0 0 0 21 12"></path></svg><h3 class="p-portfolio__skill-title">CMS / Backend</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">WordPress（テーマ/ブロック/プラグイン）</span> <span class="c-badge">ACFを使用した複雑なカスタムフィールド設計</span> <span class="c-badge">PHP</span> <span class="c-badge">Laravelへの組み込み</span></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg><h3 class="p-portfolio__skill-title">Environment / LLMs</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">Docker</span> <span class="c-badge">XAMPP</span> <span class="c-badge">EmEditor</span> <span class="c-badge">VSCode</span> <span class="c-badge">ChatGPT Teams/Free</span> <span class="c-badge">Cursor Pro</span></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><line x1="6" x2="6" y1="3" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg><h3 class="p-portfolio__skill-title">Version Control / Deployment</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">Git</span> <span class="c-badge">GitHub</span> <span class="c-badge">SVN</span> <span class="c-badge">SSH</span> <button class="c-badge c-badge--popover" popovertarget="popover-auto-deploy">自動デプロイ</button><div class="c-popbox" id="popover-auto-deploy" popover>Netlifyを使用した自動デプロイ。このサイトもNetlifyでデプロイされています</div></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><h3 class="p-portfolio__skill-title">Optimization / SEO</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">Core Web Vitals</span> <span class="c-badge">構造化データ</span> <span class="c-badge">メタ最適化</span></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg><h3 class="p-portfolio__skill-title">Other / Utilities</h3></div><div class="p-portfolio__skill-tags"><button class="c-badge c-badge--popover" popovertarget="popover-wp-static">WordPress静的化</button><div class="c-popbox" id="popover-wp-static" popover>プラグインを使用した大規模サイトの静的化</div><button class="c-badge c-badge--popover" popovertarget="popover-writing">記事ライティング</button><div class="c-popbox" id="popover-writing" popover>技術記事やドキュメントの執筆。<a href="https://wp.fairground.co.jp/qa/611/" target="_blank">現職で運営しているオウンドメディア</a>など。</div><button class="c-badge c-badge--popover" popovertarget="popover-vscode-extension">VSCode拡張機能作成</button><div class="c-popbox" id="popover-vscode-extension" popover>案件ごとの独自仕様に合わせた開発効率を向上させるツールの作成</div><button class="c-badge c-badge--popover" popovertarget="popover-mail-tool">メルマガ生成ツール</button><div class="c-popbox" id="popover-mail-tool" popover>定型メールマガジンの自動生成ツール。EJS+jsonを使用して、テキスト版のメールマガジンなどからHTMLメールを生成するツールを作成しました。</div><button class="c-badge c-badge--popover" popovertarget="popover-html-mail">HTMLメール作成</button><div class="c-popbox" id="popover-html-mail" popover>Microsoft OutlookやGmailなど各種メールクライアントに対応したHTMLメールのコーディング。テーブルレイアウトを使用したレスポンシブにも対応した互換性の高いメールテンプレートを作成できます。</div></div></article></li><li class="p-portfolio__skill-card"><article><div class="p-portfolio__skill-header"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path></svg><h3 class="p-portfolio__skill-title">Personal Projects</h3></div><div class="p-portfolio__skill-tags"><span class="c-badge">「<span class="u-font-en u-text-primary">devfolio</span>」</span> <button class="c-badge c-badge--popover" popovertarget="popover-moneyforward">マネーフォワード自動登録ツール</button><div class="c-popbox" id="popover-moneyforward" popover>Gmail APIを使用し、PythonでGmailへの使用通知メールを取得・パースし、Selenium越しにマネーフォワードに自動登録するツールを作成しました。<br>対応：楽天市場・楽天ペイ・ANA PAY</div><span class="c-badge">Text->Epub変換ツール</span> <button class="c-badge c-badge--popover" popovertarget="popover-llm-mdc">汎用LLM向け指示書作成</button><div class="c-popbox" id="popover-llm-mdc" popover>各プロジェクトのリポジトリにサブモジュールで設置する用の汎用的な指示書（MDC）を作成しており、常に更新中です。<ul><li>・プロジェクト全体の基本方針とコーディング規約</li><li>・CSS設計ガイドライン</li><li>・WordPress開発のガイドライン</li><li>・コードレビュー時の確認項目</li><li>・プロジェクト固有のメモや注意点　など</li></ul></div><button class="c-badge c-badge--popover" popovertarget="popover-recipe-app">自分用レシピ収集アプリ（作成中）</button><div class="c-popbox" id="popover-recipe-app" popover>アプリをどう作るかの勉強をしたく、Kotlin+Android SDKを使用した個人用のレシピ収集・管理Androidアプリを作成中です。<br>AIを使ったUIデザイン、スクリーンショットからのOCR・サイトURLからのテキスト自動取得・その他レシピ手動登録、お買い物リスト作成、お気に入り機能など。</div></div></article></li></ul></div></section><section id="works" class="p-portfolio__section p-portfolio__work js-work"><div class="l-container"><div class="u-text-center u-mb-16"><h2 class="p-portfolio__section-title">Works</h2></div><ul class="p-portfolio__work-list l-grid l-grid--cols-3 js-work-list"><li class="p-portfolio__work-card js-work-card" data-work-meta="フロントエンド設計・WordPressテーマ開発" data-work-tags='["WordPress","SCSS","Gulp","PHP"]' data-work-summary="レスポンシブ対応、SEO最適化、高速化" data-work-description="既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web Vitalsスコア大幅改善を実現。" data-work-images='["https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200","https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"]'><article><button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger" aria-label="ECサイトリニューアルの詳細を表示"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800" alt="ECサイトリニューアル"></button><div class="p-portfolio__work-content"><h3 class="p-portfolio__work-title">ECサイトリニューアル</h3></div></article></li><li class="p-portfolio__work-card js-work-card" data-work-meta="パフォーマンス改善・インフラ最適化" data-work-tags='["WordPress","CDN","画像最適化","キャッシュ"]' data-work-summary="表示速度向上、画像最適化、CDN導入" data-work-description="大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed Insightsスコアを70点台から90点台へ改善。" data-work-images='["https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200","https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"]'><article><button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger" aria-label="メディアサイト高速化の詳細を表示"><img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800" alt="メディアサイト高速化"></button><div class="p-portfolio__work-content"><h3 class="p-portfolio__work-title">メディアサイト高速化</h3></div></article></li><li class="p-portfolio__work-card js-work-card" data-work-meta="フロントエンド設計・WordPressテーマ開発" data-work-tags='["WordPress","SCSS","Gulp","PHP"]' data-work-summary="レスポンシブ対応、SEO最適化、高速化" data-work-description="既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web Vitalsスコア大幅改善を実現。" data-work-images='["https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200","https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"]'><article><button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger" aria-label="ECサイトリニューアルの詳細を表示"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800" alt="ECサイトリニューアル"></button><div class="p-portfolio__work-content"><h3 class="p-portfolio__work-title">ECサイトリニューアル</h3></div></article></li><li class="p-portfolio__work-card js-work-card" data-work-meta="要件定義・設計・開発・デプロイ" data-work-tags='["Docker","WordPress","Vite","SCSS"]' data-work-summary="多言語対応、アクセシビリティ対応、CMS化" data-work-description="B2B企業向けコーポレートサイト。多言語対応とアクセシビリティ（WCAG 2.1 AA準拠）を重視した設計。Docker環境での開発効率化とViteを活用した高速なビルドプロセスを実現。" data-work-images='["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200","https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200","https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"]'><article><button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger" aria-label="コーポレートサイト構築の詳細を表示"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800" alt="コーポレートサイト構築"></button><div class="p-portfolio__work-content"><h3 class="p-portfolio__work-title">コーポレートサイト構築</h3></div></article></li><li class="p-portfolio__work-card js-work-card" data-work-meta="パフォーマンス改善・インフラ最適化" data-work-tags='["WordPress","CDN","画像最適化","キャッシュ"]' data-work-summary="表示速度向上、画像最適化、CDN導入" data-work-description="大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed Insightsスコアを70点台から90点台へ改善。" data-work-images='["https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200","https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"]'><article><button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger" aria-label="メディアサイト高速化の詳細を表示"><img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800" alt="メディアサイト高速化"></button><div class="p-portfolio__work-content"><h3 class="p-portfolio__work-title">メディアサイト高速化</h3></div></article></li></ul></div></section><section id="notes" class="p-portfolio__section p-portfolio__notes"><div class="l-container"><div class="u-text-center u-mb-16"><h2 class="p-portfolio__section-title">Tech Notes</h2></div><div class="l-grid l-grid--cols-3"><article class="p-portfolio__note-card"><h3 class="p-portfolio__note-title">Gulpによる開発自動化</h3><p class="p-portfolio__note-text">SCSS コンパイル、画像圧縮、ファイル監視を自動化するGulpタスクの構築方法</p></article><article class="p-portfolio__note-card"><h3 class="p-portfolio__note-title">Viteを使った軽量開発</h3><p class="p-portfolio__note-text">モダンなフロントエンド開発環境としてViteを活用した高速な開発フローの構築</p></article><article class="p-portfolio__note-card"><h3 class="p-portfolio__note-title">Dockerでの共有環境構築</h3><p class="p-portfolio__note-text">チーム開発における環境統一とデプロイメント効率化のためのDocker活用術</p></article><article class="p-portfolio__note-card"><h3 class="p-portfolio__note-title">WordPressブロックカスタマイズ</h3><p class="p-portfolio__note-text">Gutenbergブロックエディターのカスタムブロック開発とテーマとの連携方法</p></article><article class="p-portfolio__note-card"><h3 class="p-portfolio__note-title">SEO向け構造化データ</h3><p class="p-portfolio__note-text">検索エンジン最適化のための構造化データ実装とCore Web Vitals改善</p></article><article class="p-portfolio__note-card"><h3 class="p-portfolio__note-title">アクセシビリティ改善</h3><p class="p-portfolio__note-text">WCAG 2.1 ガイドラインに準拠したWebアクセシビリティの実装と検証</p></article></div></div></section><section id="flow" class="p-portfolio__section p-portfolio__flow"><div class="l-container"><div class="u-text-center u-mb-16"><h2 class="p-portfolio__section-title">How I Built “<span class="u-text-primary">devfolio</span>"</h2></div><ol class="p-portfolio__flow-list"><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">要件定義・技術選定</h3><p class="p-portfolio__flow-text">ChatGPTを活用してポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、開発計画とチェックリストを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。</p></div></li><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">デザイン生成・プロトタイプ作成</h3><p class="p-portfolio__flow-text"><a href="https://www.createanything.com/" target="_blank" rel="noopener noreferrer">Anything</a>でReact+Vite+Tailwind CSSのプロトタイプデザインを生成し、デザインの方向性を確認。生成されたソースをダウンロードしてローカル環境でビルドできるようにしました。</p></div></li><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">技術スタック移行・環境構築</h3><p class="p-portfolio__flow-text">Cursor Proに相談しながらReact→HTML+CSS+JSへ変換し、HTMLからTailwind CSSを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装。ページリロードなしで高速に開発を進められるのでお気に入り。<br>ここでAnythingのデザイン・中身がざっくりしているために調整と加筆にかなり手間取りました。<br>初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると思い、諦めて修行のような気持ちで開発しました。</p></div></li><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">実装・モジュール化</h3><p class="p-portfolio__flow-text">この時点では公開したくない個人情報やコンテンツデータはダミーです。作ったHTMLをパーシャル（_header.ejs、_footer.ejs等）に分割し、GitHub公開時に公開したくない個人情報やコンテンツデータをCSVに外部化し、EJS->HTMLのビルド時に読み込む仕組みを構築しました。</p></div></li><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">品質保証・最適化</h3><p class="p-portfolio__flow-text">WAI-ARIA属性の確認、キーボード操作の検証、Lighthouseによるアクセシビリティチェックを実施。パフォーマンス最適化としてクリティカルCSSの抽出、フォント最適化を実施。デプロイ前にはビルド確認、リンク切れチェック、クロスブラウザテストを徹底しました。</p></div></li><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">CI/CD・デプロイ</h3><p class="p-portfolio__flow-text">Netlifyのデプロイ設定としてnetlify.tomlを作成し、ビルドコマンドを`gulp build`に設定。本番環境への自動デプロイパイプラインを構築し、GitHubへのプッシュと連動してデプロイが実行される仕組みを整備しました。</p></div></li><li class="p-portfolio__flow-item"><div class="p-portfolio__flow-content"><h3 class="p-portfolio__flow-title">リリース・運用確認</h3><p class="p-portfolio__flow-text">本番環境での動作確認と最終調整を実施。実際のデプロイ後の動作を確認し、パフォーマンス指標やアクセシビリティスコアを検証。必要に応じて微調整を行い、安定した運用が可能な状態まで整備しました。</p></div></li></ol></div></section><section id="about" class="p-portfolio__section p-portfolio__about"><div class="l-container l-container--narrow"><div class="u-text-center u-mb-16"><h2 class="p-portfolio__section-title">About</h2></div><div class="p-portfolio__about-grid"><div class="p-portfolio__about-visual"><div class="p-portfolio__about-avatar"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-white"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div></div><div class="p-portfolio__about-content"><div><h3 class="p-portfolio__about-name">田中 太郎</h3><p class="p-portfolio__about-role">Webエンジニア / WordPress / Frontend</p><p class="p-portfolio__about-text">WordPressを軸に、HTML／SCSSの構造設計・テーマ開発・静的化・運用改善のための自動化ツール整備まで、マークアップ中心のフロントエンド実装を担当しています。<br>セマンティックな構造と再現性を重視し、複数人で回す運用・改修案件でも維持しやすいコードとワークフローを設計しています。<br>運用作業や開発プロセスの無駄を減らすことを意識し、必要なツールを適宜作りながら環境を整えることが多いです。<br>ビルド環境からデプロイフローまで含め、長期運用に耐える制作基盤の構築を常に意識しています。</p></div><ul class="p-portfolio__about-list"><li class="p-portfolio__about-item"><span>Web制作会社での開発年数 15年</span></li><li class="p-portfolio__about-item"><span>WordPress開発 11年</span></li><li class="p-portfolio__about-item"><span>SVN/Githubでのバージョン管理 8年</span></li><li class="p-portfolio__about-item"><span>アクセシビリティ対応可</span></li><li class="p-portfolio__about-item"><span>HTML/CSS 25年</span></li><li class="p-portfolio__about-item"><span>インターネット歴 25年</span></li></ul></div></div></div></section><section id="contact" class="p-portfolio__section p-portfolio__contact"><div class="l-container l-container--narrow u-text-center"><div class="u-mb-16"><h2 class="p-portfolio__section-title">Connect</h2></div><div class="p-portfolio__contact-buttons"><a href="mailto:contact@example.com" class="c-button c-button--primary u-font-en"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg> <span>Email</span> </a><a href="https://github.com/tkhsykk/tkhsykk__devfolio" target="_blank" rel="noopener noreferrer" class="c-button c-button--outline u-font-en"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg> <span>GitHub</span></a></div></div></section><footer class="p-portfolio__footer"><div class="l-container u-text-center"><p class="p-portfolio__footer-text">&copy; TKHSYKK. All rights reserved.</p></div></footer></div><div class="modal micromodal-slide" id="modal-work-1" aria-hidden="true"><div class="modal__overlay" tabindex="-1" data-micromodal-close><div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-1-title"><header class="modal__header"><h2 class="modal__title" id="modal-work-1-title">ECサイトリニューアル</h2><button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button></header><main class="modal__content"><div class="c-slider" data-slider="work-1"><div class="c-slider__viewport"><div class="c-slider__track"><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200" alt="ECサイトリニューアル - 画像1"></div><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200" alt="ECサイトリニューアル - 画像2"></div><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200" alt="ECサイトリニューアル - 画像3"></div></div></div><button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button> <button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button><div class="c-slider__pagination" aria-label="スライダーのページネーション"></div></div><div class="p-portfolio__work-modal-content"><p class="p-portfolio__work-meta">フロントエンド設計・WordPressテーマ開発</p><div class="p-portfolio__work-tags"><span class="c-badge c-badge--small">WordPress</span> <span class="c-badge c-badge--small">SCSS</span> <span class="c-badge c-badge--small">Gulp</span> <span class="c-badge c-badge--small">PHP</span></div><p class="p-portfolio__work-summary">レスポンシブ対応、SEO最適化、高速化</p><div class="p-portfolio__work-solution"><div class="p-portfolio__work-problem"><h4 class="p-portfolio__work-problem-title">課題</h4><p class="p-portfolio__work-problem-text">旧サイトの表示速度が遅く、モバイル対応が不十分。管理画面が複雑で更新が困難。</p></div><div class="p-portfolio__work-solution-content"><h4 class="p-portfolio__work-solution-title">解決方法</h4><p class="p-portfolio__work-solution-text">WordPressカスタムテーマで軽量化、レスポンシブデザイン実装。直感的な管理画面設計で更新効率を向上。</p></div></div><p class="p-portfolio__work-overlay-text">既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web Vitalsスコア大幅改善を実現。</p></div></main></div></div></div><div class="modal micromodal-slide" id="modal-work-2" aria-hidden="true"><div class="modal__overlay" tabindex="-1" data-micromodal-close><div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-2-title"><header class="modal__header"><h2 class="modal__title" id="modal-work-2-title">コーポレートサイト構築</h2><button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button></header><main class="modal__content"><div class="c-slider" data-slider="work-2"><div class="c-slider__viewport"><div class="c-slider__track"><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200" alt="コーポレートサイト構築 - 画像1"></div><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200" alt="コーポレートサイト構築 - 画像2"></div><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200" alt="コーポレートサイト構築 - 画像3"></div></div></div><button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button> <button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button><div class="c-slider__pagination" aria-label="スライダーのページネーション"></div></div><div class="p-portfolio__work-modal-content"><p class="p-portfolio__work-meta">要件定義・設計・開発・デプロイ</p><div class="p-portfolio__work-tags"><span class="c-badge c-badge--small">Docker</span> <span class="c-badge c-badge--small">WordPress</span> <span class="c-badge c-badge--small">Vite</span> <span class="c-badge c-badge--small">SCSS</span></div><p class="p-portfolio__work-summary">多言語対応、アクセシビリティ対応、CMS化</p><div class="p-portfolio__work-solution"><div class="p-portfolio__work-problem"><h4 class="p-portfolio__work-problem-title">課題</h4><p class="p-portfolio__work-problem-text">グローバル展開のため多言語対応が必要。アクセシビリティ基準を満たす必要があるが、既存サイトは未対応。</p></div><div class="p-portfolio__work-solution-content"><h4 class="p-portfolio__work-solution-title">解決方法</h4><p class="p-portfolio__work-solution-text">WPMLで多言語対応、WCAG 2.1 AA準拠の実装。Docker環境で開発効率化、Viteで高速ビルドを実現。</p></div></div><p class="p-portfolio__work-overlay-text">B2B企業向けコーポレートサイト。多言語対応とアクセシビリティ（WCAG 2.1 AA準拠）を重視した設計。Docker環境での開発効率化とViteを活用した高速なビルドプロセスを実現。</p></div></main></div></div></div><div class="modal micromodal-slide" id="modal-work-3" aria-hidden="true"><div class="modal__overlay" tabindex="-1" data-micromodal-close><div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-3-title"><header class="modal__header"><h2 class="modal__title" id="modal-work-3-title">メディアサイト高速化</h2><button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button></header><main class="modal__content"><div class="c-slider" data-slider="work-3"><div class="c-slider__viewport"><div class="c-slider__track"><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200" alt="メディアサイト高速化 - 画像1"></div><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200" alt="メディアサイト高速化 - 画像2"></div><div class="c-slider__slide"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200" alt="メディアサイト高速化 - 画像3"></div></div></div><button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg></button> <button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg></button><div class="c-slider__pagination" aria-label="スライダーのページネーション"></div></div><div class="p-portfolio__work-modal-content"><p class="p-portfolio__work-meta">パフォーマンス改善・インフラ最適化</p><div class="p-portfolio__work-tags"><span class="c-badge c-badge--small">WordPress</span> <span class="c-badge c-badge--small">CDN</span> <span class="c-badge c-badge--small">画像最適化</span> <span class="c-badge c-badge--small">キャッシュ</span></div><p class="p-portfolio__work-summary">表示速度向上、画像最適化、CDN導入</p><div class="p-portfolio__work-solution"><div class="p-portfolio__work-problem"><h4 class="p-portfolio__work-problem-title">課題</h4><p class="p-portfolio__work-problem-text">大量の画像とコンテンツにより表示速度が低下。PageSpeed Insightsスコアが70点台で改善が必要。</p></div><div class="p-portfolio__work-solution-content"><h4 class="p-portfolio__work-solution-title">解決方法</h4><p class="p-portfolio__work-solution-text">画像のWebP変換と遅延読み込み、CDN導入、効率的なキャッシュ戦略でスコアを90点台に改善。</p></div></div><p class="p-portfolio__work-overlay-text">大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed Insightsスコアを70点台から90点台へ改善。</p></div></main></div></div></div><script src="./js/main.js" type="module" async></script></body></html>
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="./css/style.css" />
+	<title>devfolio</title>
+</head>
+
+<body data-barba="wrapper">
+	<div id="webgl-container" class="p-portfolio__bg"></div>
+	<div class="p-portfolio" data-barba="container" data-barba-namespace="home">
+		<nav class="p-portfolio__nav" aria-label="メインナビゲーション">
+			<div class="l-container p-portfolio__nav-inner">
+				<h1 class="p-portfolio__nav-logo u-font-en">devfolio</h1>
+				<ul class="p-portfolio__nav-links">
+					<li><a href="#hero" class="p-portfolio__nav-link">Top</a></li>
+					<li><a href="#skills" class="p-portfolio__nav-link">Skills</a></li>
+					<li><a href="#works" class="p-portfolio__nav-link">Works</a></li>
+					<li><a href="#notes" class="p-portfolio__nav-link">Notes</a></li>
+					<li><a href="#about" class="p-portfolio__nav-link">About</a></li>
+					<li><a href="#contact" class="p-portfolio__nav-link">Contact</a></li>
+				</ul>
+			</div>
+		</nav>
+
+		<header id="hero" class="p-portfolio__hero js-scroll-trigger">
+			<div class="l-container l-container--narrow u-text-center">
+				<h2 class="p-portfolio__hero-title js-text-scramble" data-text="About devfolio">
+					About devfolio
+				</h2>
+				<p class="p-portfolio__hero-description">
+					そうだ、AIでサイトを作ってみようか。
+				</p>
+				<dl class="p-portfolio__hero-concepts">
+					<div class="p-portfolio__hero-concept">
+						<dt class="p-portfolio__hero-concept-title">コンセプト</dt>
+						<dd class="p-portfolio__hero-concept-description">
+							これからの時代、WEBエンジニアの仕事もAIとは切り離せないのはほぼ確実。<br>
+							アプリやシステム開発のようにAIでコーディング→リファクタリング→テスト→プルリク→テスト…を繰り返すような開発は現時点ではまだ難しいが、いい機会なので今どこまでAIに任せて開発ができるかをポートフォリオサイトで試してみた。
+						</dd>
+					</div>
+					<div class="p-portfolio__hero-concept">
+						<dt class="p-portfolio__hero-concept-title">開発フロー</dt>
+						<dd class="p-portfolio__hero-concept-description">
+							詳細は<span class="u-font-en"><a href="#flow">How I Built “devfolio"</a></span>をご覧いただくとして、
+						</dd>
+					</div>
+					<div class="p-portfolio__hero-concept">
+						<dt class="p-portfolio__hero-concept-title">なぜAIなのか</dt>
+						<dd class="p-portfolio__hero-concept-description">
+							人工知能の発展でエンジニアの仕事がなくなるかもしれないと言われて結構経つ。私は父に15年以上前から脅され続けてきた。それでも大好きなインターネットとHTMLに関わる仕事を続けている。<br>
+							100年後とかはさすがに仕事がなくなっているかもしれないが、この先数十年、AIと共に働くことを前提に、人間がやるべき・伸ばすべきスキルとより良い答えと知識を得るためのAIの使い方はどんなものかを考え続けた2025年だった。このポートフォリオは図らずもそんな2025年の集大成になりそうで今から少しワクワクしている。<br>
+
+						</dd>
+					</div>
+				</dl>
+			</div>
+		</header>
+
+		<section id="skills" class="p-portfolio__section p-portfolio__skill js-scroll-trigger">
+			<div class="l-container">
+				<div class="u-text-center u-mb-16">
+					<h2 class="p-portfolio__section-title js-text-scramble" data-text="Skills">Skills</h2>
+				</div>
+				<ul class="l-grid l-grid--cols-3">
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<polyline points="16 18 22 12 16 6"></polyline>
+									<polyline points="8 6 2 12 8 18"></polyline>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Markup / Style</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">HTML5</span>
+								<span class="c-badge">SCSS</span>
+								<span class="c-badge">PDFLOCSS</span>
+								<span class="c-badge">セマンティックなHTML</span>
+								<span class="c-badge">アクセシビリティ対応</span>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<path
+										d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+									</path>
+									<circle cx="12" cy="12" r="3"></circle>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Build / Tools</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">Gulp</span>
+								<span class="c-badge">Webpack</span>
+								<span class="c-badge">esbuild</span>
+								<button class="c-badge c-badge--popover" popovertarget="popover-vite">Vite</button>
+								<div class="c-popbox" id="popover-vite" popover>
+									Vite+wp-env+DockerでのWordPressの開発環境構築。
+								</div>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+									<path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
+									<path d="M3 12A9 3 0 0 0 21 12"></path>
+								</svg>
+								<h3 class="p-portfolio__skill-title">CMS / Backend</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">WordPress（テーマ/ブロック/プラグイン）</span>
+								<span class="c-badge">ACFを使用した複雑なカスタムフィールド設計</span>
+								<span class="c-badge">PHP</span>
+								<span class="c-badge">Laravelへの組み込み</span>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<circle cx="12" cy="12" r="10"></circle>
+									<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+									<path d="M2 12h20"></path>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Environment / LLMs</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">Docker</span>
+								<span class="c-badge">XAMPP</span>
+								<span class="c-badge">EmEditor</span>
+								<span class="c-badge">VSCode</span>
+								<span class="c-badge">ChatGPT Teams/Free</span>
+								<span class="c-badge">Cursor Pro</span>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<line x1="6" x2="6" y1="3" y2="15"></line>
+									<circle cx="18" cy="6" r="3"></circle>
+									<circle cx="6" cy="18" r="3"></circle>
+									<path d="M18 9a9 9 0 0 1-9 9"></path>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Version Control / Deployment</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">Git</span>
+								<span class="c-badge">GitHub</span>
+								<span class="c-badge">SVN</span>
+								<span class="c-badge">SSH</span>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-auto-deploy">自動デプロイ</button>
+								<div class="c-popbox" id="popover-auto-deploy" popover>
+									Netlifyを使用した自動デプロイ。このサイトもNetlifyでデプロイされています
+								</div>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<circle cx="11" cy="11" r="8"></circle>
+									<path d="m21 21-4.3-4.3"></path>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Optimization / SEO</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">Core Web Vitals</span>
+								<span class="c-badge">構造化データ</span>
+								<span class="c-badge">メタ最適化</span>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<path
+										d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
+									</path>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Other / Utilities</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-wp-static">WordPress静的化</button>
+								<div class="c-popbox" id="popover-wp-static" popover>
+									プラグインを使用した大規模サイトの静的化
+								</div>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-writing">記事ライティング</button>
+								<div class="c-popbox" id="popover-writing" popover>
+									技術記事やドキュメントの執筆。<a href="https://wp.fairground.co.jp/qa/611/"
+										target="_blank">現職で運営しているオウンドメディア</a>など。
+								</div>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-vscode-extension">VSCode拡張機能作成</button>
+								<div class="c-popbox" id="popover-vscode-extension" popover>
+									案件ごとの独自仕様に合わせた開発効率を向上させるツールの作成
+								</div>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-mail-tool">メルマガ生成ツール</button>
+								<div class="c-popbox" id="popover-mail-tool" popover>
+									定型メールマガジンの自動生成ツール。EJS+jsonを使用して、テキスト版のメールマガジンなどからHTMLメールを生成するツールを作成しました。
+								</div>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-html-mail">HTMLメール作成</button>
+								<div class="c-popbox" id="popover-html-mail" popover>
+									Microsoft
+									OutlookやGmailなど各種メールクライアントに対応したHTMLメールのコーディング。テーブルレイアウトを使用したレスポンシブにも対応した互換性の高いメールテンプレートを作成できます。
+								</div>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__skill-card">
+						<article>
+							<div class="p-portfolio__skill-header">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+									stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+								</svg>
+								<h3 class="p-portfolio__skill-title">Personal Projects</h3>
+							</div>
+							<div class="p-portfolio__skill-tags">
+								<span class="c-badge">「<span class="u-font-en u-text-primary">devfolio</span>」</span>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-moneyforward">マネーフォワード自動登録ツール</button>
+								<div class="c-popbox" id="popover-moneyforward" popover>
+									Gmail
+									APIを使用し、PythonでGmailへの使用通知メールを取得・パースし、Selenium越しにマネーフォワードに自動登録するツールを作成しました。<br>対応：楽天市場・楽天ペイ・ANA
+									PAY
+								</div>
+								<span class="c-badge">Text->Epub変換ツール</span>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-llm-mdc">汎用LLM向け指示書作成</button>
+								<div class="c-popbox" id="popover-llm-mdc" popover>
+									各プロジェクトのリポジトリにサブモジュールで設置する用の汎用的な指示書（MDC）を作成しており、常に更新中です。
+									<ul>
+										<li>・プロジェクト全体の基本方針とコーディング規約</li>
+										<li>・CSS設計ガイドライン</li>
+										<li>・WordPress開発のガイドライン</li>
+										<li>・コードレビュー時の確認項目</li>
+										<li>・プロジェクト固有のメモや注意点　など</li>
+									</ul>
+								</div>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-recipe-app">自分用レシピ収集アプリ（作成中）</button>
+								<div class="c-popbox" id="popover-recipe-app" popover>
+									アプリをどう作るかの勉強をしたく、Kotlin+Android SDKを使用した個人用のレシピ収集・管理Androidアプリを作成中です。<br>
+									AIを使ったUIデザイン、スクリーンショットからのOCR・サイトURLからのテキスト自動取得・その他レシピ手動登録、お買い物リスト作成、お気に入り機能など。
+								</div>
+							</div>
+						</article>
+					</li>
+				</ul>
+			</div>
+		</section>
+
+		<section id="works" class="p-portfolio__section p-portfolio__work js-work js-scroll-trigger">
+			<div class="l-container">
+				<div class="u-text-center u-mb-16">
+					<h2 class="p-portfolio__section-title js-text-scramble" data-text="Works">Works</h2>
+				</div>
+
+				<!-- グリッドレイアウト -->
+				<ul class="p-portfolio__work-list l-grid l-grid--cols-3 js-work-list">
+					<li class="p-portfolio__work-card js-work-card" data-work-meta="フロントエンド設計・WordPressテーマ開発"
+						data-work-tags='["WordPress","SCSS","Gulp","PHP"]' data-work-summary="レスポンシブ対応、SEO最適化、高速化"
+						data-work-description="既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web Vitalsスコア大幅改善を実現。"
+						data-work-images='["https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200","https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"]'>
+						<article>
+							<button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger"
+								aria-label="ECサイトリニューアルの詳細を表示">
+								<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800"
+									alt="ECサイトリニューアル" />
+							</button>
+
+							<div class="p-portfolio__work-content">
+								<h3 class="p-portfolio__work-title">ECサイトリニューアル</h3>
+							</div>
+						</article>
+					</li>
+
+					<li class="p-portfolio__work-card js-work-card" data-work-meta="パフォーマンス改善・インフラ最適化"
+						data-work-tags='["WordPress","CDN","画像最適化","キャッシュ"]' data-work-summary="表示速度向上、画像最適化、CDN導入"
+						data-work-description="大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed Insightsスコアを70点台から90点台へ改善。"
+						data-work-images='["https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200","https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"]'>
+						<article>
+							<button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger"
+								aria-label="メディアサイト高速化の詳細を表示">
+								<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800"
+									alt="メディアサイト高速化" />
+							</button>
+
+							<div class="p-portfolio__work-content">
+								<h3 class="p-portfolio__work-title">メディアサイト高速化</h3>
+							</div>
+						</article>
+					</li>
+					<li class="p-portfolio__work-card js-work-card" data-work-meta="フロントエンド設計・WordPressテーマ開発"
+						data-work-tags='["WordPress","SCSS","Gulp","PHP"]' data-work-summary="レスポンシブ対応、SEO最適化、高速化"
+						data-work-description="既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web Vitalsスコア大幅改善を実現。"
+						data-work-images='["https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200","https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"]'>
+						<article>
+							<button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger"
+								aria-label="ECサイトリニューアルの詳細を表示">
+								<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800"
+									alt="ECサイトリニューアル" />
+							</button>
+
+							<div class="p-portfolio__work-content">
+								<h3 class="p-portfolio__work-title">ECサイトリニューアル</h3>
+							</div>
+						</article>
+					</li>
+
+					<li class="p-portfolio__work-card js-work-card" data-work-meta="要件定義・設計・開発・デプロイ"
+						data-work-tags='["Docker","WordPress","Vite","SCSS"]' data-work-summary="多言語対応、アクセシビリティ対応、CMS化"
+						data-work-description="B2B企業向けコーポレートサイト。多言語対応とアクセシビリティ（WCAG 2.1 AA準拠）を重視した設計。Docker環境での開発効率化とViteを活用した高速なビルドプロセスを実現。"
+						data-work-images='["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200","https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200","https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"]'>
+						<article>
+							<button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger"
+								aria-label="コーポレートサイト構築の詳細を表示">
+								<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800"
+									alt="コーポレートサイト構築" />
+							</button>
+
+							<div class="p-portfolio__work-content">
+								<h3 class="p-portfolio__work-title">コーポレートサイト構築</h3>
+							</div>
+						</article>
+					</li>
+
+					<li class="p-portfolio__work-card js-work-card" data-work-meta="パフォーマンス改善・インフラ最適化"
+						data-work-tags='["WordPress","CDN","画像最適化","キャッシュ"]' data-work-summary="表示速度向上、画像最適化、CDN導入"
+						data-work-description="大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed Insightsスコアを70点台から90点台へ改善。"
+						data-work-images='["https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200","https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200","https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"]'>
+						<article>
+							<button class="p-portfolio__work-image p-portfolio__work-trigger js-work-trigger"
+								aria-label="メディアサイト高速化の詳細を表示">
+								<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800"
+									alt="メディアサイト高速化" />
+							</button>
+
+							<div class="p-portfolio__work-content">
+								<h3 class="p-portfolio__work-title">メディアサイト高速化</h3>
+							</div>
+						</article>
+					</li>
+				</ul>
+			</div>
+		</section>
+
+		<section id="notes" class="p-portfolio__section p-portfolio__notes js-scroll-trigger">
+			<div class="l-container">
+				<div class="u-text-center u-mb-16">
+					<h2 class="p-portfolio__section-title js-text-scramble" data-text="Tech Notes">Tech Notes</h2>
+				</div>
+				<div class="l-grid l-grid--cols-3">
+					<article class="p-portfolio__note-card">
+						<h3 class="p-portfolio__note-title">Gulpによる開発自動化</h3>
+						<p class="p-portfolio__note-text">SCSS コンパイル、画像圧縮、ファイル監視を自動化するGulpタスクの構築方法</p>
+					</article>
+					<article class="p-portfolio__note-card">
+						<h3 class="p-portfolio__note-title">Viteを使った軽量開発</h3>
+						<p class="p-portfolio__note-text">モダンなフロントエンド開発環境としてViteを活用した高速な開発フローの構築</p>
+					</article>
+					<article class="p-portfolio__note-card">
+						<h3 class="p-portfolio__note-title">Dockerでの共有環境構築</h3>
+						<p class="p-portfolio__note-text">チーム開発における環境統一とデプロイメント効率化のためのDocker活用術</p>
+					</article>
+					<article class="p-portfolio__note-card">
+						<h3 class="p-portfolio__note-title">WordPressブロックカスタマイズ</h3>
+						<p class="p-portfolio__note-text">Gutenbergブロックエディターのカスタムブロック開発とテーマとの連携方法</p>
+					</article>
+					<article class="p-portfolio__note-card">
+						<h3 class="p-portfolio__note-title">SEO向け構造化データ</h3>
+						<p class="p-portfolio__note-text">検索エンジン最適化のための構造化データ実装とCore Web Vitals改善</p>
+					</article>
+					<article class="p-portfolio__note-card">
+						<h3 class="p-portfolio__note-title">アクセシビリティ改善</h3>
+						<p class="p-portfolio__note-text">WCAG 2.1 ガイドラインに準拠したWebアクセシビリティの実装と検証</p>
+					</article>
+				</div>
+			</div>
+		</section>
+
+		<section id="flow" class="p-portfolio__section p-portfolio__flow js-scroll-trigger">
+			<div class="l-container">
+				<div class="u-text-center u-mb-16">
+					<h2 class="p-portfolio__section-title">How I Built “<span class="u-text-primary">devfolio</span>"
+					</h2>
+				</div>
+				<ol class="p-portfolio__flow-list">
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">要件定義・技術選定</h3>
+							<p class="p-portfolio__flow-text">
+								ChatGPTを活用してポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、開発計画とチェックリストを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">デザイン生成・プロトタイプ作成</h3>
+							<p class="p-portfolio__flow-text"><a href="https://www.createanything.com/" target="_blank"
+									rel="noopener noreferrer">Anything</a>でReact+Vite+Tailwind
+								CSSのプロトタイプデザインを生成し、デザインの方向性を確認。生成されたソースをダウンロードしてローカル環境でビルドできるようにしました。</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">技術スタック移行・環境構築</h3>
+							<p class="p-portfolio__flow-text">
+								Cursor Proに相談しながらReact→HTML+CSS+JSへ変換し、HTMLからTailwind
+								CSSを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装。ページリロードなしで高速に開発を進められるのでお気に入り。<br>
+								ここでAnythingのデザイン・中身がざっくりしているために調整と加筆にかなり手間取りました。<br>
+								初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると思い、諦めて修行のような気持ちで開発しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">実装・モジュール化</h3>
+							<p class="p-portfolio__flow-text">
+								この時点では公開したくない個人情報やコンテンツデータはダミーです。作ったHTMLをパーシャル（_header.ejs、_footer.ejs等）に分割し、GitHub公開時に公開したくない個人情報やコンテンツデータをCSVに外部化し、EJS->HTMLのビルド時に読み込む仕組みを構築しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">品質保証・最適化</h3>
+							<p class="p-portfolio__flow-text">
+								WAI-ARIA属性の確認、キーボード操作の検証、Lighthouseによるアクセシビリティチェックを実施。パフォーマンス最適化としてクリティカルCSSの抽出、フォント最適化を実施。デプロイ前にはビルド確認、リンク切れチェック、クロスブラウザテストを徹底しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">CI/CD・デプロイ</h3>
+							<p class="p-portfolio__flow-text">Netlifyのデプロイ設定としてnetlify.tomlを作成し、ビルドコマンドを`gulp
+								build`に設定。本番環境への自動デプロイパイプラインを構築し、GitHubへのプッシュと連動してデプロイが実行される仕組みを整備しました。</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">リリース・運用確認</h3>
+							<p class="p-portfolio__flow-text">
+								本番環境での動作確認と最終調整を実施。実際のデプロイ後の動作を確認し、パフォーマンス指標やアクセシビリティスコアを検証。必要に応じて微調整を行い、安定した運用が可能な状態まで整備しました。
+							</p>
+						</div>
+					</li>
+				</ol>
+			</div>
+		</section>
+
+		<section id="about" class="p-portfolio__section p-portfolio__about js-scroll-trigger">
+			<div class="l-container l-container--narrow">
+				<div class="u-text-center u-mb-16">
+					<h2 class="p-portfolio__section-title js-text-scramble" data-text="About">About</h2>
+				</div>
+
+				<div class="p-portfolio__about-grid">
+					<div class="p-portfolio__about-visual">
+						<div class="p-portfolio__about-avatar">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round" class="w-12 h-12 text-white">
+								<polyline points="16 18 22 12 16 6"></polyline>
+								<polyline points="8 6 2 12 8 18"></polyline>
+							</svg>
+						</div>
+					</div>
+
+					<div class="p-portfolio__about-content">
+						<div>
+							<h3 class="p-portfolio__about-name">田中 太郎</h3>
+
+							<p class="p-portfolio__about-role">Webエンジニア / WordPress / Frontend</p>
+
+							<p class="p-portfolio__about-text">
+								WordPressを軸に、HTML／SCSSの構造設計・テーマ開発・静的化・運用改善のための自動化ツール整備まで、マークアップ中心のフロントエンド実装を担当しています。<br>
+								セマンティックな構造と再現性を重視し、複数人で回す運用・改修案件でも維持しやすいコードとワークフローを設計しています。<br>
+								運用作業や開発プロセスの無駄を減らすことを意識し、必要なツールを適宜作りながら環境を整えることが多いです。<br>
+								ビルド環境からデプロイフローまで含め、長期運用に耐える制作基盤の構築を常に意識しています。
+							</p>
+						</div>
+
+						<ul class="p-portfolio__about-list">
+							<li class="p-portfolio__about-item">
+								<span>Web制作会社での開発年数 15年</span>
+							</li>
+
+							<li class="p-portfolio__about-item">
+								<span>WordPress開発 11年</span>
+							</li>
+
+							<li class="p-portfolio__about-item">
+								<span>SVN/Githubでのバージョン管理 8年</span>
+							</li>
+
+							<li class="p-portfolio__about-item">
+								<span>アクセシビリティ対応可</span>
+							</li>
+
+							<li class="p-portfolio__about-item">
+								<span>HTML/CSS 25年</span>
+							</li>
+
+							<li class="p-portfolio__about-item">
+								<span>インターネット歴 25年</span>
+							</li>
+						</ul>
+
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<section id="contact" class="p-portfolio__section p-portfolio__contact js-scroll-trigger">
+			<div class="l-container l-container--narrow u-text-center">
+				<div class="u-mb-16">
+					<h2 class="p-portfolio__section-title js-text-scramble" data-text="Connect">Connect</h2>
+				</div>
+				<div class="p-portfolio__contact-buttons">
+					<a href="mailto:contact@example.com" class="c-button c-button--primary u-font-en">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+							style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
+							<rect width="20" height="16" x="2" y="4" rx="2"></rect>
+							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+						</svg>
+						<span>Email</span>
+					</a>
+					<a href="https://github.com/tkhsykk/tkhsykk__devfolio" target="_blank" rel="noopener noreferrer"
+						class="c-button c-button--outline u-font-en">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+							style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
+							<path
+								d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+							</path>
+							<path d="M9 18c-4.51 2-5-2-7-2"></path>
+						</svg>
+						<span>GitHub</span>
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<footer class="p-portfolio__footer">
+			<div class="l-container u-text-center">
+				<p class="p-portfolio__footer-text">&copy; TKHSYKK. All rights reserved.</p>
+			</div>
+		</footer>
+	</div>
+
+	<!-- モーダル: ECサイトリニューアル -->
+	<div class="modal micromodal-slide" id="modal-work-1" aria-hidden="true">
+		<div class="modal__overlay" tabindex="-1" data-micromodal-close>
+			<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-1-title">
+				<header class="modal__header">
+					<h2 class="modal__title" id="modal-work-1-title">ECサイトリニューアル</h2>
+					<button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button>
+				</header>
+				<main class="modal__content">
+					<div class="c-slider" data-slider="work-1">
+						<div class="c-slider__viewport">
+							<div class="c-slider__track">
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"
+										alt="ECサイトリニューアル - 画像1" />
+								</div>
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
+										alt="ECサイトリニューアル - 画像2" />
+								</div>
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"
+										alt="ECサイトリニューアル - 画像3" />
+								</div>
+							</div>
+						</div>
+						<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<polyline points="15 18 9 12 15 6"></polyline>
+							</svg>
+						</button>
+						<button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<polyline points="9 18 15 12 9 6"></polyline>
+							</svg>
+						</button>
+						<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
+					</div>
+					<div class="p-portfolio__work-modal-content">
+						<p class="p-portfolio__work-meta">フロントエンド設計・WordPressテーマ開発</p>
+						<div class="p-portfolio__work-tags">
+							<span class="c-badge c-badge--small">WordPress</span>
+							<span class="c-badge c-badge--small">SCSS</span>
+							<span class="c-badge c-badge--small">Gulp</span>
+							<span class="c-badge c-badge--small">PHP</span>
+						</div>
+						<p class="p-portfolio__work-summary">レスポンシブ対応、SEO最適化、高速化</p>
+						<div class="p-portfolio__work-solution">
+							<div class="p-portfolio__work-problem">
+								<h4 class="p-portfolio__work-problem-title">課題</h4>
+								<p class="p-portfolio__work-problem-text">旧サイトの表示速度が遅く、モバイル対応が不十分。管理画面が複雑で更新が困難。</p>
+							</div>
+							<div class="p-portfolio__work-solution-content">
+								<h4 class="p-portfolio__work-solution-title">解決方法</h4>
+								<p class="p-portfolio__work-solution-text">
+									WordPressカスタムテーマで軽量化、レスポンシブデザイン実装。直感的な管理画面設計で更新効率を向上。</p>
+							</div>
+						</div>
+						<p class="p-portfolio__work-overlay-text">
+							既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web
+							Vitalsスコア大幅改善を実現。
+						</p>
+					</div>
+				</main>
+			</div>
+		</div>
+	</div>
+
+	<!-- モーダル: コーポレートサイト構築 -->
+	<div class="modal micromodal-slide" id="modal-work-2" aria-hidden="true">
+		<div class="modal__overlay" tabindex="-1" data-micromodal-close>
+			<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-2-title">
+				<header class="modal__header">
+					<h2 class="modal__title" id="modal-work-2-title">コーポレートサイト構築</h2>
+					<button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button>
+				</header>
+				<main class="modal__content">
+					<div class="c-slider" data-slider="work-2">
+						<div class="c-slider__viewport">
+							<div class="c-slider__track">
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
+										alt="コーポレートサイト構築 - 画像1" />
+								</div>
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"
+										alt="コーポレートサイト構築 - 画像2" />
+								</div>
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"
+										alt="コーポレートサイト構築 - 画像3" />
+								</div>
+							</div>
+						</div>
+						<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<polyline points="15 18 9 12 15 6"></polyline>
+							</svg>
+						</button>
+						<button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<polyline points="9 18 15 12 9 6"></polyline>
+							</svg>
+						</button>
+						<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
+					</div>
+					<div class="p-portfolio__work-modal-content">
+						<p class="p-portfolio__work-meta">要件定義・設計・開発・デプロイ</p>
+						<div class="p-portfolio__work-tags">
+							<span class="c-badge c-badge--small">Docker</span>
+							<span class="c-badge c-badge--small">WordPress</span>
+							<span class="c-badge c-badge--small">Vite</span>
+							<span class="c-badge c-badge--small">SCSS</span>
+						</div>
+						<p class="p-portfolio__work-summary">多言語対応、アクセシビリティ対応、CMS化</p>
+						<div class="p-portfolio__work-solution">
+							<div class="p-portfolio__work-problem">
+								<h4 class="p-portfolio__work-problem-title">課題</h4>
+								<p class="p-portfolio__work-problem-text">
+									グローバル展開のため多言語対応が必要。アクセシビリティ基準を満たす必要があるが、既存サイトは未対応。</p>
+							</div>
+							<div class="p-portfolio__work-solution-content">
+								<h4 class="p-portfolio__work-solution-title">解決方法</h4>
+								<p class="p-portfolio__work-solution-text">WPMLで多言語対応、WCAG 2.1
+									AA準拠の実装。Docker環境で開発効率化、Viteで高速ビルドを実現。</p>
+							</div>
+						</div>
+						<p class="p-portfolio__work-overlay-text">
+							B2B企業向けコーポレートサイト。多言語対応とアクセシビリティ（WCAG 2.1
+							AA準拠）を重視した設計。Docker環境での開発効率化とViteを活用した高速なビルドプロセスを実現。
+						</p>
+					</div>
+				</main>
+			</div>
+		</div>
+	</div>
+
+	<!-- モーダル: メディアサイト高速化 -->
+	<div class="modal micromodal-slide" id="modal-work-3" aria-hidden="true">
+		<div class="modal__overlay" tabindex="-1" data-micromodal-close>
+			<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-3-title">
+				<header class="modal__header">
+					<h2 class="modal__title" id="modal-work-3-title">メディアサイト高速化</h2>
+					<button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button>
+				</header>
+				<main class="modal__content">
+					<div class="c-slider" data-slider="work-3">
+						<div class="c-slider__viewport">
+							<div class="c-slider__track">
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"
+										alt="メディアサイト高速化 - 画像1" />
+								</div>
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"
+										alt="メディアサイト高速化 - 画像2" />
+								</div>
+								<div class="c-slider__slide">
+									<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
+										alt="メディアサイト高速化 - 画像3" />
+								</div>
+							</div>
+						</div>
+						<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<polyline points="15 18 9 12 15 6"></polyline>
+							</svg>
+						</button>
+						<button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round">
+								<polyline points="9 18 15 12 9 6"></polyline>
+							</svg>
+						</button>
+						<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
+					</div>
+					<div class="p-portfolio__work-modal-content">
+						<p class="p-portfolio__work-meta">パフォーマンス改善・インフラ最適化</p>
+						<div class="p-portfolio__work-tags">
+							<span class="c-badge c-badge--small">WordPress</span>
+							<span class="c-badge c-badge--small">CDN</span>
+							<span class="c-badge c-badge--small">画像最適化</span>
+							<span class="c-badge c-badge--small">キャッシュ</span>
+						</div>
+						<p class="p-portfolio__work-summary">表示速度向上、画像最適化、CDN導入</p>
+						<div class="p-portfolio__work-solution">
+							<div class="p-portfolio__work-problem">
+								<h4 class="p-portfolio__work-problem-title">課題</h4>
+								<p class="p-portfolio__work-problem-text">大量の画像とコンテンツにより表示速度が低下。PageSpeed
+									Insightsスコアが70点台で改善が必要。</p>
+							</div>
+							<div class="p-portfolio__work-solution-content">
+								<h4 class="p-portfolio__work-solution-title">解決方法</h4>
+								<p class="p-portfolio__work-solution-text">
+									画像のWebP変換と遅延読み込み、CDN導入、効率的なキャッシュ戦略でスコアを90点台に改善。</p>
+							</div>
+						</div>
+						<p class="p-portfolio__work-overlay-text">
+							大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed
+							Insightsスコアを70点台から90点台へ改善。
+						</p>
+					</div>
+				</main>
+			</div>
+		</div>
+	</div>
+
+	<script src="./js/main.js" type="module" async></script>
+</body>
+
+</html>

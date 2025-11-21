@@ -1,0 +1,40 @@
+@use '../foundation' as *;
+
+.c-cursor {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 20px;
+	height: 20px;
+	background-color: rgba($color-primary, 0.5);
+	border: 1px solid $color-primary;
+	border-radius: 50%;
+	pointer-events: none; // クリックを透過
+	z-index: 9999;
+	transform: translate3d(0, 0, 0);
+	margin-left: -10px; // 中心に合わせる
+	margin-top: -10px;
+	transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, margin 0.3s ease;
+	opacity: 0; // 初期状態は非表示
+
+	&.is-active {
+		opacity: 1;
+	}
+
+	&.is-hover {
+		width: 50px;
+		height: 50px;
+		margin-left: -25px;
+		margin-top: -25px;
+		background-color: rgba($color-primary, 0.1);
+		border-color: transparent;
+		mix-blend-mode: difference; // 背景と反転させて視認性を確保
+	}
+}
+
+// タッチデバイスでは非表示
+@media (hover: none) and (pointer: coarse) {
+	.c-cursor {
+		display: none;
+	}
+}

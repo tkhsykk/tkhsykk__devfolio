@@ -5,8 +5,10 @@
 
 @use '../global' as *;
 
-@forward 'card';
 @forward 'badge';
 @forward 'button';
+@forward 'card';
+@forward 'cursor';
 @forward 'popover';
 @forward 'slider';
+@forward 'theme-toggle';

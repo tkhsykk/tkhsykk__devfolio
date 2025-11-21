@@ -4,71 +4,82 @@
  */
 
 @use '../foundation' as *;
+@use 'sass:color';
 
 .c-button {
 	$this: &;
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 	padding: $spacing-3 $spacing-8;
-	border: 3px solid $color-primary;
-	border-radius: $border-radius-lg;
-	font-weight: $font-weight-semibold;
-	border: 3px solid $color-primary;
+	border: none;
+	border-radius: $border-radius-full;
+	font-weight: $font-weight-bold;
+	cursor: pointer;
+	text-decoration: none;
+	position: relative;
+	overflow: hidden;
+	z-index: 1;
+	transition: all $transition-base;
+	box-shadow: $shadow-md;
 
-	@media (hover: hover) {
-		@include transition();
+	// ホバー時のエフェクト用擬似要素
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+		opacity: 0;
+		transition: opacity $transition-base;
+		z-index: -1;
 	}
 
-	&#{$this}--outline {
-		//border: 3px solid $color-primary;
-		color: $color-primary;
+	&:hover {
+		transform: translateY(-2px);
+		box-shadow: $shadow-lg;
 
-		&:hover {
-			background-color: $color-primary;
-			color: $color-white;
+		&::before {
+			opacity: 1;
 		}
+	}
+
+	&:active {
+		transform: translateY(0);
+		box-shadow: $shadow-sm;
 	}
 
 	&--primary {
-		background-color: $color-primary;
+		background: linear-gradient(135deg, $color-primary, color.adjust($color-primary, $lightness: 10%));
 		color: $color-white;
 
 		&:hover {
-			background-color: $color-text;
-			border-color: $color-text;
+			background: linear-gradient(135deg, color.adjust($color-primary, $lightness: 5%), color.adjust($color-primary, $lightness: 15%));
 		}
+	}
 
-		&#{$this}--outline {
-			//border: 3px solid $color-primary;
-			color: $color-primary;
+	&--outline {
+		background: transparent;
+		border: 2px solid $color-primary;
+		color: $color-primary;
+		box-shadow: none;
 
-			&:hover {
-				background-color: $color-primary;
-				color: $color-white;
-			}
+		&:hover {
+			background: $color-primary;
+			color: $color-white;
+			box-shadow: $shadow-md;
 		}
 	}
 
 	&--secondary {
-		background-color: $color-text;
-		color: $color-white;
+		background: $color-bg-lighter;
+		color: $color-text;
 
 		&:hover {
-			background-color: $color-text;
-			border-color: $color-text;
-		}
-
-		&#{$this}--outline {
-			border: 3px solid $color-text;
-			//color: $color-text;
-
-			&:hover {
-				background-color: $color-white;
-				color: $color-text;
-			}
+			background: color.adjust($color-bg-lighter, $lightness: -5%);
 		}
 	}
-
-
 }
 

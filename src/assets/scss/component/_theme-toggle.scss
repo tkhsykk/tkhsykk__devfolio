@@ -1,0 +1,52 @@
+@use '../foundation' as *;
+
+.c-theme-toggle {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: $spacing-2;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $border-radius-full;
+  transition: background-color $transition-base, color $transition-base;
+  position: relative;
+  overflow: hidden;
+  width: 2.5rem;
+  height: 2.5rem;
+
+  &:hover {
+    background-color: var(--color-bg-lighter);
+  }
+
+  &__icon {
+    position: absolute;
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s ease;
+    
+    &--sun {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+    
+    &--moon {
+      opacity: 0;
+      transform: rotate(90deg) scale(0);
+    }
+  }
+}
+
+// ダークモード時のアイコン切り替え
+[data-theme="dark"] .c-theme-toggle {
+  &__icon {
+    &--sun {
+      opacity: 0;
+      transform: rotate(-90deg) scale(0);
+    }
+    
+    &--moon {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+  }
+}
