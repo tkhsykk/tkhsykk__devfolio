@@ -65,6 +65,11 @@ class WorkDetails {
 		// ESCキーで閉じる
 		this.escapeHandler = (e) => {
 			if (e.key === 'Escape' && this.currentCard !== null) {
+				// Lightboxが開いている場合は、work-detailsは閉じない
+				const lightbox = document.getElementById('js-lightbox');
+				if (lightbox && lightbox.classList.contains('is-open')) {
+					return;
+				}
 				this.close();
 			}
 		};
