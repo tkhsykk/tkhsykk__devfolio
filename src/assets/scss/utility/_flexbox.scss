@@ -1,0 +1,29 @@
+/**
+ * フレックスボックスユーティリティ
+ * Flexbox のレイアウトを制御する単機能クラス
+ */
+
+// Flexbox 有効化
+.u-flex {
+	display: flex;
+}
+
+// Flex 方向
+.u-flex-col {
+	flex-direction: column;
+}
+
+// Align
+.u-items-center {
+	align-items: center;
+}
+
+// Justify
+.u-justify-between {
+	justify-content: space-between;
+}
+
+.u-justify-center {
+	justify-content: center;
+}
+

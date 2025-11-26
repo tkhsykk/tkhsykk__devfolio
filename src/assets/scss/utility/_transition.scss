@@ -1,0 +1,11 @@
+/**
+ * トランジションユーティリティ
+ * アニメーションやトランジションを制御する単機能クラス
+ */
+
+@use '../foundation' as *;
+
+.u-transition {
+	transition: all $transition-base;
+}
+

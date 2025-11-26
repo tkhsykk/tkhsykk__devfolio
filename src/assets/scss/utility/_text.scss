@@ -1,0 +1,38 @@
+/**
+ * テキストユーティリティ
+ * テキストの配置・色・フォントを制御する単機能クラス
+ */
+
+@use '../foundation' as *;
+
+// テキスト配置
+.u-text-center {
+	text-align: center;
+}
+
+// テキスト色
+.u-text-primary {
+	color: $color-primary;
+}
+
+// フォントファミリー
+.u-font-en {
+	font-family: $font-family-en;
+}
+
+.u-font-barlow {
+	font-family: $font-family-barlow;
+}
+
+.u-font-barlow.is-regular {
+	font-weight: 400;
+}
+
+.u-font-barlow.is-medium {
+	font-weight: 500;
+}
+
+.u-font-barlow.is-bold {
+	font-weight: 700;
+}
+
