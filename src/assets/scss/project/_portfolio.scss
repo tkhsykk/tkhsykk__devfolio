@@ -55,9 +55,9 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		background-color: rgba(var(--color-card-bg), 0.6);
+		background-color: rgba(var(--color-card-bg), 1.0);
 		backdrop-filter: blur(4px);
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 		z-index: 50;
 	}
 
@@ -72,6 +72,11 @@
 		font-weight: $font-weight-bold;
 		font-size: $font-size-2xl;
 		letter-spacing: 0.05em;
+		text-shadow: 0px 0px 2px rgba(255, 255, 255, .4), 0px 0px 10px rgba(255, 255, 255, 1);
+
+		[data-theme="dark"] & {
+			text-shadow: 0px 0px 2px rgba(0, 0, 0, .4), 0px 0px 10px rgba(0, 0, 0, 1);
+		}
 	}
 
 	&__nav-links {
@@ -80,7 +85,10 @@
 	}
 
 	&__nav-link {
-		font-size: $font-size-sm;
+		font-size: $font-size-base;
+		font-family: $font-family-barlow;
+		font-weight: $font-weight-medium;
+		//letter-spacing: 0.02em;
 
 		@media (hover: hover) {
 			@include transition();
@@ -200,9 +208,9 @@
 			display: block;
 			width: 6rem;
 			height: 0.375rem;
-			background: linear-gradient(90deg, $color-primary, transparent);
+			//background: linear-gradient(90deg, $color-primary, transparent);
+			background-color: $color-primary;
 			margin: $spacing-4 auto 0;
-			//border-radius: $border-radius-full;
 		}
 	}
 }
