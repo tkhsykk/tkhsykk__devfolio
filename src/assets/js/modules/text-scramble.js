@@ -72,7 +72,7 @@ class TextScramble {
 
 export default class TextScrambleController {
 	constructor() {
-		this.targets = document.querySelectorAll('.js-text-scramble');
+		this.targets = document.querySelectorAll('[data-text-scramble]');
 		this.init();
 	}
 

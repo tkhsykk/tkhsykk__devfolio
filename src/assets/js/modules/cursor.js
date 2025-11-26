@@ -22,7 +22,7 @@ export default class Cursor {
 		document.addEventListener('mousemove', this.onMouseMove.bind(this));
 		
 		// ホバー対象の監視
-		const hoverTargets = document.querySelectorAll('a, button, .js-cursor-hover');
+		const hoverTargets = document.querySelectorAll('a, button, [data-cursor-hover]');
 		hoverTargets.forEach(target => {
 			target.addEventListener('mouseenter', () => this.cursor.classList.add('is-hover'));
 			target.addEventListener('mouseleave', () => this.cursor.classList.remove('is-hover'));

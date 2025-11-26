@@ -38,7 +38,7 @@
 	//}
 
 	// スクロールアニメーション
-	.js-scroll-trigger {
+	[data-scroll-trigger] {
 		opacity: 0;
 		transform: translateY(30px);
 		transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);

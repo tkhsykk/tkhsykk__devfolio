@@ -4,7 +4,7 @@
  */
 export default class ScrollAnimation {
 	constructor() {
-		this.targets = document.querySelectorAll('.js-scroll-trigger');
+		this.targets = document.querySelectorAll('[data-scroll-trigger]');
 		this.options = {
 			root: null,
 			rootMargin: '0px',

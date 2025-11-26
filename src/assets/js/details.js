@@ -28,9 +28,9 @@ class WorkDetails {
 	 * @constructor
 	 */
 	constructor() {
-		this.worksSection = document.querySelector('.js-work');
-		this.workList = document.querySelector('.js-work-list');
-		this.workCards = document.querySelectorAll('.js-work-card');
+		this.worksSection = document.querySelector('[data-work]');
+		this.workList = document.querySelector('[data-work-list]');
+		this.workCards = document.querySelectorAll('[data-work-card]');
 		this.currentCard = null;
 		this.detailsBlock = null;
 		this.workData = [];
@@ -52,7 +52,7 @@ class WorkDetails {
 
 		// 各カードにクリックイベントを設定
 		this.workCards.forEach((card, index) => {
-			const trigger = card.querySelector('.js-work-trigger');
+			const trigger = card.querySelector('[data-work-trigger]');
 			if (trigger) {
 				trigger.addEventListener('click', (e) => {
 					e.preventDefault();
@@ -77,7 +77,7 @@ class WorkDetails {
 	 */
 	extractWorkData() {
 		this.workCards.forEach((card) => {
-			const img = card.querySelector('.js-work-trigger img');
+			const img = card.querySelector('[data-work-trigger] img');
 			const title = card.querySelector('.p-portfolio__work-title');
 
 			if (img && title) {
@@ -183,7 +183,8 @@ class WorkDetails {
 	createDetailsElement(detailsHTML) {
 		// <li>要素として作成（グリッドアイテムとして挿入）
 		const detailsElement = document.createElement('li');
-		detailsElement.className = 'p-portfolio__work-details-block js-work-details-block';
+		detailsElement.className = 'p-portfolio__work-details-block';
+		detailsElement.setAttribute('data-work-details-block', '');
 		detailsElement.innerHTML = detailsHTML;
 
 		return detailsElement;
@@ -255,7 +256,7 @@ class WorkDetails {
 	 */
 	setupDetailsBlockEvents(detailsElement, work, index) {
 		// 閉じるボタンのイベント
-		const closeButton = detailsElement.querySelector('.js-work-close');
+		const closeButton = detailsElement.querySelector('[data-work-close]');
 		if (closeButton) {
 			closeButton.addEventListener('click', () => {
 				this.close();
@@ -311,7 +312,7 @@ class WorkDetails {
 
 		return `
 			<div class="p-portfolio__work-details-content">
-				<button class="p-portfolio__work-close js-work-close" aria-label="詳細を閉じる">
+				<button class="p-portfolio__work-close" data-work-close aria-label="詳細を閉じる">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<line x1="18" y1="6" x2="6" y2="18"></line>
 						<line x1="6" y1="6" x2="18" y2="18"></line>
@@ -466,7 +467,7 @@ class WorkDetails {
  * @description ページ内のワークセクションを初期化
  */
 function initWorkDetails() {
-	const workList = document.querySelector('.js-work-list');
+	const workList = document.querySelector('[data-work-list]');
 	if (!workList) {
 		return;
 	}
