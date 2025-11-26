@@ -15,12 +15,12 @@
 import '@oddbird/popover-polyfill';
 
 /* 2. ライブラリ */
-import MicroModal from 'micromodal';
-
-/* 3. init */
-MicroModal.init({
-	disableScroll: true
-});
+//import MicroModal from 'micromodal';
+//
+///* 3. init */
+//MicroModal.init({
+//	disableScroll: true
+//});
 
 /* 4. スライダー */
 import './modules/image-slider.js';
