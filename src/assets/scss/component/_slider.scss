@@ -39,6 +39,16 @@
 		width: 100%;
 		position: relative;
 
+		a {
+			display: block;
+			cursor: zoom-in;
+			transition: opacity $transition-base;
+
+			&:hover {
+				opacity: 0.9;
+			}
+		}
+
 		img {
 			aspect-ratio: 4/3;
 			width: 100%;

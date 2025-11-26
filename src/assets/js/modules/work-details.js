@@ -285,11 +285,19 @@ class WorkDetails {
 			<div class="c-slider" data-slider="work-details-${index}">
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
-						${work.images.map((imgSrc, imgIndex) => `
+						${work.images.map((imgSrc, imgIndex) => {
+							// 原寸大のURLを生成（パラメータを削除）
+							const fullSizeUrl = imgSrc.split('?')[0];
+							// 最初と2番目の画像にリンクを追加（例として）
+							const hasLink = imgIndex < 2;
+							return `
 							<div class="c-slider__slide">
-								<img src="${imgSrc}" alt="${work.alt} - 画像${imgIndex + 1}" />
+								${hasLink ? `<a href="${fullSizeUrl}">` : ''}
+									<img src="${imgSrc}" alt="${work.alt} - 画像${imgIndex + 1}" />
+								${hasLink ? '</a>' : ''}
 							</div>
-						`).join('')}
+						`;
+						}).join('')}
 					</div>
 				</div>
 				<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
