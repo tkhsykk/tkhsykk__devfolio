@@ -111,14 +111,11 @@ class ImageSlider {
 		const img = link.querySelector('img');
 		if (!img) return;
 
+		// リンクのデフォルト動作のみ防止（他のイベントハンドラーには影響しない）
 		e.preventDefault();
-		e.stopPropagation();
-		e.stopImmediatePropagation();
 
 		// 元の画像要素をそのまま拡大表示
 		this.openLightboxWithImage(img, link);
-
-		return false;
 	}
 
 	/**
@@ -139,7 +136,7 @@ class ImageSlider {
 	}
 
 	/**
-	 * 元の画像をそのまま拡大表示するライトボックスを開く
+	 * 元の画像をそのまま拡大表示するライトボックスを開く（cloneNode方式）
 	 * @param {HTMLImageElement} img - 拡大表示する画像要素
 	 * @param {HTMLElement} link - 画像を囲むリンク要素
 	 * @private
@@ -154,30 +151,48 @@ class ImageSlider {
 		// フォーカスを保存（閉じた時に戻すため）
 		this.previousFocus = document.activeElement;
 
-		// 元の画像の位置とサイズ、親要素を保存
+		// ① trackのtransformを外す
+		const track = img.closest('.c-slider__track');
+		const prevTransform = track ? track.style.transform : null;
+		if (track) {
+			track.style.transform = 'none';
+		}
+
+		// ② rectを正確に取得（transform無効化後の正しいviewport座標）
 		const rect = img.getBoundingClientRect();
+		const { left, top, width, height } = rect;
 		const sourceRect = {
-			left: rect.left,
-			top: rect.top,
-			width: rect.width,
-			height: rect.height
-		};
-		const originalParent = img.parentElement;
-		const originalNextSibling = img.nextSibling;
-		const originalStyles = {
-			position: img.style.position,
-			left: img.style.left,
-			top: img.style.top,
-			width: img.style.width,
-			height: img.style.height,
-			transform: img.style.transform,
-			transformOrigin: img.style.transformOrigin,
-			transition: img.style.transition,
-			zIndex: img.style.zIndex,
-			opacity: img.style.opacity
+			left,
+			top,
+			width,
+			height
 		};
 
-		// ライトボックス要素を作成
+		// ③ transformを元に戻す
+		if (track) {
+			track.style.transform = prevTransform;
+		}
+
+		// ④ cloneを作成してrectに完全一致させて配置
+		const clone = img.cloneNode(true);
+		clone.style.position = 'fixed';
+		clone.style.left = `${left}px`;
+		clone.style.top = `${top}px`;
+		clone.style.width = `${width}px`;
+		clone.style.height = `${height}px`;
+		clone.style.margin = '0';
+		clone.style.zIndex = '9999';
+		clone.style.transformOrigin = 'top left'; // 必須：object-fit/aspect-ratioの影響を避ける
+		clone.style.transform = 'translate(0, 0) scale(1)';
+		clone.style.willChange = 'transform';
+		clone.setAttribute('aria-hidden', 'true');
+		clone.classList.add('lightbox-clone');
+		document.body.appendChild(clone);
+
+		// ⑤ append後、強制reflow（必須）
+		clone.getBoundingClientRect();
+
+		// ライトボックス要素を作成（overlayは後で表示）
 		const lightbox = document.createElement('div');
 		lightbox.className = 'c-lightbox';
 		lightbox.setAttribute('role', 'dialog');
@@ -242,63 +257,75 @@ class ImageSlider {
 		lightbox.appendChild(overlay);
 		lightbox.appendChild(closeButton);
 
-		// bodyに追加
+		// bodyに追加（ただしoverlayはまだ非表示）
 		if (document.body) {
 			document.body.appendChild(lightbox);
 		} else {
 			document.documentElement.appendChild(lightbox);
 		}
 
-		// 画像を元の親から一時的に削除して、bodyに直接追加（アニメーション用）
-		if (img.parentElement) {
-			img.parentElement.removeChild(img);
-		}
-		document.body.appendChild(img);
+		// ⑥ 目標位置（中央の原寸画像）のtransformを計算
+		const targetW = window.innerWidth * 0.9;
+		const targetH = window.innerHeight * 0.9;
+		const targetLeft = (window.innerWidth - targetW) / 2;
+		const targetTop = (window.innerHeight - targetH) / 2;
 
-		// 画像のalt属性を保持（アクセシビリティ）
-		if (!img.hasAttribute('alt')) {
-			img.setAttribute('alt', '拡大表示中の画像');
-		}
+		const scaleX = targetW / width;
+		const scaleY = targetH / height;
+		const scale = Math.min(scaleX, scaleY); // アスペクト比を維持
 
-		// 画像を元の位置に設定（アニメーション開始位置）
-		img.style.position = 'fixed';
-		img.style.left = `${sourceRect.left}px`;
-		img.style.top = `${sourceRect.top}px`;
-		img.style.width = `${sourceRect.width}px`;
-		img.style.height = `${sourceRect.height}px`;
-		img.style.transform = 'none';
-		img.style.transformOrigin = 'center center';
-		img.style.zIndex = '10001';
-		img.style.transition = 'none';
-		img.style.opacity = '1';
-		img.style.pointerEvents = 'none';
+		const finalWidth = width * scale;
+		const finalHeight = height * scale;
+		const finalLeft = (window.innerWidth - finalWidth) / 2;
+		const finalTop = (window.innerHeight - finalHeight) / 2;
 
-		// リサイズ時の位置再計算ハンドラー
-		const handleResize = () => {
-			if (img && sourceRect) {
-				this.animateImageExpand(img, sourceRect, originalStyles);
-			}
-		};
-		window.addEventListener('resize', handleResize);
-		lightbox._handleResize = handleResize;
+		const translateX = finalLeft - left;
+		const translateY = finalTop - top;
 
-		// ライトボックスを表示
+		// ⑦ transformアニメーション開始（transitionを使用）
+		clone.style.transition = 'transform 0.3s cubic-bezier(0.33, 0, 0.67, 1)';
+
+		// アニメーション開始（requestAnimationFrameで確実に反映）
 		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				clone.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+			});
+		});
+
+		// ⑧ cloneのアニメ終了後にoverlayを表示（transitionendを使用）
+		let overlayShown = false;
+		const handleTransitionEnd = () => {
+			if (overlayShown) return;
+			overlayShown = true;
+
+			// overlayを表示
 			requestAnimationFrame(() => {
 				lightbox.style.opacity = '1';
 				lightbox.style.visibility = 'visible';
 				lightbox.style.pointerEvents = 'auto';
 				overlay.style.opacity = '1';
 				closeButton.style.opacity = '1';
-
-				// 画像を拡大アニメーション
-				this.animateImageExpand(img, sourceRect, originalStyles);
 			});
-		});
+
+			// 本物のLightbox画像を表示
+			this.showModalWithImage(img, lightbox, overlay, closeButton, sourceRect);
+
+			// cloneを削除
+			clone.remove();
+
+			// イベントリスナーを削除
+			clone.removeEventListener('transitionend', handleTransitionEnd);
+		};
+
+		clone.addEventListener('transitionend', handleTransitionEnd, { once: true });
+
+		// 参照を保存（クローンアニメーション用）
+		lightbox._clone = clone;
+		lightbox._sourceRect = sourceRect;
 
 		// 閉じる処理
 		const closeLightbox = () => {
-			this.closeLightbox(lightbox, img, originalParent, originalNextSibling, sourceRect, originalStyles);
+			this.closeLightbox(lightbox, img, sourceRect);
 		};
 
 		// イベントリスナー
@@ -316,18 +343,16 @@ class ImageSlider {
 
 		// 参照を保存
 		lightbox._originalImg = img;
-		lightbox._originalParent = originalParent;
-		lightbox._originalNextSibling = originalNextSibling;
 		lightbox._sourceRect = sourceRect;
-		lightbox._originalStyles = originalStyles;
 		lightbox._handleEscape = handleEscape;
 		lightbox._previousFocus = this.previousFocus;
+		lightbox._clone = clone;
 
 		// アクティブなライトボックスとして保存
 		this.activeLightbox = lightbox;
 
 		// フォーカストラップの設定
-		this.setupFocusTrap(lightbox, closeButton);
+		this.setupFocusTrap(lightbox);
 
 		// 閉じるボタンにフォーカスを移動
 		requestAnimationFrame(() => {
@@ -336,158 +361,211 @@ class ImageSlider {
 	}
 
 	/**
-	 * フォーカストラップの設定
+	 * フォーカストラップの設定（W3C仕様に基づく包括的な実装）
 	 * @param {HTMLElement} lightbox - ライトボックス要素
-	 * @param {HTMLElement} closeButton - 閉じるボタン
 	 * @private
 	 */
-	setupFocusTrap(lightbox, closeButton) {
-		const handleTabKey = (e) => {
+	setupFocusTrap(lightbox) {
+		// W3C仕様に基づく包括的なフォーカス可能要素セレクタ
+		const FOCUSABLE_SELECTOR = `
+			a[href],
+			area[href],
+			input:not([disabled]),
+			select:not([disabled]),
+			textarea:not([disabled]),
+			button:not([disabled]),
+			iframe,
+			object,
+			embed,
+			[tabindex]:not([tabindex="-1"]),
+			[contenteditable]
+		`.replace(/\s+/g, ' ').trim();
+
+		lightbox.addEventListener('keydown', (e) => {
 			if (e.key !== 'Tab') return;
 
-			// フォーカス可能な要素を取得
-			const focusableElements = lightbox.querySelectorAll(
-				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-			);
-			const firstElement = focusableElements[0];
-			const lastElement = focusableElements[focusableElements.length - 1];
+			// 毎回フォーカス可能な要素を取得（動的UIに対応）
+			const focusable = lightbox.querySelectorAll(FOCUSABLE_SELECTOR);
+			if (focusable.length === 0) {
+				// フォーカス可能な要素がない場合はデフォルト動作を許可
+				return;
+			}
 
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+
+			// Shift + Tab（逆方向）
 			if (e.shiftKey) {
-				// Shift + Tab
-				if (document.activeElement === firstElement || document.activeElement === closeButton) {
+				if (document.activeElement === first) {
 					e.preventDefault();
-					lastElement?.focus();
-				}
-			} else {
-				// Tab
-				if (document.activeElement === lastElement) {
-					e.preventDefault();
-					firstElement?.focus();
+					last.focus();
 				}
 			}
-		};
-
-		lightbox.addEventListener('keydown', handleTabKey);
-		lightbox._handleTabKey = handleTabKey;
+			// Tab（順方向）
+			else {
+				if (document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			}
+		});
 	}
 
 	/**
-	 * ライトボックスを閉じる
-	 * @param {HTMLElement} lightbox - ライトボックス要素
+	 * ライトボックス内に本物の画像を表示
 	 * @param {HTMLImageElement} img - 画像要素
-	 * @param {HTMLElement} originalParent - 元の親要素
-	 * @param {Node} originalNextSibling - 元の次の兄弟要素
+	 * @param {HTMLElement} lightbox - ライトボックス要素
+	 * @param {HTMLElement} overlay - オーバーレイ要素
+	 * @param {HTMLElement} closeButton - 閉じるボタン
 	 * @param {Object} sourceRect - 元の位置とサイズ
-	 * @param {Object} originalStyles - 元のスタイル
 	 * @private
 	 */
-	closeLightbox(lightbox, img = null, originalParent = null, originalNextSibling = null, sourceRect = null, originalStyles = null) {
+	showModalWithImage(img, lightbox, overlay, closeButton, sourceRect) {
+		// 本物の画像をライトボックス内に表示
+		const content = document.createElement('div');
+		content.className = 'c-lightbox__content';
+		content.style.cssText = `
+			position: relative;
+			max-width: 90vw;
+			max-height: 90vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 1;
+		`;
+
+		const displayImg = img.cloneNode(true);
+		displayImg.className = 'c-lightbox__image';
+		displayImg.style.cssText = `
+			max-width: 100%;
+			max-height: 90vh;
+			width: auto;
+			height: auto;
+			object-fit: contain;
+			border-radius: 4px;
+			box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+		`;
+
+		content.appendChild(displayImg);
+		lightbox.insertBefore(content, closeButton);
+
+		// 参照を保存
+		lightbox._displayImg = displayImg;
+		lightbox._content = content;
+	}
+
+	/**
+	 * ライトボックスを閉じる（ステップ5: 逆再生で戻す）
+	 * @param {HTMLElement} lightbox - ライトボックス要素
+	 * @param {HTMLImageElement} img - 画像要素
+	 * @param {Object} sourceRect - 元の位置とサイズ
+	 * @private
+	 */
+	closeLightbox(lightbox, img = null, sourceRect = null) {
 		if (!img) img = lightbox._originalImg;
-		if (!originalParent) originalParent = lightbox._originalParent;
-		if (!originalNextSibling) originalNextSibling = lightbox._originalNextSibling;
 		if (!sourceRect) sourceRect = lightbox._sourceRect;
-		if (!originalStyles) originalStyles = lightbox._originalStyles;
 
-		// 画像を元の位置に戻すアニメーション（transformを使用して滑らかに）
-		if (img && sourceRect) {
-			const rect = img.getBoundingClientRect();
-			const currentWidth = rect.width;
-			const currentHeight = rect.height;
-			const currentLeft = rect.left + currentWidth / 2; // 中心点
-			const currentTop = rect.top + currentHeight / 2;
+		// 表示中の画像を取得
+		const displayImg = lightbox._displayImg || lightbox.querySelector('.c-lightbox__image');
+		if (!displayImg) {
+			// 画像がない場合は通常の閉じる処理
+			this.closeLightboxSimple(lightbox);
+			return;
+		}
 
-			// 元の画像の中心点
-			const sourceCenterX = sourceRect.left + sourceRect.width / 2;
-			const sourceCenterY = sourceRect.top + sourceRect.height / 2;
+		// ステップ5: クローンを作成して逆再生
+		const rect = displayImg.getBoundingClientRect();
+		const clone = displayImg.cloneNode(true);
+		clone.style.position = 'fixed';
+		clone.style.left = `${rect.left}px`;
+		clone.style.top = `${rect.top}px`;
+		clone.style.width = `${rect.width}px`;
+		clone.style.height = `${rect.height}px`;
+		clone.style.margin = '0';
+		clone.style.zIndex = '9999';
+		clone.style.transformOrigin = 'left top';
+		clone.classList.add('lightbox-clone');
+		document.body.appendChild(clone);
 
-			// 中心点からの移動距離
-			const translateX = sourceCenterX - currentLeft;
-			const translateY = sourceCenterY - currentTop;
-
-			// 縮小率を計算（アスペクト比を維持）
-			const scaleX = sourceRect.width / currentWidth;
-			const scaleY = sourceRect.height / currentHeight;
-			// アスペクト比を維持するため、より小さい方の縮小率を使用
-			const scale = Math.min(scaleX, scaleY);
-
-			// transformを使用して滑らかにアニメーション
-			// フェードアウトと同時に、元の位置へ移動しながら縮小
-			img.style.transition = 'opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-			img.style.transformOrigin = 'center center';
-			img.style.opacity = '0';
-			img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+		// 表示中の画像を非表示
+		if (lightbox._content) {
+			lightbox._content.style.opacity = '0';
 		}
 
 		// ライトボックスを非表示
-		if (lightbox) {
-			lightbox.style.opacity = '0';
-			lightbox.style.visibility = 'hidden';
-			lightbox.style.pointerEvents = 'none';
-			if (lightbox.querySelector('.c-lightbox__overlay')) {
-				lightbox.querySelector('.c-lightbox__overlay').style.opacity = '0';
-			}
-			if (lightbox.querySelector('.c-lightbox__close')) {
-				lightbox.querySelector('.c-lightbox__close').style.opacity = '0';
-			}
+		lightbox.style.opacity = '0';
+		lightbox.style.visibility = 'hidden';
+		lightbox.style.pointerEvents = 'none';
+		const overlay = lightbox.querySelector('.c-lightbox__overlay');
+		if (overlay) {
+			overlay.style.opacity = '0';
+		}
+		if (lightbox.querySelector('.c-lightbox__close')) {
+			lightbox.querySelector('.c-lightbox__close').style.opacity = '0';
 		}
 
-		// アニメーション完了後に画像を元の位置に戻す
-		setTimeout(() => {
-			if (img && originalParent) {
-				// 画像をbodyから削除
-				if (img.parentElement === document.body) {
-					document.body.removeChild(img);
-				}
+		// 逆再生アニメーション
+		const targetW = window.innerWidth * 0.9;
+		const targetH = window.innerHeight * 0.9;
+		const scaleX = targetW / sourceRect.width;
+		const scaleY = targetH / sourceRect.height;
+		const scale = Math.min(scaleX, scaleY);
 
-				// 元のスタイルを復元
-				Object.keys(originalStyles).forEach(key => {
-					if (originalStyles[key]) {
-						img.style[key] = originalStyles[key];
-					} else {
-						img.style.removeProperty(key);
-					}
-				});
+		const finalWidth = sourceRect.width * scale;
+		const finalHeight = sourceRect.height * scale;
+		const finalLeft = (window.innerWidth - finalWidth) / 2;
+		const finalTop = (window.innerHeight - finalHeight) / 2;
 
-				// 元の親要素に戻す
-				if (originalParent && originalParent.parentElement) {
-					if (originalNextSibling && originalNextSibling.parentElement === originalParent) {
-						originalParent.insertBefore(img, originalNextSibling);
-					} else {
-						originalParent.appendChild(img);
-					}
-				}
+		const translateX = finalLeft - rect.left;
+		const translateY = finalTop - rect.top;
+		const reverseTranslateX = sourceRect.left - finalLeft;
+		const reverseTranslateY = sourceRect.top - finalTop;
+		const reverseScale = 1 / scale;
+
+		const animation = clone.animate([
+			{
+				transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`
+			},
+			{
+				transform: `translate(${reverseTranslateX}px, ${reverseTranslateY}px) scale(${reverseScale})`
 			}
+		], {
+			duration: 300,
+			easing: 'cubic-bezier(0.33, 0, 0.67, 1)'
+		});
 
-			// ライトボックスを削除
-			if (lightbox && lightbox.parentElement) {
-				lightbox.remove();
-			}
+		// アニメーション完了後にクリーンアップ
+		animation.addEventListener('finish', () => {
+			clone.remove();
+			this.closeLightboxSimple(lightbox);
+		});
+	}
 
-			// ESCキーのイベントリスナーを削除
-			if (lightbox && lightbox._handleEscape) {
-				document.removeEventListener('keydown', lightbox._handleEscape);
-			}
+	/**
+	 * ライトボックスのクリーンアップ（シンプル版）
+	 * @param {HTMLElement} lightbox - ライトボックス要素
+	 * @private
+	 */
+	closeLightboxSimple(lightbox) {
+		// ESCキーのイベントリスナーを削除
+		if (lightbox && lightbox._handleEscape) {
+			document.removeEventListener('keydown', lightbox._handleEscape);
+		}
 
-			// フォーカストラップのイベントリスナーを削除
-			if (lightbox && lightbox._handleTabKey) {
-				lightbox.removeEventListener('keydown', lightbox._handleTabKey);
-			}
+		// ライトボックスを削除
+		if (lightbox && lightbox.parentElement) {
+			lightbox.remove();
+		}
 
-			// リサイズイベントリスナーを削除
-			if (lightbox && lightbox._handleResize) {
-				window.removeEventListener('resize', lightbox._handleResize);
-			}
+		// 元のフォーカス位置に戻す
+		if (lightbox && lightbox._previousFocus && typeof lightbox._previousFocus.focus === 'function') {
+			lightbox._previousFocus.focus();
+		}
 
-			// 元のフォーカス位置に戻す
-			if (lightbox && lightbox._previousFocus && typeof lightbox._previousFocus.focus === 'function') {
-				lightbox._previousFocus.focus();
-			}
-
-			// アクティブなライトボックスを解除
-			if (this.activeLightbox === lightbox) {
-				this.activeLightbox = null;
-			}
-		}, 350); // transformアニメーションに合わせて調整
+		// アクティブなライトボックスを解除
+		if (this.activeLightbox === lightbox) {
+			this.activeLightbox = null;
+		}
 	}
 
 	/**
@@ -712,21 +790,27 @@ class ImageSlider {
 		const finalLeft = (viewportWidth - finalWidth) / 2;
 		const finalTop = (viewportHeight - finalHeight) / 2;
 
-		// 現在の位置から最終位置への変換を計算
+		// transformのみを使用してアニメーション（パフォーマンス最適化）
+		// 元の位置とサイズから最終位置とサイズへの変換を計算
+		const sourceCenterX = sourceRect.left + sourceRect.width / 2;
+		const sourceCenterY = sourceRect.top + sourceRect.height / 2;
+		const finalCenterX = finalLeft + finalWidth / 2;
+		const finalCenterY = finalTop + finalHeight / 2;
+
+		// 中心点からの移動距離
+		const translateX = finalCenterX - sourceCenterX;
+		const translateY = finalCenterY - sourceCenterY;
+
+		// 縮小率を計算（アスペクト比を維持）
 		const scaleX = finalWidth / sourceRect.width;
 		const scaleY = finalHeight / sourceRect.height;
-		const translateX = finalLeft - sourceRect.left;
-		const translateY = finalTop - sourceRect.top;
+		const scale = Math.min(scaleX, scaleY);
 
-		// アニメーション開始
+		// アニメーション開始（transformのみ）
 		requestAnimationFrame(() => {
 			requestAnimationFrame(() => {
-				img.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1), height 0.4s cubic-bezier(0.4, 0, 0.2, 1), left 0.4s cubic-bezier(0.4, 0, 0.2, 1), top 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
-				img.style.left = `${finalLeft}px`;
-				img.style.top = `${finalTop}px`;
-				img.style.width = `${finalWidth}px`;
-				img.style.height = `${finalHeight}px`;
-				img.style.transform = 'none';
+				img.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease';
+				img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
 				img.style.pointerEvents = 'auto';
 			});
 		});
@@ -931,34 +1015,98 @@ function initSliders(root = document) {
 	scope.querySelectorAll('[data-slider]').forEach((slider) => ensureSliderInstance(slider));
 }
 
-let modalPatched = false;
+let modalObserver = null;
 
+/**
+ * MicroModalの表示を監視してスライダーを初期化（安全な実装）
+ * MicroModalのメソッドを直接上書きせず、MutationObserverで監視
+ * @param {Object} micromodal - MicroModalインスタンス（使用しないが互換性のため残す）
+ */
 function setupModalSliders(micromodal = typeof window !== 'undefined' ? window.MicroModal : undefined) {
-	if (!micromodal || modalPatched) {
-		return;
+	if (modalObserver) {
+		return; // 既に初期化済み
 	}
 
-	const originalShow = micromodal.show.bind(micromodal);
-
-	micromodal.show = (modalId, options = {}) => {
-		originalShow(modalId, options);
-
-		const modalElement = document.getElementById(modalId);
+	/**
+	 * モーダル内のスライダーを初期化
+	 * @param {HTMLElement} modalElement - モーダル要素
+	 */
+	const initSlidersInModal = (modalElement) => {
 		if (!modalElement) {
 			return;
 		}
 
-		modalElement.querySelectorAll('[data-slider]').forEach((slider) => {
-			const instance = sliderInstances.get(slider);
-			if (instance) {
-				instance.reset();
-			} else {
-				ensureSliderInstance(slider);
-			}
+		requestAnimationFrame(() => {
+			modalElement.querySelectorAll('[data-slider]').forEach((slider) => {
+				const instance = sliderInstances.get(slider);
+				if (instance) {
+					instance.reset();
+				} else {
+					ensureSliderInstance(slider);
+				}
+			});
 		});
 	};
 
-	modalPatched = true;
+	// MutationObserverでモーダルの表示を監視（MicroModalの実装に依存しない）
+	if (typeof MutationObserver !== 'undefined') {
+		modalObserver = new MutationObserver((mutations) => {
+			mutations.forEach((mutation) => {
+				// aria-hidden属性の変更を監視
+				if (mutation.type === 'attributes' && mutation.attributeName === 'aria-hidden') {
+					const modalElement = mutation.target;
+					if (modalElement instanceof HTMLElement && modalElement.id?.startsWith('modal-')) {
+						const isHidden = modalElement.getAttribute('aria-hidden') === 'true';
+						if (!isHidden) {
+							// モーダルが表示された
+							initSlidersInModal(modalElement);
+						}
+					}
+				}
+
+				// 新しく追加されたモーダル要素を監視
+				mutation.addedNodes.forEach((node) => {
+					if (node instanceof HTMLElement) {
+						// 追加されたノード自体がモーダルの場合
+						if (node.id?.startsWith('modal-')) {
+							modalObserver.observe(node, {
+								attributes: true,
+								attributeFilter: ['aria-hidden']
+							});
+							if (node.getAttribute('aria-hidden') !== 'true') {
+								initSlidersInModal(node);
+							}
+						}
+
+						// 追加されたノード内のモーダルを検索
+						node.querySelectorAll?.('[id^="modal-"]').forEach((modal) => {
+							modalObserver.observe(modal, {
+								attributes: true,
+								attributeFilter: ['aria-hidden']
+							});
+							if (modal.getAttribute('aria-hidden') !== 'true') {
+								initSlidersInModal(modal);
+							}
+						});
+					}
+				});
+			});
+		});
+
+		// 既存のモーダル要素を監視
+		document.querySelectorAll('[id^="modal-"]').forEach((modal) => {
+			modalObserver.observe(modal, {
+				attributes: true,
+				attributeFilter: ['aria-hidden']
+			});
+		});
+
+		// 動的に追加されるモーダルにも対応
+		modalObserver.observe(document.body, {
+			childList: true,
+			subtree: true
+		});
+	}
 }
 
 let sliderObserver;
