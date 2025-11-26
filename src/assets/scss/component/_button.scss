@@ -4,6 +4,7 @@
  */
 
 @use '../foundation' as *;
+@use '../global' as g;
 @use 'sass:color';
 
 .c-button {
@@ -20,8 +21,11 @@
 	position: relative;
 	overflow: hidden;
 	z-index: 1;
-	transition: all $transition-base;
 	box-shadow: $shadow-md;
+
+	@media (hover: hover) {
+		transition: all $transition-base;
+	}
 
 	// ホバー時のエフェクト用擬似要素
 	&::before {
@@ -49,6 +53,7 @@
 	&:active {
 		transform: translateY(0);
 		box-shadow: $shadow-sm;
+		@include g.apply-ripple($color-primary, 10px, 1.5s, 1);
 	}
 
 	&--primary {

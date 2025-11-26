@@ -1,0 +1,43 @@
+/**
+ * 共通アニメーション定義
+ * 複数のコンポーネントで使用するアニメーションをここに集約
+ */
+
+@use '../foundation' as *;
+@use 'sass:color';
+
+/**
+ * リップルアニメーション
+ * ボタンやポップオーバートリガーなどのインタラクション時に使用
+ */
+@keyframes ripple {
+	0% {
+		box-shadow: 0 0 0 0 var(--ripple-color, rgba($color-primary, 0.3));
+	}
+
+	70% {
+		box-shadow: 0 0 0 var(--ripple-size, 10px) rgba(255, 255, 255, 0);
+	}
+
+	100% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+	}
+}
+
+/**
+ * リップルアニメーションミックスイン
+ * @param {Color} $color - リップルの色（省略時は CSS 変数を使用）
+ * @param {Length} $size - リップルの最大サイズ
+ * @param {Time} $duration - アニメーションの長さ
+ * @param {Number} $count - アニメーション再生回数
+ */
+@mixin apply-ripple($color: null, $size: 10px, $duration: 0.6s, $count: 1) {
+	animation: ripple $duration ease-out $count;
+
+	@if $color {
+		--ripple-color: #{color.change($color, $alpha: 0.3)};
+	}
+
+	--ripple-size: #{$size};
+}
+
