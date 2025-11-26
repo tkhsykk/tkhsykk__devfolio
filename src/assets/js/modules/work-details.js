@@ -348,7 +348,7 @@ class WorkDetails {
 		const sliderElement = container.querySelector('[data-slider]');
 		if (!sliderElement) return;
 
-		import('./slider.js').then(({ ImageSlider, sliderInstances }) => {
+		import('./image-slider.js').then(({ ImageSlider, sliderInstances }) => {
 			setTimeout(() => {
 				if (!sliderInstances.has(sliderElement)) {
 					const instance = new ImageSlider(sliderElement);
@@ -488,3 +488,4 @@ init();
 
 // エクスポート
 export { WorkDetails, initWorkDetails };
+

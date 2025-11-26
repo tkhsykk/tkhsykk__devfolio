@@ -344,3 +344,4 @@ if (document.readyState === 'loading') {
 }
 
 export { ImageSlider, initSliders, sliderInstances, setupModalSliders };
+

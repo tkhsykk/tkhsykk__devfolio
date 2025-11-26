@@ -9,7 +9,7 @@ import gsap from 'gsap';
 import ScrollAnimation from './scroll-animation.js';
 import TextScramble from './text-scramble.js';
 import Cursor from './cursor.js';
-// WebGLとThemeToggleは永続化するため再初期化不要（あるいは別途対応）
+// ThemeToggleは永続化するため再初期化不要
 
 export default class PageTransition {
 	constructor() {
