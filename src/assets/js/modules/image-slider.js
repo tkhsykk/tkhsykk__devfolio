@@ -218,27 +218,7 @@ class ImageLightbox {
 		// 目標位置（画面中央・最大 90%）を計算
 		this.targetRect = this._computeTargetRect(img, this.sourceRect);
 
-		// tween 用 clone を作成
-		const clone = img.cloneNode();
-		clone.removeAttribute('id');
-		clone.setAttribute('aria-hidden', 'true');
-
-		clone.style.position = 'fixed';
-		clone.style.left = this.sourceRect.left + 'px';
-		clone.style.top = this.sourceRect.top + 'px';
-		clone.style.width = this.sourceRect.width + 'px';
-		clone.style.height = this.sourceRect.height + 'px';
-		clone.style.margin = '0';
-		clone.style.zIndex = '9999';
-		clone.style.transformOrigin = 'top left';
-		clone.style.transform = 'translate3d(0, 0, 0) scale(1)';
-		clone.style.willChange = 'transform, opacity';
-		clone.style.transition = 'transform .3s cubic-bezier(.33,0,.67,1), opacity .3s ease';
-
-		document.body.appendChild(clone);
-		this.currentClone = clone;
-
-		// モーダル側の画像をセット（まだ表示はしない）
+		// モーダル側の画像をセット
 		const src = img.currentSrc || img.src;
 		this.modalImage.src = src;
 		if (img.hasAttribute('alt')) {
@@ -247,105 +227,95 @@ class ImageLightbox {
 			this.modalImage.removeAttribute('alt');
 		}
 
-		// モーダルを「非表示のまま開く」: hidden を外し、opacity などは CSS 側で制御
+		// modalImage の初期状態を "即座に透明" に固定する（CSSに依存させない）
+		this.modalImage.style.opacity = '0';
+		this.modalImage.style.transition = 'none';
+
+		// tween 用 clone を作成（閉じる時の真逆のロジック）
+		const clone = img.cloneNode();
+		clone.removeAttribute('id');
+		clone.setAttribute('aria-hidden', 'true');
+
+		const { left: sLeft, top: sTop, width: sWidth, height: sHeight } = this.sourceRect;
+		const { left: tLeft, top: tTop, width: tWidth, height: tHeight } = this.targetRect;
+
+		// 閉じる時と同じ構造：position は元の位置（sourceRect）
+		clone.style.position = 'fixed';
+		clone.style.left = sLeft + 'px';
+		clone.style.top = sTop + 'px';
+		clone.style.width = sWidth + 'px';
+		clone.style.height = sHeight + 'px';
+		clone.style.margin = '0';
+		clone.style.zIndex = '9999';
+		clone.style.transformOrigin = 'top left';
+		clone.style.transform = 'translate3d(0, 0, 0) scale(1)'; // 初期状態：元の位置
+		clone.style.willChange = 'transform, opacity';
+		clone.style.transition = 'transform .2s cubic-bezier(.33,0,.67,1), opacity .2s cubic-bezier(.2, 0, .2, 1)';
+
+		document.body.appendChild(clone);
+		this.currentClone = clone;
+
+		// モーダルを表示準備
 		this.modal.removeAttribute('hidden');
 		this.modal.setAttribute('aria-hidden', 'false');
 		this.modal.classList.add('is-opening');
 
 		document.addEventListener('keydown', this._onKeyDown, { passive: false });
 
-		// reflow 強制 → transform 適用
+		// reflow 強制
 		void clone.offsetWidth;
 
-		const { left, top, width, height } = this.sourceRect;
-		const { left: tLeft, top: tTop, width: tWidth, height: tHeight } = this.targetRect;
-
-		const scaleX = tWidth / width;
-		const scaleY = tHeight / height;
-		const translateX = tLeft - left;
-		const translateY = tTop - top;
+		// 閉じる時と同じ計算式
+		const scaleX = tWidth / sWidth;
+		const scaleY = tHeight / sHeight;
+		const translateX = tLeft - sLeft;
+		const translateY = tTop - sTop;
 
 		const onOpened = () => {
 			clone.removeEventListener('transitionend', onOpened);
 
-			// (1) modalImage を clone と全く同じ位置に合わせる（透明）
-			Object.assign(this.modalImage.style, {
-				position: 'fixed',
-				left: this.targetRect.left + 'px',
-				top: this.targetRect.top + 'px',
-				width: this.targetRect.width + 'px',
-				height: this.targetRect.height + 'px',
-				margin: '0',
-				zIndex: '9998', // clone より下でスタート
-				opacity: '0',
-				pointerEvents: 'none',
-				transition: 'opacity .15s ease'
-			});
+			// modalImage を clone と完全に同じ位置・サイズに合わせる（targetRect にピクセルぴったり）
+			// ★ CSS に任せず、targetRect に固定し続ける（リセットしない）
+			this.modalImage.style.position = 'fixed';
+			this.modalImage.style.left = tLeft + 'px';
+			this.modalImage.style.top = tTop + 'px';
+			this.modalImage.style.width = tWidth + 'px';
+			this.modalImage.style.height = tHeight + 'px';
+			this.modalImage.style.margin = '0';
+			this.modalImage.style.transform = 'none';
+			this.modalImage.style.zIndex = '999';
 
-			// (2) 強制 reflow（style 適用確定）
-			void this.modalImage.offsetWidth;
-
-			// (3) clone → fade-out / modalImage → fade-in
-			clone.style.transition = 'opacity .15s ease';
-			clone.style.opacity = '0';
-
-			// ★ modalImage を clone の上に持ってくる（滑らかに切り替えるため）
-			this.modalImage.style.zIndex = '10000';
-
-			// fade-in 開始
+			// clone 削除前に modalImage を表示状態にしておく（瞬時）
 			this.modalImage.style.opacity = '1';
+			//this.modalImage.style.transition = 'opacity 0s linear';
 
-			const cleanup = () => {
-				clone.removeEventListener('transitionend', cleanup);
-
-				// clone はここで確実に消す
-				clone.remove();
+			// clone 削除（modalImage が先に表示されてから削除）
+			if (this.currentClone) {
+				this.currentClone.remove();
 				this.currentClone = null;
+			}
 
-				// natural size を必ず使う
-				const naturalW = this.modalImage.naturalWidth;
-				const naturalH = this.modalImage.naturalHeight;
+			// モーダル本体を正式に open 状態へ
+			this.modal.classList.remove('is-opening');
+			this.modal.classList.add('is-open');
 
-				requestAnimationFrame(() => {
-					this.modalImage.style.position = '';
-					this.modalImage.style.left = '';
-					this.modalImage.style.top = '';
-					this.modalImage.style.margin = '';
-					this.modalImage.style.zIndex = '';
-					this.modalImage.style.opacity = '';
-					this.modalImage.style.pointerEvents = '';
-					this.modalImage.style.transition = '';
-
-					// ★ natural size に戻す
-					this.modalImage.style.width = naturalW + 'px';
-					this.modalImage.style.height = naturalH + 'px';
-
-					// object-fit の影響を排除したいなら:
-					this.modalImage.style.maxWidth = 'none';
-					this.modalImage.style.maxHeight = 'none';
-				});
-
-
-				// モーダル本体を正式に open 状態へ
-				this.modal.classList.remove('is-opening');
-				this.modal.classList.add('is-open');
-
-				// フォーカス移動
-				if (this.closeButton) {
-					this.closeButton.focus();
-				} else {
-					this.dialog.setAttribute('tabindex', '-1');
-					this.dialog.focus();
-				}
-			};
-
-			clone.addEventListener('transitionend', cleanup);
+			// フォーカス移動
+			if (this.closeButton) {
+				this.closeButton.focus();
+			} else {
+				this.dialog.setAttribute('tabindex', '-1');
+				this.dialog.focus();
+			}
 		};
 
+		// モーダル表示後、backdrop をフェードイン
+		requestAnimationFrame(() => {
+			this.backdrop.style.opacity = '1';
+		});
 
 		clone.addEventListener('transitionend', onOpened);
 
-		// transform を目標地点へ
+		// transform を目標地点（中央）へ：閉じる時の真逆
 		clone.style.transform = 'translate3d(' + translateX + 'px,' + translateY + 'px,0) scale(' + scaleX + ',' + scaleY + ')';
 	}
 
@@ -401,8 +371,9 @@ class ImageLightbox {
 			this.currentClone = null;
 		}
 
-		// モーダルの現在の画像位置（targetRect）から、元の sourceRect へ戻す tween 用 clone を新たに作る
-		const { left: tLeft, top: tTop, width: tWidth, height: tHeight } = this.targetRect;
+		// modalImage の実際の位置を取得（開く時に position: fixed で配置しているため）
+		const currentRect = this.modalImage.getBoundingClientRect();
+		const { left: tLeft, top: tTop, width: tWidth, height: tHeight } = currentRect;
 		const { left: sLeft, top: sTop, width: sWidth, height: sHeight } = this.sourceRect;
 
 		const clone = this.modalImage.cloneNode();
@@ -415,16 +386,17 @@ class ImageLightbox {
 		clone.style.width = tWidth + 'px';
 		clone.style.height = tHeight + 'px';
 		clone.style.margin = '0';
-		clone.style.zIndex = '9999';
+		clone.style.zIndex = '999';
 		clone.style.transformOrigin = 'top left';
-		// 開く時の最終 transform を再利用する
-		clone.style.transform = `translate3d(${tLeft - sLeft}px, ${tTop - sTop}px, 0) scale(${tWidth / sWidth}, ${tHeight / sHeight})`;
+		clone.style.transform = 'translate3d(0, 0, 0) scale(1)'; // 初期状態：現在の位置
 
 		clone.style.willChange = 'transform, opacity';
-		clone.style.transition = 'transform .3s cubic-bezier(.33,0,.67,1), opacity .3s ease';
+		clone.style.transition = 'transform .2s cubic-bezier(.33,0,.67,1), opacity .2s cubic-bezier(.2, 0, .2, 1)';
 
 		document.body.appendChild(clone);
 		this.currentClone = clone;
+
+		this.backdrop.style.opacity = '0';
 
 		// モーダル本体はフェードアウト扱いにして閉じる
 		this.modal.classList.remove('is-open');
