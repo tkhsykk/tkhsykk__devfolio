@@ -875,6 +875,26 @@
 				border-radius: $border-radius-full;
 			}
 		}
+
+		&-hobbies {
+			margin-top: $spacing-6;
+			padding-top: $spacing-6;
+			border-top: 1px solid rgba(var(--color-text-rgb), 0.1);
+		}
+
+		&-hobbies-title {
+			font-size: $font-size-xl;
+			font-weight: $font-weight-semibold;
+			font-family: $font-family-en;
+			margin-bottom: $spacing-3;
+			color: rgba($color-primary, .8);
+		}
+
+		&-hobbies-text {
+			font-size: $font-size-sm;
+			opacity: 0.8;
+			line-height: $line-height-relaxed;
+		}
 	}
 
 

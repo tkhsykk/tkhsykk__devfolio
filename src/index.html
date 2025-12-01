@@ -34,28 +34,22 @@
 					About devfolio
 				</h2>
 				<p class="p-portfolio__hero-description">
-					そうだ、AIでサイトを作ってみようか。
+					ChatGPTを使い始めて9ヶ月。これからのWEBエンジニアの仕事とAIは切り離せないと確信している。<br>
+					だからAIでサイトを作ってみた。
 				</p>
 				<dl class="p-portfolio__hero-concepts">
 					<div class="p-portfolio__hero-concept">
 						<dt class="p-portfolio__hero-concept-title">コンセプト</dt>
 						<dd class="p-portfolio__hero-concept-description">
-							これからの時代、WEBエンジニアの仕事もAIとは切り離せないのはほぼ確実。<br>
-							アプリやシステム開発のようにAIでコーディング→リファクタリング→テスト→プルリク→テスト…を繰り返すような開発は現時点ではまだ難しいが、いい機会なので今どこまでAIに任せて開発ができるかをポートフォリオサイトで試してみた。
+							さて転職活動をするかという時にポートフォリオがないな、と思った。お客さんのサイトのソースコードを公開するわけにはいかないし、かと言って出力・公開されたものだけを見せるのも芸がない。<br>
+							じゃあAI（LLM）に人間が伴走する形でポートフォリオサイトをプロジェクトとして作ってみようか。ということで作った。
 						</dd>
 					</div>
 					<div class="p-portfolio__hero-concept">
 						<dt class="p-portfolio__hero-concept-title">開発フロー</dt>
 						<dd class="p-portfolio__hero-concept-description">
-							詳細は<span class="u-font-en"><a href="#flow">How I Built “devfolio"</a></span>をご覧いただくとして、
-						</dd>
-					</div>
-					<div class="p-portfolio__hero-concept">
-						<dt class="p-portfolio__hero-concept-title">なぜAIなのか</dt>
-						<dd class="p-portfolio__hero-concept-description">
-							人工知能の発展でエンジニアの仕事がなくなるかもしれないと言われて結構経つ。私は父に15年以上前から脅され続けてきた。それでも大好きなインターネットとHTMLに関わる仕事を続けている。<br>
-							100年後とかはさすがに仕事がなくなっているかもしれないが、この先数十年、AIと共に働くことを前提に、人間がやるべき・伸ばすべきスキルとより良い答えと知識を得るためのAIの使い方はどんなものかを考え続けた2025年だった。このポートフォリオは図らずもそんな2025年の集大成になりそうで今から少しワクワクしている。<br>
-
+							詳細は「<span class="u-font-en"><a href="#flow">How I Built “devfolio"</a></span>」をご覧いただくとして、単にHTMLを書かせるだけでは面白みに欠けるため、「できるだけ人間が手を動かさない」という大まかな方針を掲げた。<br>
+							デザイン生成からプロトタイプ・指示書作成、逆コンパイルを用いた静的実装、ビルドやデプロイまでをLLMに任せることでLLMとの会話力も鍛えつつ、これからのLLM中心の開発フローを試すプロジェクトとして進めた。
 						</dd>
 					</div>
 				</dl>
@@ -71,9 +65,7 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
 									<polyline points="16 18 22 12 16 6"></polyline>
 									<polyline points="8 6 2 12 8 18"></polyline>
 								</svg>
@@ -81,7 +73,10 @@
 							</div>
 							<div class="p-portfolio__skill-tags">
 								<span class="c-badge">HTML5</span>
-								<span class="c-badge">SCSS</span>
+								<button class="c-badge c-badge--popover" popovertarget="popover-scss">SCSS</button>
+								<div class="c-popbox" id="popover-scss" popover>
+									詳細度が過度に固定化する深いネスト構造は避け、最小限の階層で管理。予測・検索がしやすく、上書きも容易なCSS設計を意識している。
+								</div>
 								<span class="c-badge">PDFLOCSS</span>
 								<span class="c-badge">セマンティックなHTML</span>
 								<span class="c-badge">アクセシビリティ対応</span>
@@ -91,12 +86,8 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
-									<path
-										d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
-									</path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
 									<circle cx="12" cy="12" r="3"></circle>
 								</svg>
 								<h3 class="p-portfolio__skill-title">Build / Tools</h3>
@@ -115,9 +106,7 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
 									<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
 									<path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
 									<path d="M3 12A9 3 0 0 0 21 12"></path>
@@ -135,9 +124,7 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
 									<circle cx="12" cy="12" r="10"></circle>
 									<path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
 									<path d="M2 12h20"></path>
@@ -145,21 +132,23 @@
 								<h3 class="p-portfolio__skill-title">Environment / LLMs</h3>
 							</div>
 							<div class="p-portfolio__skill-tags">
-								<span class="c-badge">Docker</span>
+								<button class="c-badge c-badge--popover" popovertarget="popover-docker">Docker</button>
+								<div class="c-popbox" id="popover-docker" popover>
+									Windowsの低速なDocker開発を避けるため、WSL2上でコンテナを構築・実行し、Dockerをネイティブに近い高速かつ安定した開発環境として使用。
+								</div>
 								<span class="c-badge">XAMPP</span>
 								<span class="c-badge">EmEditor</span>
 								<span class="c-badge">VSCode</span>
 								<span class="c-badge">ChatGPT Teams/Free</span>
 								<span class="c-badge">Cursor(IDE/LLM)</span>
+								<span class="c-badge">Codex</span>
 							</div>
 						</article>
 					</li>
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
 									<line x1="6" x2="6" y1="3" y2="15"></line>
 									<circle cx="18" cy="6" r="3"></circle>
 									<circle cx="6" cy="18" r="3"></circle>
@@ -182,9 +171,7 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
 									<circle cx="11" cy="11" r="8"></circle>
 									<path d="m21 21-4.3-4.3"></path>
 								</svg>
@@ -200,12 +187,8 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
-									<path
-										d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z">
-									</path>
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
+									<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
 								</svg>
 								<h3 class="p-portfolio__skill-title">Other / Utilities</h3>
 							</div>
@@ -241,9 +224,7 @@
 					<li class="p-portfolio__skill-card">
 						<article>
 							<div class="p-portfolio__skill-header">
-								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-									fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-									stroke-linejoin="round" class="p-portfolio__skill-icon">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="p-portfolio__skill-icon">
 									<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
 								</svg>
 								<h3 class="p-portfolio__skill-title">Personal Projects</h3>
@@ -259,7 +240,7 @@
 								<button class="c-badge c-badge--popover"
 									popovertarget="popover-llm-mdc">汎用LLM向け指示書作成</button>
 								<div class="c-popbox" id="popover-llm-mdc" popover>
-									各プロジェクトのリポジトリにサブモジュールで設置する用の汎用的な指示書（MDC）を作成しており、常に更新中です。
+									各LLMごとの性格を考えつつプロジェクトリポジトリを作る際にコピーで使える汎用的な指示書（MDC）を作成しており、常に更新中です。ignoreしていますがこのサイトでも配置しています。
 									<ul>
 										<li>プロジェクト全体の基本方針とコーディング規約</li>
 										<li>CSS設計ガイドライン</li>
@@ -273,6 +254,15 @@
 								<div class="c-popbox" id="popover-recipe-app" popover>
 									アプリをどう作るかの勉強をしたく、Kotlin+Android SDKを使用した個人用のレシピ収集・管理Androidアプリを作成中です。<br>
 									AIを使ったUIデザイン、スクリーンショットからのOCR・サイトURLからのテキスト自動取得・その他レシピ手動登録、お買い物リスト作成、お気に入り機能など。
+								</div>
+								<button class="c-badge c-badge--popover"
+									popovertarget="popover-js-plugin">JavaScriptプラグイン</button>
+								<div class="c-popbox" id="popover-js-plugin" popover>
+									現在は配布するかは不明ですが、このサイトで使用しているJavaScriptモジュールをクライアントワーク向けにプラグイン化予定です。
+									<ul>
+										<li><a href="https://github.com/tkhsykk/tkhsykk__devfolio/blob/main/src/assets/js/modules/image-slider.js" target="_blank" rel="noopener noreferrer">image-slider.js</a>: 画像をクリックすると元の位置から画面中央へスムーズに拡大表示するライトボックス。スライダー機能も内蔵し、タッチスワイプ・キーボード操作・アクセシビリティ対応。</li>
+										<li><a href="https://github.com/tkhsykk/tkhsykk__devfolio/blob/main/src/assets/js/modules/work-details.js" target="_blank" rel="noopener noreferrer">work-details.js</a>: カードクリックでグリッド内に詳細ブロックを動的に挿入・表示するパネル。高さトランジションアニメーション付きで、スライダーとの連携も可能。</li>
+									</ul>
 								</div>
 							</div>
 						</article>
@@ -420,26 +410,27 @@
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">要件定義・技術選定</h3>
 							<p class="p-portfolio__flow-text">
-								ChatGPTを活用してポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、開発計画とチェックリストを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。
+								ChatGPTでポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、Cursorで開発計画とチェックリストなどを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。
 							</p>
 						</div>
 					</li>
 					<li class="p-portfolio__flow-item">
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">デザイン生成・プロトタイプ作成</h3>
-							<p class="p-portfolio__flow-text"><a href="https://www.createanything.com/" target="_blank"
-									rel="noopener noreferrer">Anything</a>でReact+Vite+Tailwind
-								CSSのプロトタイプデザインを生成し、デザインの方向性を確認。生成されたソースをダウンロードしてローカル環境でビルドできるようにしました。</p>
+							<p class="p-portfolio__flow-text">
+								ChatGPTの作ったプロンプトを元に<a href="https://www.createanything.com/" target="_blank" rel="noopener noreferrer">Anything</a>でReact+Vite+Tailwindのプロトタイプデザインを生成し、デザインを作成。デザイナーのポートフォリオサイトではないため、あまりここで時間はかけずに最大公約数的なデザインでほぼポン出しを採用しました。<br>
+								生成されたソースをダウンロードして中身を確認しますが、Reactに対して薄い理解しかないため、しばしフリーズの時間。
+							</p>
 						</div>
 					</li>
 					<li class="p-portfolio__flow-item">
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">技術スタック移行・環境構築</h3>
 							<p class="p-portfolio__flow-text">
-								Cursor Proに相談しながらReact→HTML+CSS+JSへ変換し、HTMLからTailwind
-								CSSを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装。ページリロードなしで高速に開発を進められるのでお気に入り。<br>
+								ChatGPTとCursor Proに相談しながらReact->HTML+CSS+JSへ変換し、HTMLからTailwindのClassを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装しました。<br>
 								ここでAnythingのデザイン・中身がざっくりしているために調整と加筆にかなり手間取りました。<br>
-								初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると思い、諦めて修行のような気持ちで開発しました。
+								初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると思い、諦め。<br>
+								各所の文言はさすがにLLMに任せるにも限度があったので加筆修正多数。
 							</p>
 						</div>
 					</li>
@@ -487,9 +478,7 @@
 				<div class="p-portfolio__about-grid">
 					<div class="p-portfolio__about-visual">
 						<div class="p-portfolio__about-avatar">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round" class="w-12 h-12 text-white">
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-12 h-12 text-white">
 								<polyline points="16 18 22 12 16 6"></polyline>
 								<polyline points="8 6 2 12 8 18"></polyline>
 							</svg>
@@ -536,6 +525,13 @@
 							</li>
 						</ul>
 
+						<div class="p-portfolio__about-hobbies">
+							<h4 class="p-portfolio__about-hobbies-title">Interests and Skills</h4>
+							<p class="p-portfolio__about-hobbies-text">
+								読書、プログラミング、新しい技術の学習、効率化ツールの作成
+							</p>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -548,22 +544,15 @@
 				</div>
 				<div class="p-portfolio__contact-buttons">
 					<a href="mailto:contact@example.com" class="c-button c-button--primary u-font-en">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-							style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
 							<rect width="20" height="16" x="2" y="4" rx="2"></rect>
 							<path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
 						</svg>
 						<span>Email</span>
 					</a>
-					<a href="https://github.com/tkhsykk/tkhsykk__devfolio" target="_blank" rel="noopener noreferrer"
-						class="c-button c-button--outline u-font-en">
-						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-							style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
-							<path
-								d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
-							</path>
+					<a href="https://github.com/tkhsykk/tkhsykk__devfolio" target="_blank" rel="noopener noreferrer" class="c-button c-button--outline u-font-en">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem;">
+							<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
 							<path d="M9 18c-4.51 2-5-2-7-2"></path>
 						</svg>
 						<span>GitHub</span>
@@ -577,236 +566,6 @@
 				<p class="p-portfolio__footer-text">&copy; TKHSYKK. All rights reserved.</p>
 			</div>
 		</footer>
-	</div>
-
-	<!-- モーダル: ECサイトリニューアル -->
-	<div class="modal micromodal-slide" id="modal-work-1" aria-hidden="true">
-		<div class="modal__overlay" tabindex="-1" data-micromodal-close>
-			<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-1-title">
-				<header class="modal__header">
-					<h2 class="modal__title" id="modal-work-1-title">ECサイトリニューアル</h2>
-					<button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button>
-				</header>
-				<main class="modal__content">
-					<div class="c-slider" data-slider="work-1">
-						<div class="c-slider__viewport">
-							<div class="c-slider__track">
-								<div class="c-slider__slide">
-									<a href="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d">
-										<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"
-											alt="ECサイトリニューアル - 画像1" />
-									</a>
-								</div>
-								<div class="c-slider__slide">
-									<a href="https://images.unsplash.com/photo-1460925895917-afdab827c52f">
-										<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
-											alt="ECサイトリニューアル - 画像2" />
-									</a>
-								</div>
-								<div class="c-slider__slide">
-									<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"
-										alt="ECサイトリニューアル - 画像3" />
-								</div>
-							</div>
-						</div>
-						<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<polyline points="15 18 9 12 15 6"></polyline>
-							</svg>
-						</button>
-						<button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<polyline points="9 18 15 12 9 6"></polyline>
-							</svg>
-						</button>
-						<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
-					</div>
-					<div class="p-portfolio__work-modal-content">
-						<p class="p-portfolio__work-meta">フロントエンド設計・WordPressテーマ開発</p>
-						<div class="p-portfolio__work-tags">
-							<span class="c-badge c-badge--small">WordPress</span>
-							<span class="c-badge c-badge--small">SCSS</span>
-							<span class="c-badge c-badge--small">Gulp</span>
-							<span class="c-badge c-badge--small">PHP</span>
-						</div>
-						<p class="p-portfolio__work-summary">レスポンシブ対応、SEO最適化、高速化</p>
-						<div class="p-portfolio__work-solution">
-							<div class="p-portfolio__work-problem">
-								<h4 class="p-portfolio__work-problem-title">課題</h4>
-								<p class="p-portfolio__work-problem-text">旧サイトの表示速度が遅く、モバイル対応が不十分。管理画面が複雑で更新が困難。</p>
-							</div>
-							<div class="p-portfolio__work-solution-content">
-								<h4 class="p-portfolio__work-solution-title">解決方法</h4>
-								<p class="p-portfolio__work-solution-text">
-									WordPressカスタムテーマで軽量化、レスポンシブデザイン実装。直感的な管理画面設計で更新効率を向上。</p>
-							</div>
-						</div>
-						<p class="p-portfolio__work-overlay-text">
-							既存ECサイトの完全リニューアル。WordPressをベースとした柔軟なCMS設計により、クライアントが容易にコンテンツ更新できる仕組みを構築。Core Web
-							Vitalsスコア大幅改善を実現。
-						</p>
-					</div>
-				</main>
-			</div>
-		</div>
-	</div>
-
-	<!-- モーダル: コーポレートサイト構築 -->
-	<div class="modal micromodal-slide" id="modal-work-2" aria-hidden="true">
-		<div class="modal__overlay" tabindex="-1" data-micromodal-close>
-			<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-2-title">
-				<header class="modal__header">
-					<h2 class="modal__title" id="modal-work-2-title">コーポレートサイト構築</h2>
-					<button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button>
-				</header>
-				<main class="modal__content">
-					<div class="c-slider" data-slider="work-2">
-						<div class="c-slider__viewport">
-							<div class="c-slider__track">
-								<div class="c-slider__slide">
-									<a href="https://images.unsplash.com/photo-1460925895917-afdab827c52f">
-										<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
-											alt="コーポレートサイト構築 - 画像1" />
-									</a>
-								</div>
-								<div class="c-slider__slide">
-									<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"
-										alt="コーポレートサイト構築 - 画像2" />
-								</div>
-								<div class="c-slider__slide">
-									<a href="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d">
-										<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"
-											alt="コーポレートサイト構築 - 画像3" />
-									</a>
-								</div>
-							</div>
-						</div>
-						<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<polyline points="15 18 9 12 15 6"></polyline>
-							</svg>
-						</button>
-						<button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<polyline points="9 18 15 12 9 6"></polyline>
-							</svg>
-						</button>
-						<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
-					</div>
-					<div class="p-portfolio__work-modal-content">
-						<p class="p-portfolio__work-meta">要件定義・設計・開発・デプロイ</p>
-						<div class="p-portfolio__work-tags">
-							<span class="c-badge c-badge--small">Docker</span>
-							<span class="c-badge c-badge--small">WordPress</span>
-							<span class="c-badge c-badge--small">Vite</span>
-							<span class="c-badge c-badge--small">SCSS</span>
-						</div>
-						<p class="p-portfolio__work-summary">多言語対応、アクセシビリティ対応、CMS化</p>
-						<div class="p-portfolio__work-solution">
-							<div class="p-portfolio__work-problem">
-								<h4 class="p-portfolio__work-problem-title">課題</h4>
-								<p class="p-portfolio__work-problem-text">
-									グローバル展開のため多言語対応が必要。アクセシビリティ基準を満たす必要があるが、既存サイトは未対応。</p>
-							</div>
-							<div class="p-portfolio__work-solution-content">
-								<h4 class="p-portfolio__work-solution-title">解決方法</h4>
-								<p class="p-portfolio__work-solution-text">WPMLで多言語対応、WCAG 2.1
-									AA準拠の実装。Docker環境で開発効率化、Viteで高速ビルドを実現。</p>
-							</div>
-						</div>
-						<p class="p-portfolio__work-overlay-text">
-							B2B企業向けコーポレートサイト。多言語対応とアクセシビリティ（WCAG 2.1
-							AA準拠）を重視した設計。Docker環境での開発効率化とViteを活用した高速なビルドプロセスを実現。
-						</p>
-					</div>
-				</main>
-			</div>
-		</div>
-	</div>
-
-	<!-- モーダル: メディアサイト高速化 -->
-	<div class="modal micromodal-slide" id="modal-work-3" aria-hidden="true">
-		<div class="modal__overlay" tabindex="-1" data-micromodal-close>
-			<div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-work-3-title">
-				<header class="modal__header">
-					<h2 class="modal__title" id="modal-work-3-title">メディアサイト高速化</h2>
-					<button class="modal__close" aria-label="モーダルを閉じる" data-micromodal-close></button>
-				</header>
-				<main class="modal__content">
-					<div class="c-slider" data-slider="work-3">
-						<div class="c-slider__viewport">
-							<div class="c-slider__track">
-								<div class="c-slider__slide">
-									<a href="https://images.unsplash.com/photo-1432821596592-e2c18b78144f">
-										<img src="https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200"
-											alt="メディアサイト高速化 - 画像1" />
-									</a>
-								</div>
-								<div class="c-slider__slide">
-									<a href="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d">
-										<img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200"
-											alt="メディアサイト高速化 - 画像2" />
-									</a>
-								</div>
-								<div class="c-slider__slide">
-									<img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200"
-										alt="メディアサイト高速化 - 画像3" />
-								</div>
-							</div>
-						</div>
-						<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<polyline points="15 18 9 12 15 6"></polyline>
-							</svg>
-						</button>
-						<button class="c-slider__button c-slider__button--next" aria-label="次の画像" data-slider-next>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-								fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round">
-								<polyline points="9 18 15 12 9 6"></polyline>
-							</svg>
-						</button>
-						<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
-					</div>
-					<div class="p-portfolio__work-modal-content">
-						<p class="p-portfolio__work-meta">パフォーマンス改善・インフラ最適化</p>
-						<div class="p-portfolio__work-tags">
-							<span class="c-badge c-badge--small">WordPress</span>
-							<span class="c-badge c-badge--small">CDN</span>
-							<span class="c-badge c-badge--small">画像最適化</span>
-							<span class="c-badge c-badge--small">キャッシュ</span>
-						</div>
-						<p class="p-portfolio__work-summary">表示速度向上、画像最適化、CDN導入</p>
-						<div class="p-portfolio__work-solution">
-							<div class="p-portfolio__work-problem">
-								<h4 class="p-portfolio__work-problem-title">課題</h4>
-								<p class="p-portfolio__work-problem-text">大量の画像とコンテンツにより表示速度が低下。PageSpeed
-									Insightsスコアが70点台で改善が必要。</p>
-							</div>
-							<div class="p-portfolio__work-solution-content">
-								<h4 class="p-portfolio__work-solution-title">解決方法</h4>
-								<p class="p-portfolio__work-solution-text">
-									画像のWebP変換と遅延読み込み、CDN導入、効率的なキャッシュ戦略でスコアを90点台に改善。</p>
-							</div>
-						</div>
-						<p class="p-portfolio__work-overlay-text">
-							大規模メディアサイトの表示速度改善プロジェクト。画像の適切な圧縮・最適化、CDNの導入、効率的なキャッシュ戦略により、PageSpeed
-							Insightsスコアを70点台から90点台へ改善。
-						</p>
-					</div>
-				</main>
-			</div>
-		</div>
 	</div>
 
 	<script src="./js/main.js" type="module" async></script>
