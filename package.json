@@ -40,9 +40,6 @@
 		"sass": "^1.83.0"
 	},
 	"dependencies": {
-		"@oddbird/popover-polyfill": "^0.6.1",
-		"gsap": "^3.13.0",
-		"micromodal": "^0.6.1",
-		"three": "^0.181.2"
+		"@oddbird/popover-polyfill": "^0.6.1"
 	}
 }
