@@ -1,6 +1,16 @@
 /**
+ * TextScramble
  * テキストスクランブルエフェクト
- * ランダムな文字遷移アニメーション
+ * ランダムな文字遷移アニメーションでテキストを更新
+ *
+ * 前提HTML例:
+ *
+ * <h2 data-text-scramble data-text="表示したいテキスト">初期テキスト</h2>
+ *
+ * 初期化例:
+ * import TextScramble from './text-scramble.js';
+ * const scramble = new TextScramble(element);
+ * scramble.setText('新しいテキスト');
  */
 class TextScramble {
 	constructor(el) {

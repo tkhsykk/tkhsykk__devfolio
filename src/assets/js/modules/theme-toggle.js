@@ -1,6 +1,17 @@
 /**
+ * ThemeToggle
  * テーマ切り替えモジュール
- * ライト/ダークモードの切り替えを管理
+ * ライト/ダークモードの切り替えを管理し、LocalStorageに保存
+ *
+ * 前提HTML例:
+ *
+ * <button data-theme-toggle aria-label="テーマ切り替え">
+ * 	<!-- アイコン -->
+ * </button>
+ *
+ * 初期化例:
+ * import ThemeToggle from './theme-toggle.js';
+ * const themeToggle = new ThemeToggle();
  */
 
 export default class ThemeToggle {
@@ -8,7 +19,7 @@ export default class ThemeToggle {
 		this.STORAGE_KEY = 'theme';
 		this.DARK_THEME_VALUE = 'dark';
 		this.LIGHT_THEME_VALUE = 'light';
-		
+
 		this.init();
 	}
 
@@ -24,7 +35,7 @@ export default class ThemeToggle {
 	 */
 	applyInitialTheme() {
 		const savedTheme = localStorage.getItem(this.STORAGE_KEY);
-		
+
 		if (savedTheme) {
 			document.documentElement.setAttribute('data-theme', savedTheme);
 		} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -49,7 +60,7 @@ export default class ThemeToggle {
 		`;
 
 		button.addEventListener('click', () => this.toggleTheme());
-		
+
 		// ロゴの横あたりに追加
 		navInner.appendChild(button);
 	}

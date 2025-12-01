@@ -1,6 +1,19 @@
 /**
+ * PageTransition
  * ページ遷移アニメーション
- * Barba.jsを使用したSPA風遷移
+ * Barba.jsを使用したSPA風のページ遷移を実装
+ *
+ * 前提HTML例:
+ *
+ * <div id="barba-wrapper">
+ * 	<div class="barba-container" data-barba="container">
+ * 		<!-- コンテンツ -->
+ * 	</div>
+ * </div>
+ *
+ * 初期化例:
+ * import PageTransition from './page-transition.js';
+ * const pageTransition = new PageTransition();
  */
 import barba from '@barba/core';
 import gsap from 'gsap';
@@ -8,7 +21,7 @@ import gsap from 'gsap';
 // モジュールの再初期化用にインポート
 import ScrollAnimation from './scroll-animation.js';
 import TextScramble from './text-scramble.js';
-import Cursor from './cursor.js';
+import Cursor from './custom-cursor.js';
 // ThemeToggleは永続化するため再初期化不要
 
 export default class PageTransition {

@@ -1,8 +1,9 @@
 /**
+ * WorkDetails
  * ワーク詳細パネルの制御
- * @description カードクリックで詳細ブロックを表示する機能
+ * カードクリックで詳細ブロックを表示する機能
  *
- * 概要:
+  * 概要:
  * - ワークカードをクリックすると、クリックしたカードの次の行の開始位置に詳細ブロックを表示
  * - 詳細ブロックはグリッドアイテムとして挿入され、全幅表示
  * - 同じカードを再度クリックすると詳細ブロックを閉じる（トグル）
@@ -17,6 +18,25 @@
  *
  * 制限事項:
  * - 詳細情報は各カードから抽出する
+ *
+ * 前提HTML例:
+ *
+ * <ul class="p-portfolio__work-list l-grid l-grid--cols-3" data-work-list>
+ * 	<li class="p-portfolio__work-card" data-work-card data-work-meta="..." data-work-tags='["..."]' data-work-summary="..." data-work-description="..." data-work-images='["..."]'>
+ * 		<article>
+ * 			<button class="p-portfolio__work-image p-portfolio__work-trigger" data-work-trigger>
+ * 				<img src="..." alt="..." />
+ * 			</button>
+ * 			<div class="p-portfolio__work-content">
+ * 				<h3 class="p-portfolio__work-title">...</h3>
+ * 			</div>
+ * 		</article>
+ * 	</li>
+ * </ul>
+ *
+ * 初期化例:
+ * import { initWorkDetails } from './work-details.js';
+ * initWorkDetails();
  */
 
 /**

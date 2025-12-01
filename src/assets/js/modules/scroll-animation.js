@@ -1,6 +1,17 @@
 /**
+ * ScrollAnimation
  * スクロール連動アニメーション
- * Intersection Observerを使用して要素の表示を検知
+ * Intersection Observerを使用して要素の表示を検知し、アニメーションをトリガー
+ *
+ * 前提HTML例:
+ *
+ * <section data-scroll-trigger>
+ * 	<!-- コンテンツ -->
+ * </section>
+ *
+ * 初期化例:
+ * import ScrollAnimation from './scroll-animation.js';
+ * const scrollAnimation = new ScrollAnimation();
  */
 export default class ScrollAnimation {
 	constructor() {
@@ -10,7 +21,7 @@ export default class ScrollAnimation {
 			rootMargin: '0px',
 			threshold: 0.2,
 		};
-		
+
 		this.init();
 	}
 
