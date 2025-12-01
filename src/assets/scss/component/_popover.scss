@@ -39,15 +39,42 @@ popover 本体（吹き出しボックス）
 		0 2px 4px -1px rgba(0, 0, 0, 0.06),
 		0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 
-	/* テキスト */
 	color: $color-white;
 	padding: $spacing-2;
 	font-size: .9em;
 	line-height: $line-height-relaxed;
 
-	/* 初期状態（非表示時） */
 	opacity: 0;
 	transform: translateY(0) scale(0.8);
+
+	a{
+		color: $color-white;
+		text-decoration: underline;
+		text-decoration-color: $color-white;
+		&:hover{
+			filter: brightness(0) saturate(100%) invert(14%) sepia(90%) saturate(7455%) hue-rotate(329deg) brightness(101%) contrast(102%);
+		}
+	}
+
+	ul{
+		margin-top: $spacing-1;
+
+		li{
+			margin-left: 1em;
+			text-indent: -1em;
+
+			&::before{
+				content: '';
+				width: .3em;
+				height: .3em;
+				background-color: var(--color-primary);
+				border-radius: $border-radius-full;
+				display: inline-block;
+				margin-right: .5em;
+				vertical-align: middle;
+			}
+		}
+	}
 
 	/* 表示時のアニメーション */
 	&:popover-open {
