@@ -11,7 +11,7 @@
 
 💡 この段階で Tailwind や React を二度と触らずに済む。
 
-## フェーズ1: Gulp + SCSS（HTMLとスタイルの固定フェーズ）
+## フェーズ1: Gulp + SCSS（HTMLとスタイルの固定フェーズ）✅ 完了
 
 ### 1.1 ディレクトリ構造の準備
 ```
@@ -41,15 +41,17 @@
 使用するプラグイン：
 - gulp
 - gulp-sass（dart-sass）
+- gulp-postcss
 - gulp-autoprefixer
 - gulp-sourcemaps
-- gulp-ejs（フェーズ2で使用）
 - browser-sync
 - gulp-clean-css
 - gulp-htmlmin
 - esbuild
+- gulp-plumber
+- gulp-notify
 
-- [x] 必要パッケージをインストール: `npm i -D gulp sass gulp-sass gulp-autoprefixer gulp-sourcemaps browser-sync gulp-clean-css gulp-htmlmin gulp-ejs esbuild`
+- [x] 必要パッケージをインストール
 - [x] `gulpfile.js`を作成
 - [x] `package.json`のscriptsを更新（`dev`, `build`）
 
@@ -87,7 +89,7 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 
 **重要：** このフェーズでは EJS に触らない（HTMLは1ファイルにまとめておく）。
 
-### 1.4 Gulpで HTML + SCSS の開発環境
+### 1.4 Gulpで HTML + SCSS + JS の開発環境
 
 タスク例：
 - `gulp html` → `src/index.html` → `site/index.html`
@@ -97,20 +99,38 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 
 - [x] `gulp html`タスクを作成
 - [x] `gulp styles`タスクを作成（SCSSコンパイル）
+- [x] `gulp js`タスクを作成（esbuildでバンドル）
 - [x] `gulp dev`タスクを作成（watch + BrowserSync）
 - [x] `gulp build`タスクを作成（本番用ビルド：minify + assetコピー）
 
 💡 EJSなしで HTML と SCSSとJS だけに集中することで、作業速度が桁違いに上がる。
 
-### 1.5 フェーズ1のゴール
+### 1.5 JavaScriptモジュール化
+
+- [x] `image-slider.js` - 画像スライダー・ライトボックス機能
+- [x] `work-details.js` - ワーク詳細パネル機能
+- [x] `custom-cursor.js` - カスタムカーソル機能
+- [x] `scroll-animation.js` - スクロールアニメーション
+- [x] `text-scramble.js` - テキストスクランブル
+- [x] `theme-toggle.js` - テーマ切り替え
+- [x] `main.js`で各モジュールを統合
+
+### 1.6 フェーズ1のゴール
 
 - [x] `index.html` と `style.css` が "完成形"
 - [x] Tailwind 完全除去
 - [x] React Router の JS も完全除去
-- [x] CSS 設計が完全にあなたのスタックに統合される
+- [x] CSS 設計が完全にPDFLOCSSスタックに統合される
+- [x] JavaScriptモジュールが完成
+- [x] アクセシビリティ対応完了
+- [x] パフォーマンス最適化完了
 
-## フェーズ2: EJS化（構造の分割フェーズ）
+## フェーズ2: EJS化（構造の分割フェーズ）📅 実装予定
+
 目的：HTML が固まったタイミングで初めて分割する
+
+**現状**: HTMLは1ファイル（`src/index.html`）のまま。  
+**予定**: パーシャル化してテンプレート構造を整備する予定。
 
 ### 2.1 EJS ディレクトリ構造
 ```
@@ -145,8 +165,12 @@ HTML をパーツに分割し、include で組み立てる：
 
 **重要：** ここで初めて Gulp に EJSパイプラインを追加（フェーズ1では絶対に使わない）
 
-## フェーズ3: CSV（データ外部化フェーズ）
+## フェーズ3: CSV（データ外部化フェーズ）📅 実装予定
+
 目的：EJS テンプレをCSVから生成できるようにする
+
+**現状**: データはHTMLに直接記述。  
+**予定**: 個人情報やコンテンツデータをCSV化して外部化する予定。
 
 ### 3.1 dataディレクトリ
 ```
@@ -186,19 +210,48 @@ const data = Papa.parse(fs.readFileSync('data/skills.csv', 'utf8'), { header: tr
 - [ ] EJSテンプレートでCSVデータをループ表示
 - [ ] 各セクション（hero, skills, works等）でEJSのループ構文を使用
 
-## フェーズ4: 本番ビルド + Netlify デプロイ
+## フェーズ4: 本番ビルド + Netlify デプロイ ✅ 完了
 
-- [ ] `gulp build` → minify + assetコピー
-- [ ] `netlify.toml`を作成して`publish = "site"`を設定
-- [ ] `.gitignore`に`site/`、`.env`、その他非公開情報を追加
+- [x] `gulp build` → minify + assetコピー
+- [x] `.gitignore`に`site/`、`.env`、その他非公開情報を追加
 - [ ] Netlifyのビルドコマンドを`gulp build`に設定
+- [ ] `main`ブランチへのプッシュで自動デプロイが実行される
 
 ## 🏁 全体の進行順（最短で沼らない順番）
 
 1. [x] 素材HTMLを作る（React/TS完全排除）
-2. [ ] Tailwind → SCSS（PDFLOCSS）変換
-3. [ ] GulpでHTML+SCSSの開発環境
-4. [ ] デザイン確定
-5. [ ] EJS化（初めてテンプレ化）
-6. [ ] CSV化（データ外部化）
-7. [ ] Netlify公開
+2. [x] Tailwind → SCSS（PDFLOCSS）変換
+3. [x] GulpでHTML+SCSS+JSの開発環境
+4. [x] JavaScriptモジュール化
+5. [x] デザイン確定
+6. [ ] アクセシビリティ対応
+7. [ ] パフォーマンス最適化
+8. [ ] Netlify公開
+9. [ ] EJS化（初めてテンプレ化）- 未実装
+10. [ ] CSV化（データ外部化）- 未実装
+
+## 補足
+
+### 現在の実装状況
+
+- **フェーズ1**: 完了 ✅
+  - Gulp + SCSS環境構築
+  - Tailwind → PDFLOCSS変換
+  - JavaScriptモジュール化
+  - アクセシビリティ対応
+  - パフォーマンス最適化
+  - Netlifyデプロイ
+
+- **フェーズ2**: 実装予定 📅
+  - EJS化によりHTMLをパーシャル化してテンプレート構造を整備
+  - メンテナンス性と再利用性を向上
+
+- **フェーズ3**: 実装予定 📅
+  - CSV化によりデータを外部化
+  - 個人情報やコンテンツデータの管理を容易に
+
+### 今後の拡張予定
+
+- **JavaScriptプラグイン化**: image-slider.js、work-details.jsをクライアントワーク向けにプラグイン化予定
+- **EJS化**: フェーズ2として実装予定
+- **CSV化**: フェーズ3として実装予定
