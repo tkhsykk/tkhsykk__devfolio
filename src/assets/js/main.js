@@ -37,7 +37,7 @@ import ScrollAnimation from './modules/scroll-animation.js';
 new ScrollAnimation();
 
 /* 8. カスタムカーソル */
-import Cursor from './modules/cursor.js';
+import Cursor from './modules/custom-cursor.js';
 new Cursor();
 
 /* 9. テキストスクランブル */

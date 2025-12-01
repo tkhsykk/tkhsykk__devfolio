@@ -1,6 +1,14 @@
 /**
- * カスタムカーソル
- * マウスストーカーの実装
+ * Cursor
+ * カスタムカーソル（マウスストーカー）の実装
+ * マウス位置に追従するカスタムカーソル要素を表示
+ *
+ * 前提HTML例:
+ * （HTML構造は不要。JavaScriptで動的に生成）
+ *
+ * 初期化例:
+ * import Cursor from './custom-cursor.js';
+ * const cursor = new Cursor();
  */
 export default class Cursor {
 	constructor() {
@@ -8,7 +16,7 @@ export default class Cursor {
 		this.pos = { x: 0, y: 0 };
 		this.mouse = { x: 0, y: 0 };
 		this.speed = 0.1; // 追従速度
-		
+
 		this.init();
 	}
 
@@ -20,7 +28,7 @@ export default class Cursor {
 
 		// イベントリスナー
 		document.addEventListener('mousemove', this.onMouseMove.bind(this));
-		
+
 		// ホバー対象の監視
 		const hoverTargets = document.querySelectorAll('a, button, [data-cursor-hover]');
 		hoverTargets.forEach(target => {
@@ -35,7 +43,7 @@ export default class Cursor {
 	onMouseMove(e) {
 		this.mouse.x = e.clientX;
 		this.mouse.y = e.clientY;
-		
+
 		// 初期表示用（最初は非表示にしておき、マウスが動いたら表示するなど）
 		if (!this.cursor.classList.contains('is-active')) {
 			this.cursor.classList.add('is-active');
@@ -52,3 +60,4 @@ export default class Cursor {
 		requestAnimationFrame(this.animate.bind(this));
 	}
 }
+
