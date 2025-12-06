@@ -169,12 +169,11 @@ HTML をパーツに分割し、include で組み立てる：
 
 **重要：** ここで初めて Gulp に EJSパイプラインを追加（フェーズ1では絶対に使わない）
 
-## フェーズ3: CSV（データ外部化フェーズ）📅 実装予定
+## フェーズ3: CSV（データ外部化フェーズ）✅ 完了
 
 目的：EJS テンプレをCSVから生成できるようにする
 
-**現状**: データはHTMLに直接記述。  
-**予定**: 個人情報やコンテンツデータをCSV化して外部化する予定。
+**完了**: 個人情報やコンテンツデータをCSV化して外部化し、EJSテンプレートで動的に生成できるようになりました。
 
 ### 3.1 CSVファイル構成（決定事項）
 
@@ -202,16 +201,15 @@ works_02,02,.p-portfolio__work-details-title,次のワークのタイトル
 
 **ディレクトリ構造:**
 ```
-data/
-  └─ portfolio.csv          # CSVデータ（GitHubにコミット）
 private/
+  ├─ portfolio.csv          # CSVデータ（GitHubにコミット）
   └─ images/                # 非公開画像（.gitignore対象）
       ├─ works_01_01.png
       ├─ works_01_02.png
       └─ ...
 ```
 
-- [x] `data/portfolio.csv`を作成
+- [x] `private/portfolio.csv`を作成
 - [x] `.gitignore`に`private/images/`を追加
 
 ### 3.2 Gulpで CSV → JSON に変換
@@ -225,21 +223,21 @@ papaparseを使用してJSON を EJS に渡す
 4. D列の値がパイプ区切りの場合は配列に変換（`split('|')`）
 5. EJSテンプレートにデータを渡す
 
-**スクリプト例：**
-```javascript
-const Papa = require('papaparse');
-const csvContent = fs.readFileSync('data/portfolio.csv', 'utf8');
-const parsed = Papa.parse(csvContent, { header: false });
-const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
-// B列でグループ化、C列をキーにD列の値を取得
-```
+**実装内容：**
+- `gulpfile.js`に`loadCsvData()`関数を実装
+- `papaparse`を使用してCSVをJSONに変換
+- セクション別（Works、Tech Notes、About、Contact）にグループ化
+- パイプ区切りの値を配列に変換
+- 画像パスの処理（`:link`サフィックス対応）
+- エラーハンドリングの強化（null/undefined対応）
 
-- [ ] `gulpfile.js`にCSV読み込み処理を追加
-- [ ] `papaparse`を使用してCSVをJSONに変換
-- [ ] 1行目をスキップする処理を追加
-- [ ] B列でグループ化する処理を追加
-- [ ] パイプ区切りの値を配列に変換する処理を追加
-- [ ] EJSコンパイル時にCSVデータを渡す
+- [x] `gulpfile.js`にCSV読み込み処理を追加
+- [x] `papaparse`を使用してCSVをJSONに変換
+- [x] 1行目をスキップする処理を追加
+- [x] セクション別にグループ化する処理を追加
+- [x] パイプ区切りの値を配列に変換する処理を追加
+- [x] EJSコンパイル時にCSVデータを渡す
+- [x] エラーハンドリングの強化
 
 ### 3.3 画像処理
 
@@ -257,25 +255,39 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
 
 **ビルド時の処理:**
 1. `private/images/` から画像を読み込む
-2. WebPに変換（可能であれば）
-3. `site/images/` にコピー
-4. HTML内のパスを `./images/works_01_01.png` に変換
-5. 画像配列をオブジェクト配列に変換（`:link`サフィックスを処理）
+2. `site/images/` にコピー（Node.jsの`fs.copyFileSync`を使用）
+3. HTML内のパスを `./images/works_01_01.png` に変換
+4. 画像配列をオブジェクト配列に変換（`:link`サフィックスを処理）
+   - `works_01_02.png:link` → `{ src: './images/works_01_02.png', hasLink: true }`
 
-- [x] Gulpタスクで画像コピー処理を追加
-- [ ] WebP変換処理を追加（`gulp-webp`など）
-- [x] 画像パスの解決処理を追加
-- [ ] `:link`サフィックスの処理を追加
+- [x] Gulpタスクで画像コピー処理を追加（`copyImages`タスク）
+- [x] 画像パスの解決処理を追加（`processImagePath`関数）
+- [x] `:link`サフィックスの処理を追加
+- [ ] WebP変換処理を追加（`gulp-webp`など）- 将来の拡張
 
 ### 3.4 EJS でループ表示
+
+**実装内容：**
+- `src/_works.ejs`: Worksセクションの動的生成
+- `src/_notes.ejs`: Tech Notesセクションの動的生成
+- `src/_about.ejs`: Aboutセクションの動的生成
+- `src/_contact.ejs`: Contactセクションの動的生成
+
+**実装例：**
 ```ejs
-<% works.forEach(work => { %>
-  <div class="<%= work.selector %>"><%= work.value %></div>
-<% }) %>
+<% if (typeof portfolio !== 'undefined' && portfolio.works && portfolio.works.length > 0) { %>
+    <% portfolio.works.forEach(function(work) { %>
+        <li class="p-portfolio__work-card" data-work-card>
+            <!-- 動的コンテンツ -->
+        </li>
+    <% }); %>
+<% } %>
 ```
 
-- [ ] EJSテンプレートでCSVデータをループ表示
-- [ ] 各セクション（works, notes, about, connect等）でEJSのループ構文を使用
+- [x] EJSテンプレートでCSVデータをループ表示
+- [x] 各セクション（works, notes, about, contact）でEJSのループ構文を使用
+- [x] 画像の拡大リンク対応（`:link`サフィックス）
+- [x] 条件付きレンダリング（コンテンツがない場合は非表示）
 
 ## フェーズ4: 本番ビルド + Netlify デプロイ ✅ 完了
 
@@ -291,11 +303,12 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
 3. [x] GulpでHTML+SCSS+JSの開発環境
 4. [x] JavaScriptモジュール化
 5. [x] デザイン確定
-6. [ ] アクセシビリティ対応
-7. [ ] パフォーマンス最適化
-8. [ ] Netlify公開
+6. [x] アクセシビリティ対応
+7. [x] パフォーマンス最適化
+8. [x] Netlify公開
 9. [x] EJS化（初めてテンプレ化）- 完了
-10. [ ] CSV化（データ外部化）- 未実装
+10. [x] CSV化（データ外部化）- 完了
+11. [x] `gulpfile.js`のリファクタリング - 完了
 
 ## 補足
 
@@ -313,12 +326,34 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
   - EJS化によりHTMLをパーシャル化してテンプレート構造を整備
   - メンテナンス性と再利用性を向上
 
-- **フェーズ3**: 実装予定 📅
+- **フェーズ3**: 完了 ✅
   - CSV化によりデータを外部化
   - 個人情報やコンテンツデータの管理を容易に
+  - `gulpfile.js`のリファクタリング完了
+    - 不要なコードの削除
+    - 重複コードの統合（`compileEjs`、`compileScss`関数化）
+    - セクション名マッピング（`SECTION_MAP`）の追加
+    - 画像パス処理の関数化（`processImagePath`、`isImageFile`）
+    - エラーハンドリングの強化
 
 ### 今後の拡張予定
 
+- **WebP変換**: 画像のWebP変換処理を追加（`gulp-webp`など）
 - **JavaScriptプラグイン化**: image-slider.js、work-details.jsをクライアントワーク向けにプラグイン化予定
-- **EJS化**: フェーズ2として実装予定
-- **CSV化**: フェーズ3として実装予定
+
+### リファクタリング履歴
+
+#### 2025/12/07
+**gulpfile.jsの改善:**
+- 不要なコードの削除（`paths.html`、デバッグログ）
+- 重複コードの統合
+  - `html()`と`buildProd()` → `compileEjs(minify)`関数に統合
+  - `styles()`と`stylesProd()` → `compileScss(useSourcemaps)`関数に統合
+- セクション名マッピング（`SECTION_MAP`）の追加
+- 画像パス処理の関数化
+  - `processImagePath()`: 画像パスの処理と`:link`サフィックス対応
+  - `isImageFile()`: 画像ファイル判定
+- エラーハンドリングの強化
+  - CSV列のnull/undefined対応
+  - 型チェックの追加
+- コード行数: 429行 → 約350行（約18%削減）
