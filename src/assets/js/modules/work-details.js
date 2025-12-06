@@ -106,22 +106,27 @@ class WorkDetails {
 			const title = card.querySelector('.p-portfolio__work-title');
 
 			if (img && title) {
-			const meta = card.dataset.workMeta || '';
-			const tagsJson = card.dataset.workTags || '[]';
-			const tags = JSON.parse(tagsJson);
-			const description = card.dataset.workDescription || '';
-			const imagesJson = card.dataset.workImages || '[]';
-			const images = JSON.parse(imagesJson);
+		const meta = card.dataset.workMeta || '';
+		const tagsJson = card.dataset.workTags || '[]';
+		const tags = JSON.parse(tagsJson);
+		const description = card.dataset.workDescription || '';
+		const imagesJson = card.dataset.workImages || '[]';
+		let images = JSON.parse(imagesJson);
 
-			this.workData.push({
-				image: img.src,
-				alt: img.alt,
-				title: title.textContent,
-				meta,
-				tags,
-				description,
-				images: images.length > 0 ? images : [img.src]
-			});
+		// 画像データを正規化（文字列配列の場合はオブジェクト配列に変換）
+		if (images.length > 0 && typeof images[0] === 'string') {
+			images = images.map((src) => ({ src, hasLink: false }));
+		}
+
+		this.workData.push({
+			image: img.src,
+			alt: img.alt,
+			title: title.textContent,
+			meta,
+			tags,
+			description,
+			images: images.length > 0 ? images : [{ src: img.src, hasLink: false }]
+		});
 			}
 		});
 	}
@@ -308,16 +313,18 @@ class WorkDetails {
 			<div class="c-slider" data-slider="work-details-${index}">
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
-						${work.images.map((imgSrc, imgIndex) => {
+						${work.images.map((imgData, imgIndex) => {
+							// 画像データを正規化（文字列の場合はオブジェクトに変換）
+							const imgObj = typeof imgData === 'string'
+								? { src: imgData, hasLink: false }
+								: imgData;
 							// 原寸大のURLを生成（パラメータを削除）
-							const fullSizeUrl = imgSrc.split('?')[0];
-							// 最初と2番目の画像にリンクを追加（例として）
-							const hasLink = imgIndex < 2;
+							const fullSizeUrl = imgObj.src.split('?')[0];
 							return `
 							<div class="c-slider__slide">
-								${hasLink ? `<a href="${fullSizeUrl}">` : ''}
-									<img src="${imgSrc}" alt="${work.alt} - 画像${imgIndex + 1}" />
-								${hasLink ? '</a>' : ''}
+								${imgObj.hasLink ? `<a href="${fullSizeUrl}">` : ''}
+									<img src="${imgObj.src}" alt="${work.alt} - 画像${imgIndex + 1}" />
+								${imgObj.hasLink ? '</a>' : ''}
 							</div>
 						`;
 						}).join('')}
@@ -337,7 +344,16 @@ class WorkDetails {
 			</div>
 		` : `
 			<div class="p-portfolio__work-details-image">
-				<img src="${work.images[0]}" alt="${work.alt}" />
+				${(() => {
+					const firstImg = work.images[0];
+					const imgObj = typeof firstImg === 'string'
+						? { src: firstImg, hasLink: false }
+						: firstImg;
+					const fullSizeUrl = imgObj.src.split('?')[0];
+					return imgObj.hasLink
+						? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
+						: `<img src="${imgObj.src}" alt="${work.alt}" />`;
+				})()}
 			</div>
 		`;
 
