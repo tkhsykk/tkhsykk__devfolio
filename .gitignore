@@ -53,3 +53,7 @@ desktop.ini
 create-anything/mobile/
 site/
 private/portfolio.csv
+
+# 非公開画像（dummy.pngを除く）
+private/images/*
+!private/images/dummy.png
