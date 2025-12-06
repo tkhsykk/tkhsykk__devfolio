@@ -12,6 +12,8 @@ import combineMediaQuery from 'postcss-combine-media-query';
 import sourcemaps from 'gulp-sourcemaps';
 import cleanCSS from 'gulp-clean-css';
 import htmlmin from 'gulp-htmlmin';
+import ejs from 'gulp-ejs';
+import rename from 'gulp-rename';
 import { build as esbuild } from 'esbuild';
 import browserSync from 'browser-sync';
 import plumber from 'gulp-plumber';
@@ -40,6 +42,10 @@ const srcDir = join(__dirname, 'src');
 const distDir = join(__dirname, 'site');
 
 const paths = {
+	ejs: {
+		src: join(srcDir, 'index.ejs'),
+		dist: distDir,
+	},
 	html: {
 		src: join(srcDir, 'index.html'),
 		dist: distDir,
@@ -52,25 +58,18 @@ const paths = {
 		src: join(srcDir, 'assets/js/**/*.js'),
 		dist: join(distDir, 'js'),
 	},
-	assets: {
-		// 画像、フォント、その他のアセットのみ（SCSS/JSは除外）
-		src: [
-			join(srcDir, 'assets/**/*'),
-			`!${join(srcDir, 'assets/scss/**/*')}`,
-			`!${join(srcDir, 'assets/js/**/*')}`,
-		],
-		dist: join(distDir, 'assets'),
-	},
 };
 
 /**
- * HTMLファイルをコピー
+ * EJSテンプレートをコンパイルしてHTMLを生成
  */
 export function html() {
 	return gulp
-		.src(paths.html.src)
+		.src(paths.ejs.src)
 		.pipe(plumber(plumberOptions))
-		.pipe(gulp.dest(paths.html.dist));
+		.pipe(ejs({}, {}))
+		.pipe(rename({ extname: '.html' }))
+		.pipe(gulp.dest(paths.ejs.dist));
 }
 
 /**
@@ -124,15 +123,18 @@ export async function scripts() {
 	});
 }
 
+
 /**
- * アセットコピー（画像、フォントなど、SCSS/JS以外）
- * SCSS/JSのソースファイルは最初からコピーしない
+ * EJSファイル変更時の処理（開発用）
+ * htmlタスクを実行してからBrowserSyncをリロード
  */
-export function copyAssets() {
-	return gulp
-		.src(paths.assets.src, { allowEmpty: true })
-		.pipe(plumber(plumberOptions))
-		.pipe(gulp.dest(paths.assets.dist));
+function htmlWatch(done) {
+	const stream = html();
+	stream.on('end', () => {
+		browserSync.reload();
+		done();
+	});
+	stream.on('error', done);
 }
 
 /**
@@ -147,26 +149,28 @@ export function serve() {
 		open: false,
 	});
 
-	gulp.watch(paths.html.src, html).on('change', browserSync.reload);
+	gulp.watch(join(srcDir, '**/*.ejs'), htmlWatch);
 	gulp.watch(join(srcDir, 'assets/scss/**/*.scss'), styles);
 	gulp.watch(paths.js.src, scripts).on('change', browserSync.reload);
-	gulp.watch(paths.assets.src, copyAssets).on('change', browserSync.reload);
 }
 
 /**
- * HTML minify（本番用）
+ * EJSテンプレートをコンパイルしてHTMLを生成（本番用）
+ * minifyも同時に実行
  */
 export function buildProd() {
 	return gulp
-		.src(paths.html.src)
+		.src(paths.ejs.src)
 		.pipe(plumber(plumberOptions))
+		.pipe(ejs({}, {}))
+		.pipe(rename({ extname: '.html' }))
 		.pipe(
 			htmlmin({
 				collapseWhitespace: true,
 				removeComments: true,
 			})
 		)
-		.pipe(gulp.dest(paths.html.dist));
+		.pipe(gulp.dest(paths.ejs.dist));
 }
 
 /**
@@ -196,7 +200,7 @@ export function stylesProd() {
  * 開発環境
  */
 export const dev = gulp.series(
-	gulp.parallel(html, styles, scripts, copyAssets),
+	gulp.parallel(html, styles, scripts),
 	serve
 );
 
@@ -205,7 +209,7 @@ export const dev = gulp.series(
  * SCSS/JSはバンドル後のファイルのみがsite/に配置される
  */
 export const build = gulp.series(
-	gulp.parallel(buildProd, stylesProd, scripts, copyAssets)
+	gulp.parallel(buildProd, stylesProd, scripts)
 );
 
 export default dev;

@@ -1,0 +1,69 @@
+		<section id="flow" class="p-portfolio__section p-portfolio__flow" data-scroll-trigger>
+			<div class="l-container">
+				<div class="u-text-center u-mb-16">
+					<h2 class="p-portfolio__section-title" data-text-scramble data-text='How I Built "devfolio"' data-html-replace='{"devfolio":"<span class=\"u-text-primary\">devfolio</span>"}'>How I Built "<span class="u-text-primary">devfolio</span>"</h2>
+				</div>
+				<ol class="p-portfolio__flow-list">
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">要件定義・技術選定</h3>
+							<p class="p-portfolio__flow-text">
+								ChatGPTでポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、Cursorで開発計画とチェックリストなどを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">デザイン生成・プロトタイプ作成</h3>
+							<p class="p-portfolio__flow-text">
+								ChatGPTの作ったプロンプトを元に<a href="https://www.createanything.com/" target="_blank" rel="noopener noreferrer">Anything</a>でReact+Vite+Tailwindのプロトタイプデザインを生成し、デザインを作成。デザイナーのポートフォリオサイトではないため、あまりここで時間はかけずに最大公約数的なデザインでほぼポン出しを採用しました。<br>
+								生成されたソースをダウンロードして中身を確認しますが、Reactに対して薄い理解しかないため、しばしフリーズの時間。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">技術スタック移行・環境構築</h3>
+							<p class="p-portfolio__flow-text">
+								ChatGPTとCursor Proに相談しながらReact->HTML+CSS+JSへ変換し、HTMLからTailwindのClassを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装しました。<br>
+								ここでAnythingのデザイン・中身がざっくりしているために調整と加筆にかなり手間取りました。<br>
+								初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると思い、諦め。<br>
+								各所の文言はさすがにLLMに任せるにも限度があったので加筆修正多数。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">実装・モジュール化</h3>
+							<p class="p-portfolio__flow-text">
+								この時点では公開したくない個人情報やコンテンツデータはダミーです。作ったHTMLをパーシャル（_header.ejs、_footer.ejs等）に分割し、GitHub公開時に公開したくない個人情報やコンテンツデータをCSVに外部化し、EJS->HTMLのビルド時に読み込む仕組みを構築しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">品質保証・最適化</h3>
+							<p class="p-portfolio__flow-text">
+								WAI-ARIA属性の確認、キーボード操作の検証、Lighthouseによるアクセシビリティチェックを実施。パフォーマンス最適化としてクリティカルCSSの抽出、フォント最適化を実施。デプロイ前にはビルド確認、リンク切れチェック、クロスブラウザテストを徹底しました。
+							</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">CI/CD・デプロイ</h3>
+							<p class="p-portfolio__flow-text">Netlifyのデプロイ設定としてnetlify.tomlを作成し、ビルドコマンドを`gulp
+								build`に設定。本番環境への自動デプロイパイプラインを構築し、GitHubへのプッシュと連動してデプロイが実行される仕組みを整備しました。</p>
+						</div>
+					</li>
+					<li class="p-portfolio__flow-item">
+						<div class="p-portfolio__flow-content">
+							<h3 class="p-portfolio__flow-title">リリース・運用確認</h3>
+							<p class="p-portfolio__flow-text">
+								本番環境での動作確認と最終調整を実施。実際のデプロイ後の動作を確認し、パフォーマンス指標やアクセシビリティスコアを検証。必要に応じて微調整を行い、安定した運用が可能な状態まで整備しました。
+							</p>
+						</div>
+					</li>
+				</ol>
+			</div>
+		</section>
+
