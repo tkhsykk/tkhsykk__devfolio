@@ -125,43 +125,47 @@ HTMLから Tailwind を剥がして PDFLOCSS へ変換する。
 - [x] アクセシビリティ対応完了
 - [x] パフォーマンス最適化完了
 
-## フェーズ2: EJS化（構造の分割フェーズ）📅 実装予定
+## フェーズ2: EJS化（構造の分割フェーズ）✅ 完了
 
 目的：HTML が固まったタイミングで初めて分割する
 
 **現状**: HTMLは1ファイル（`src/index.html`）のまま。  
-**予定**: パーシャル化してテンプレート構造を整備する予定。
+**完了**: パーシャル化してテンプレート構造を整備しました。
 
 ### 2.1 EJS ディレクトリ構造
 ```
 ejs/
   ├─ index.ejs
-  ├─ _header.ejs
-  ├─ _footer.ejs
+  ├─ _head.ejs
+  ├─ _nav.ejs
   ├─ _hero.ejs
   ├─ _skills.ejs
   ├─ _works.ejs
+  ├─ _notes.ejs
+  ├─ _flow.ejs
   ├─ _about.ejs
-  └─ _contact.ejs
+  ├─ _contact.ejs
+  └─ _footer.ejs
 ```
 
-- [ ] `ejs/`ディレクトリを作成
-- [ ] `ejs/index.ejs`を作成
-- [ ] パーシャルファイルを作成（`_header.ejs`, `_footer.ejs`, `_hero.ejs`, `_skills.ejs`, `_works.ejs`, `_about.ejs`, `_contact.ejs`）
+- [x] `ejs/`ディレクトリを作成
+- [x] `ejs/index.ejs`を作成
+- [x] パーシャルファイルを作成（`_head.ejs`, `_nav.ejs`, `_hero.ejs`, `_skills.ejs`, `_works.ejs`, `_notes.ejs`, `_flow.ejs`, `_about.ejs`, `_contact.ejs`, `_footer.ejs`）
 
 ### 2.2 EJS ロジック
 
 HTML をパーツに分割し、include で組み立てる：
 ```ejs
-<%- include('_header') %>
+<%- include('_head') %>
+<%- include('_nav') %>
 <%- include('_hero') %>
 ...
 <%- include('_footer') %>
 ```
 
-- [ ] `src/index.html`をEJSテンプレートに分割
-- [ ] `ejs/index.ejs`でincludeを使用して組み立て
-- [ ] Gulp に EJSパイプラインを追加
+- [x] `src/index.html`をEJSテンプレートに分割
+- [x] `ejs/index.ejs`でincludeを使用して組み立て
+- [x] Gulp に EJSパイプラインを追加
 
 **重要：** ここで初めて Gulp に EJSパイプラインを追加（フェーズ1では絶対に使わない）
 
@@ -207,8 +211,8 @@ private/
       └─ ...
 ```
 
-- [ ] `data/portfolio.csv`を作成
-- [ ] `.gitignore`に`private/images/`を追加
+- [x] `data/portfolio.csv`を作成
+- [x] `.gitignore`に`private/images/`を追加
 
 ### 3.2 Gulpで CSV → JSON に変換
 
@@ -243,15 +247,25 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
 - `private/images/` に平らに配置（サブディレクトリなし）
 - CSVの値はファイル名のみ（例: `works_01_01.png`）
 
+**画像拡大リンクの指定方法:**
+- 拡大リンクを付ける画像には`:link`サフィックスを付与
+- 例: `works_01_01.png|works_01_02.png:link|works_01_03.png|works_01_04.png:link`
+- パース時に`:link`サフィックスを検出し、画像データをオブジェクト配列に変換
+  - `{ src: 'works_01_01.png', hasLink: false }`
+  - `{ src: 'works_01_02.png', hasLink: true }`
+- JavaScript側で`hasLink`フラグに基づいて`<a>`タグを生成
+
 **ビルド時の処理:**
 1. `private/images/` から画像を読み込む
 2. WebPに変換（可能であれば）
-3. `site/assets/images/` にコピー
-4. HTML内のパスを `./assets/images/works_01_01.png` に変換
+3. `site/images/` にコピー
+4. HTML内のパスを `./images/works_01_01.png` に変換
+5. 画像配列をオブジェクト配列に変換（`:link`サフィックスを処理）
 
-- [ ] Gulpタスクで画像コピー処理を追加
+- [x] Gulpタスクで画像コピー処理を追加
 - [ ] WebP変換処理を追加（`gulp-webp`など）
-- [ ] 画像パスの解決処理を追加
+- [x] 画像パスの解決処理を追加
+- [ ] `:link`サフィックスの処理を追加
 
 ### 3.4 EJS でループ表示
 ```ejs
@@ -280,7 +294,7 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
 6. [ ] アクセシビリティ対応
 7. [ ] パフォーマンス最適化
 8. [ ] Netlify公開
-9. [ ] EJS化（初めてテンプレ化）- 未実装
+9. [x] EJS化（初めてテンプレ化）- 完了
 10. [ ] CSV化（データ外部化）- 未実装
 
 ## 補足
@@ -295,7 +309,7 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
   - パフォーマンス最適化
   - Netlifyデプロイ
 
-- **フェーズ2**: 実装予定 📅
+- **フェーズ2**: 完了 ✅
   - EJS化によりHTMLをパーシャル化してテンプレート構造を整備
   - メンテナンス性と再利用性を向上
 
