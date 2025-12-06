@@ -84,6 +84,29 @@ function loadCsvData() {
 		const result = {
 			works: [],
 			notes: [],
+			about: [],
+		};
+
+		// アイテムを保存する関数
+		const saveCurrentItem = () => {
+			if (currentItemId && currentItemData && Object.keys(currentItemData).length > 0 && currentSection) {
+				if (currentSection === 'Works') {
+					result.works.push({
+						id: currentItemId,
+						data: currentItemData,
+					});
+				} else if (currentSection === 'Tech Notes') {
+					result.notes.push({
+						id: currentItemId,
+						data: currentItemData,
+					});
+				} else if (currentSection === 'About') {
+					result.about.push({
+						id: currentItemId,
+						data: currentItemData,
+					});
+				}
+			}
 		};
 
 		let currentSection = null;
@@ -96,19 +119,7 @@ function loadCsvData() {
 			// セクション見出し（A列のみ値がある）
 			if (sectionCol && !itemIdCol && !selectorCol) {
 				// セクションが変わる前に、前のアイテムを保存
-				if (currentItemId && currentItemData && Object.keys(currentItemData).length > 0) {
-					if (currentSection === 'Works') {
-						result.works.push({
-							id: currentItemId,
-							data: currentItemData,
-						});
-					} else if (currentSection === 'Tech Notes') {
-						result.notes.push({
-							id: currentItemId,
-							data: currentItemData,
-						});
-					}
-				}
+				saveCurrentItem();
 
 				// 新しいセクションを設定
 				currentSection = sectionCol.trim();
@@ -120,19 +131,7 @@ function loadCsvData() {
 			// アイテムID（B列のみ値がある）
 			if (!sectionCol && itemIdCol && !selectorCol) {
 				// 前のアイテムを保存（セレクタがあれば保存）
-				if (currentItemId && currentItemData && Object.keys(currentItemData).length > 0) {
-					if (currentSection === 'Works') {
-						result.works.push({
-							id: currentItemId,
-							data: currentItemData,
-						});
-					} else if (currentSection === 'Tech Notes') {
-						result.notes.push({
-							id: currentItemId,
-							data: currentItemData,
-						});
-					}
-				}
+				saveCurrentItem();
 
 				// 新しいアイテムを開始
 				currentItemId = itemIdCol.trim();
@@ -199,34 +198,29 @@ function loadCsvData() {
 		}
 
 		// 最後のアイテムを保存（セレクタがあれば保存）
-		if (currentItemId && currentItemData && Object.keys(currentItemData).length > 0) {
-			if (currentSection === 'Works') {
-				result.works.push({
-					id: currentItemId,
-					data: currentItemData,
-				});
-			} else if (currentSection === 'Tech Notes') {
-				result.notes.push({
-					id: currentItemId,
-					data: currentItemData,
-				});
-			}
-		}
+		saveCurrentItem();
 
 		// デバッグ用ログ（開発時のみ）
 		if (process.env.NODE_ENV !== 'production') {
 			console.log('CSVパース結果:', {
 				worksCount: result.works.length,
 				notesCount: result.notes.length,
+				aboutCount: result.about.length,
 				worksIds: result.works.map((w) => w.id),
 				notesIds: result.notes.map((n) => n.id),
+				aboutIds: result.about.map((a) => a.id),
 			});
+			if (result.about.length > 0) {
+				console.log('Aboutデータ:', JSON.stringify(result.about[0], null, 2));
+			} else {
+				console.log('⚠️ Aboutデータが空です');
+			}
 		}
 
 		return result;
 	} catch (error) {
 		console.error('CSV読み込みエラー:', error);
-		return { works: [], notes: [] };
+		return { works: [], notes: [], about: [] };
 	}
 }
 
@@ -357,6 +351,7 @@ export function serve() {
 	});
 
 	gulp.watch(join(srcDir, '**/*.ejs'), htmlWatch);
+	gulp.watch(csvPath, htmlWatch); // CSVファイルの変更も監視
 	gulp.watch(join(srcDir, 'assets/scss/**/*.scss'), styles);
 	gulp.watch(paths.js.src, scripts).on('change', browserSync.reload);
 	gulp.watch(join(imagesSrcDir, '**/*.{png,jpg,jpeg,gif,webp}'), copyImages).on('change', browserSync.reload);

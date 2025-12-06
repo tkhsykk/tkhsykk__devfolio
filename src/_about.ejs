@@ -15,52 +15,56 @@
 					</div>
 
 					<div class="p-portfolio__about-content">
-						<div>
-							<h3 class="p-portfolio__about-name">田中 太郎</h3>
+						<% if (typeof portfolio !== 'undefined' && portfolio.about && portfolio.about.length > 0) { %>
+							<% const about = portfolio.about[0]; %>
+							<div>
+								<% if (about.data['.p-portfolio__about-name']) { %>
+									<h3 class="p-portfolio__about-name"><%= about.data['.p-portfolio__about-name'] %></h3>
+								<% } %>
 
-							<p class="p-portfolio__about-role">Webエンジニア / WordPress / Frontend</p>
+								<% if (about.data['.p-portfolio__about-role']) { %>
+									<p class="p-portfolio__about-role"><%= about.data['.p-portfolio__about-role'] %></p>
+								<% } %>
 
-							<p class="p-portfolio__about-text">
-								WordPressを軸に、HTML／SCSSの構造設計・テーマ開発・静的化・運用改善のための自動化ツール整備まで、マークアップ中心のフロントエンド実装を担当しています。<br>
-								セマンティックな構造と再現性を重視し、複数人で回す運用・改修案件でも維持しやすいコードとワークフローを設計しています。<br>
-								運用作業や開発プロセスの無駄を減らすことを意識し、必要なツールを適宜作りながら環境を整えることが多いです。<br>
-								ビルド環境からデプロイフローまで含め、長期運用に耐える制作基盤の構築を常に意識しています。
-							</p>
-						</div>
+								<% if (about.data['.p-portfolio__about-text']) { %>
+									<p class="p-portfolio__about-text">
+										<%
+											const textLines = Array.isArray(about.data['.p-portfolio__about-text'])
+												? about.data['.p-portfolio__about-text']
+												: [about.data['.p-portfolio__about-text']];
+											textLines.forEach(function(line, index) {
+												if (index > 0) { %><br><% }
+												%><%- line %><%
+											});
+										%>
+									</p>
+								<% } %>
+							</div>
 
-						<ul class="p-portfolio__about-list">
-							<li class="p-portfolio__about-item">
-								<span>Web制作会社での開発年数 15年</span>
-							</li>
+							<% if (about.data['.p-portfolio__about-list']) { %>
+								<ul class="p-portfolio__about-list">
+									<%
+										const listItems = Array.isArray(about.data['.p-portfolio__about-list'])
+											? about.data['.p-portfolio__about-list']
+											: [about.data['.p-portfolio__about-list']];
+										listItems.forEach(function(item) {
+									%>
+										<li class="p-portfolio__about-item">
+											<span><%= item %></span>
+										</li>
+									<% }); %>
+								</ul>
+							<% } %>
 
-							<li class="p-portfolio__about-item">
-								<span>WordPress開発 11年</span>
-							</li>
-
-							<li class="p-portfolio__about-item">
-								<span>SVN/Githubでのバージョン管理 8年</span>
-							</li>
-
-							<li class="p-portfolio__about-item">
-								<span>アクセシビリティ対応可</span>
-							</li>
-
-							<li class="p-portfolio__about-item">
-								<span>HTML/CSS 25年</span>
-							</li>
-
-							<li class="p-portfolio__about-item">
-								<span>インターネット歴 25年</span>
-							</li>
-						</ul>
-
-						<div class="p-portfolio__about-hobbies">
-							<h4 class="p-portfolio__about-hobbies-title">Interests and Skills</h4>
-							<p class="p-portfolio__about-hobbies-text">
-								読書、プログラミング、新しい技術の学習、効率化ツールの作成
-							</p>
-						</div>
-
+							<div class="p-portfolio__about-hobbies">
+								<% if (about.data['.p-portfolio__about-hobbies-title']) { %>
+									<h4 class="p-portfolio__about-hobbies-title"><%= about.data['.p-portfolio__about-hobbies-title'] %></h4>
+								<% } %>
+								<% if (about.data['.p-portfolio__about-hobbies-text']) { %>
+									<p class="p-portfolio__about-hobbies-text"><%= about.data['.p-portfolio__about-hobbies-text'] %></p>
+								<% } %>
+							</div>
+						<% } %>
 					</div>
 				</div>
 			</div>
