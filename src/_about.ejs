@@ -17,7 +17,7 @@
 					<div class="p-portfolio__about-content">
 						<% if (typeof portfolio !== 'undefined' && portfolio.about && portfolio.about.length > 0) { %>
 							<% const about = portfolio.about[0]; %>
-							<div>
+						<div>
 								<% if (about.data['.p-portfolio__about-name']) { %>
 									<h3 class="p-portfolio__about-name"><%= about.data['.p-portfolio__about-name'] %></h3>
 								<% } %>
@@ -27,43 +27,46 @@
 								<% } %>
 
 								<% if (about.data['.p-portfolio__about-text']) { %>
-									<p class="p-portfolio__about-text">
+							<p class="p-portfolio__about-text">
 										<%
 											const textLines = Array.isArray(about.data['.p-portfolio__about-text'])
 												? about.data['.p-portfolio__about-text']
 												: [about.data['.p-portfolio__about-text']];
+											// 最初の要素に<br>が含まれているかチェック（<br>|形式かどうか）
+											const hasBrTag = textLines.length > 0 && textLines[0].includes('<br>');
 											textLines.forEach(function(line, index) {
-												if (index > 0) { %><br><% }
+												// <br>|形式の場合は追加の<br>を挿入しない
+												if (index > 0 && !hasBrTag) { %><br><% }
 												%><%- line %><%
 											});
 										%>
 									</p>
 								<% } %>
-							</div>
+						</div>
 
 							<% if (about.data['.p-portfolio__about-list']) { %>
-								<ul class="p-portfolio__about-list">
+						<ul class="p-portfolio__about-list">
 									<%
 										const listItems = Array.isArray(about.data['.p-portfolio__about-list'])
 											? about.data['.p-portfolio__about-list']
 											: [about.data['.p-portfolio__about-list']];
 										listItems.forEach(function(item) {
 									%>
-										<li class="p-portfolio__about-item">
+							<li class="p-portfolio__about-item">
 											<span><%= item %></span>
-										</li>
+							</li>
 									<% }); %>
-								</ul>
+						</ul>
 							<% } %>
 
-							<div class="p-portfolio__about-hobbies">
+						<div class="p-portfolio__about-hobbies">
 								<% if (about.data['.p-portfolio__about-hobbies-title']) { %>
 									<h4 class="p-portfolio__about-hobbies-title"><%= about.data['.p-portfolio__about-hobbies-title'] %></h4>
 								<% } %>
 								<% if (about.data['.p-portfolio__about-hobbies-text']) { %>
 									<p class="p-portfolio__about-hobbies-text"><%= about.data['.p-portfolio__about-hobbies-text'] %></p>
 								<% } %>
-							</div>
+						</div>
 						<% } %>
 					</div>
 				</div>

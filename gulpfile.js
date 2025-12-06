@@ -133,6 +133,9 @@ function loadCsvData() {
 		const parsed = Papa.parse(csvContent, {
 			header: false,
 			skipEmptyLines: true,
+			delimiter: ',', // カンマを明示的に指定
+			quoteChar: '"', // ダブルクォートでフィールドを囲む
+			escapeChar: '"', // エスケープ文字
 		});
 
 		const rows = parsed.data.slice(1); // 1行目（説明行）をスキップ
@@ -188,8 +191,12 @@ function loadCsvData() {
 				const selector = selectorCol;
 				let value = valueCol || '';
 
-				// パイプ区切りの値を配列に変換
-				if (typeof value === 'string' && value.includes('|')) {
+				// `<br>|`で区切られた値を配列に変換（改行タグを含む）
+				if (typeof value === 'string' && value.includes('<br>|')) {
+					value = value.split('<br>|').map((v) => v.trim()).filter((v) => v);
+				}
+				// 通常のパイプ区切りの値を配列に変換（画像ファイルなど）
+				else if (typeof value === 'string' && value.includes('|')) {
 					value = value.split('|').map((v) => v.trim()).filter((v) => v);
 				}
 
