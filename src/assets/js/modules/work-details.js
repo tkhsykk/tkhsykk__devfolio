@@ -22,7 +22,7 @@
  * 前提HTML例:
  *
  * <ul class="p-portfolio__work-list l-grid l-grid--cols-3" data-work-list>
- * 	<li class="p-portfolio__work-card" data-work-card data-work-meta="..." data-work-tags='["..."]' data-work-summary="..." data-work-description="..." data-work-images='["..."]'>
+ * 	<li class="p-portfolio__work-card" data-work-card data-work-meta="..." data-work-tags='["..."]' data-work-description="..." data-work-images='["..."]'>
  * 		<article>
  * 			<button class="p-portfolio__work-image p-portfolio__work-trigger" data-work-trigger>
  * 				<img src="..." alt="..." />
@@ -106,24 +106,22 @@ class WorkDetails {
 			const title = card.querySelector('.p-portfolio__work-title');
 
 			if (img && title) {
-				const meta = card.dataset.workMeta || '';
-				const tagsJson = card.dataset.workTags || '[]';
-				const tags = JSON.parse(tagsJson);
-				const summary = card.dataset.workSummary || '';
-				const description = card.dataset.workDescription || '';
-				const imagesJson = card.dataset.workImages || '[]';
-				const images = JSON.parse(imagesJson);
+			const meta = card.dataset.workMeta || '';
+			const tagsJson = card.dataset.workTags || '[]';
+			const tags = JSON.parse(tagsJson);
+			const description = card.dataset.workDescription || '';
+			const imagesJson = card.dataset.workImages || '[]';
+			const images = JSON.parse(imagesJson);
 
-				this.workData.push({
-					image: img.src,
-					alt: img.alt,
-					title: title.textContent,
-					meta,
-					tags,
-					summary,
-					description,
-					images: images.length > 0 ? images : [img.src]
-				});
+			this.workData.push({
+				image: img.src,
+				alt: img.alt,
+				title: title.textContent,
+				meta,
+				tags,
+				description,
+				images: images.length > 0 ? images : [img.src]
+			});
 			}
 		});
 	}
@@ -363,7 +361,6 @@ class WorkDetails {
 									${work.tags.map(tag => `<span class="c-badge c-badge--small">${tag}</span>`).join('')}
 								</div>
 							` : ''}
-							${work.summary ? `<p class="p-portfolio__work-details-summary">${work.summary}</p>` : ''}
 							${work.description ? `<p class="p-portfolio__work-details-description">${work.description}</p>` : ''}
 						</div>
 					</div>
