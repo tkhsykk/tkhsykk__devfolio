@@ -85,6 +85,7 @@ function loadCsvData() {
 			works: [],
 			notes: [],
 			about: [],
+			contact: [],
 		};
 
 		// アイテムを保存する関数
@@ -102,6 +103,11 @@ function loadCsvData() {
 					});
 				} else if (currentSection === 'About') {
 					result.about.push({
+						id: currentItemId,
+						data: currentItemData,
+					});
+				} else if (currentSection === 'Contact') {
+					result.contact.push({
 						id: currentItemId,
 						data: currentItemData,
 					});
@@ -206,9 +212,11 @@ function loadCsvData() {
 				worksCount: result.works.length,
 				notesCount: result.notes.length,
 				aboutCount: result.about.length,
+				contactCount: result.contact.length,
 				worksIds: result.works.map((w) => w.id),
 				notesIds: result.notes.map((n) => n.id),
 				aboutIds: result.about.map((a) => a.id),
+				contactIds: result.contact.map((c) => c.id),
 			});
 			if (result.about.length > 0) {
 				console.log('Aboutデータ:', JSON.stringify(result.about[0], null, 2));
@@ -220,7 +228,7 @@ function loadCsvData() {
 		return result;
 	} catch (error) {
 		console.error('CSV読み込みエラー:', error);
-		return { works: [], notes: [], about: [] };
+		return { works: [], notes: [], about: [], contact: [] };
 	}
 }
 
