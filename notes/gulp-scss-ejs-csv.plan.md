@@ -172,43 +172,96 @@ HTML をパーツに分割し、include で組み立てる：
 **現状**: データはHTMLに直接記述。  
 **予定**: 個人情報やコンテンツデータをCSV化して外部化する予定。
 
-### 3.1 dataディレクトリ
-```
-data/
-  ├─ hero.csv
-  ├─ skills.csv
-  ├─ works.csv
-  ├─ notes.csv
-  ├─ about.csv
-  └─ contact.csv
+### 3.1 CSVファイル構成（決定事項）
+
+**決定事項:**
+- **1つのCSVファイルに統合**: `data/portfolio.csv`（LLMが読みやすいように）
+- **1行目は説明行**: 見出しや例を記載し、パース時にスキップ
+- **4列構成**:
+  - A列: セクション名（`Works`）またはワークID（`works_01`, `works_02`）
+  - B列: ワークの順番（`01`, `02`など）
+  - C列: CSSセレクタ（`.p-portfolio__work-details-title`など）
+  - D列: 値（テキストまたはファイル名のパイプ区切り）
+- **複数値はパイプ区切り**: `WordPress|SCSS|Gulp|PHP` → 配列に変換（`split('|')`）
+
+**CSV例:**
+```csv
+Works,,,
+works_01,01,.p-portfolio__work-details-title,タイトルテキスト
+works_01,01,.p-portfolio__work-details-meta,メタテキスト
+works_01,01,.p-portfolio__work-details-tags,WordPress|SCSS|Gulp|PHP
+works_01,01,.p-portfolio__work-details-description,説明文
+works_01,01,.c-slider__slide,works_01_01.png|works_01_02.png|works_01_03.png
+works_02,02,.p-portfolio__work-details-title,次のワークのタイトル
+...
 ```
 
-- [ ] `data/`ディレクトリを作成
-- [ ] CSVファイルを作成（`hero.csv`, `skills.csv`, `works.csv`, `notes.csv`, `about.csv`, `contact.csv`）
+**ディレクトリ構造:**
+```
+data/
+  └─ portfolio.csv          # CSVデータ（GitHubにコミット）
+private/
+  └─ images/                # 非公開画像（.gitignore対象）
+      ├─ works_01_01.png
+      ├─ works_01_02.png
+      └─ ...
+```
+
+- [ ] `data/portfolio.csv`を作成
+- [ ] `.gitignore`に`private/images/`を追加
 
 ### 3.2 Gulpで CSV → JSON に変換
 
 papaparseを使用してJSON を EJS に渡す
 
-スクリプト例：
+**処理フロー:**
+1. CSVを読み込む（1行目は説明行としてスキップ）
+2. B列でグループ化（`01`, `02`など）
+3. 各グループ内でC列のセレクタをキーにD列の値を取得
+4. D列の値がパイプ区切りの場合は配列に変換（`split('|')`）
+5. EJSテンプレートにデータを渡す
+
+**スクリプト例：**
 ```javascript
 const Papa = require('papaparse');
-const data = Papa.parse(fs.readFileSync('data/skills.csv', 'utf8'), { header: true }).data;
+const csvContent = fs.readFileSync('data/portfolio.csv', 'utf8');
+const parsed = Papa.parse(csvContent, { header: false });
+const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
+// B列でグループ化、C列をキーにD列の値を取得
 ```
 
 - [ ] `gulpfile.js`にCSV読み込み処理を追加
 - [ ] `papaparse`を使用してCSVをJSONに変換
+- [ ] 1行目をスキップする処理を追加
+- [ ] B列でグループ化する処理を追加
+- [ ] パイプ区切りの値を配列に変換する処理を追加
 - [ ] EJSコンパイル時にCSVデータを渡す
 
-### 3.3 EJS でループ表示
+### 3.3 画像処理
+
+**画像の配置:**
+- `private/images/` に平らに配置（サブディレクトリなし）
+- CSVの値はファイル名のみ（例: `works_01_01.png`）
+
+**ビルド時の処理:**
+1. `private/images/` から画像を読み込む
+2. WebPに変換（可能であれば）
+3. `site/assets/images/` にコピー
+4. HTML内のパスを `./assets/images/works_01_01.png` に変換
+
+- [ ] Gulpタスクで画像コピー処理を追加
+- [ ] WebP変換処理を追加（`gulp-webp`など）
+- [ ] 画像パスの解決処理を追加
+
+### 3.4 EJS でループ表示
 ```ejs
-<% skills.forEach(skill => { %>
-  <div><%= skill.name %></div>
+<% works.forEach(work => { %>
+  <div class="<%= work.selector %>"><%= work.value %></div>
 <% }) %>
 ```
 
 - [ ] EJSテンプレートでCSVデータをループ表示
-- [ ] 各セクション（hero, skills, works等）でEJSのループ構文を使用
+- [ ] 各セクション（works, notes, about, connect等）でEJSのループ構文を使用
 
 ## フェーズ4: 本番ビルド + Netlify デプロイ ✅ 完了
 
