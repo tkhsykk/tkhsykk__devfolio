@@ -18,7 +18,7 @@ Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDF
 10. アクセシビリティチェック（WAI-ARIA、キーボード操作、Lighthouse）- 手動チェック
 11. パフォーマンス最適化（Lighthouse、クリティカルCSS、フォント最適化）- 手動最適化
 12. デプロイ前チェック（ビルド確認、リンク切れ、クロスブラウザテスト）- 手動チェック
-13. Netlifyデプロイ設定（ビルドコマンド: `gulp build`）
+13. Cloudflare Pagesデプロイ設定（ビルドコマンド: `gulp build`、BASIC認証設定）
 14. 本番環境での動作確認と最終調整
 
 ## 技術スタック
@@ -39,6 +39,8 @@ Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDF
 - **gulp-notify 5.0.0** - エラー時にポップアップ通知
 - **browser-sync 3.0.4** - 開発サーバー（ライブリロード）
 - **esbuild 0.27.0** - JavaScriptバンドラー
+- **gulp-ejs 5.1.0** - EJSテンプレートエンジン
+- **papaparse 5.4.1** - CSVパーサー
 
 ### ライブラリ
 
@@ -75,7 +77,8 @@ Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDF
 │     ├─ 70_review-checklist.mdc       # コードレビュー確認表（Sass・一般チェックリスト）
 │     └─ 99_local-notes.mdc            # ローカルメモ（プロジェクト固有の注意点）
 ├─ src/                    # ソースファイル
-│  ├─ index.html          # メインHTML（完成形、EJS化は未実装）
+│  ├─ index.ejs           # メインEJSテンプレート
+│  ├─ _*.ejs              # EJSパーシャルテンプレート
 │  └─ assets/
 │     ├─ scss/            # SCSSソース（PDFLOCSS）
 │     │  ├─ style.scss    # エントリーポイント
@@ -94,14 +97,12 @@ Anythingで生成されたReact Router v7 + Tailwind CSS から Gulp + SCSS (PDF
 │           ├─ work-details.js       # ワーク詳細パネル
 │           ├─ scroll-animation.js  # スクロールアニメーション
 │           ├─ text-scramble.js      # テキストスクランブル
-│           ├─ theme-toggle.js       # テーマ切り替え
-│           └─ page-transition.js    # ページ遷移（未使用）
-├─ site/                  # ビルド出力先（.gitignore対象、Netlify公開用）
-│  ├─ index.html          # ビルド後のHTML
-│  ├─ css/
-│  │  └─ style.css        # コンパイル済みCSS
-│  ├─ js/                 # バンドル済みJS
-│  └─ fonts/              # フォントファイル
+│           └─ theme-toggle.js       # テーマ切り替え
+├─ private/                # コンテンツデータ
+│  ├─ portfolio.csv        # コンテンツデータ（Works、Tech Notes、About、Contact）
+│  └─ images/              # 画像ファイル（ビルド時にsite/images/にコピー）
+├─ site/                   # ビルド出力先（.gitignore対象、Cloudflare Pages公開用）
+│  └─ index.html           # ビルド後のHTML（CSS、JS、画像はビルド時に生成）
 ├─ notes/                 # ドキュメント
 │  ├─ gulp-scss-ejs-csv.plan.md
 │  └─ tech-stack-and-progress.md
@@ -191,24 +192,26 @@ npm run build
 
 ### デプロイ
 
-- **Netlify**: 自動デプロイ設定済み
+- **Cloudflare Pages**: 自動デプロイ設定済み。BASIC認証を設定済みです。
 - **ビルドコマンド**: `gulp build`
 - **公開ディレクトリ**: `site/`
 - `main`ブランチへのプッシュで自動的にビルド・デプロイが実行される
 
-## 実装予定機能
+## 実装済み機能
 
-### EJS化（フェーズ2）📅
-- **現状**: HTMLを1ファイル（`src/index.html`）で管理
-- **予定**: パーシャル化してテンプレート構造を整備
-- **使用ツール**: `gulp-ejs`を使用予定
+### EJS化（フェーズ2）✅
+- **完了**: HTMLをパーシャル化してテンプレート構造を整備
+- **使用ツール**: `gulp-ejs`を使用
 - **目的**: メンテナンス性と再利用性の向上
 
-### CSV化（フェーズ3）📅
-- **現状**: データはHTMLに直接記述
-- **予定**: 個人情報やコンテンツデータをCSV化して外部化
-- **使用ツール**: `papaparse`を使用予定
+### CSV化（フェーズ3）✅
+- **完了**: Works、Tech Notes、About、ContactセクションのデータをCSV化して外部化
+- **使用ツール**: `papaparse`を使用
 - **目的**: データ管理の容易化とGitHub公開時の個人情報保護
+- **実装内容**:
+  - `private/portfolio.csv`でコンテンツデータを管理
+  - 画像の拡大リンク指定（`:link`サフィックス）
+  - 改行タグの指定（`<br>|`形式）
 
 ## 参考資料
 

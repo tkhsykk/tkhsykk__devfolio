@@ -42,6 +42,32 @@ npm run dev
 開発サーバーは `http://localhost:3000` で起動します。  
 SCSSやJavaScriptの変更は自動でコンパイルされ、ブラウザが自動リロードされます。
 
+### コンテンツの編集
+
+サイトのコンテンツ（Works、Tech Notes、About、Contact）は `private/portfolio.csv` で管理されています。
+
+```bash
+# CSVファイルを編集
+# private/portfolio.csv を編集すると、次回のビルド時に反映されます
+```
+
+CSVファイルを編集後、`npm run dev` を実行中であれば自動的に再ビルドされ、ブラウザが自動リロードされます。  
+手動でビルドする場合は `npm run build` を実行してください。
+
+#### CSVファイルの形式
+
+- **セクション**: A列にセクション名（`Works`、`Tech Notes`、`About`、`Contact`）
+- **アイテムID**: B列にアイテムID（例：`works_01`、`note_01`）
+- **セレクタ**: C列にCSSセレクタ（例：`.p-portfolio__work-details-title`）
+- **値**: D列に表示する内容
+
+詳細な形式については `notes/gulp-scss-ejs-csv.plan.md` を参照してください。
+
+#### 画像の追加
+
+画像ファイルは `private/images/` に配置してください。  
+ビルド時に自動的に `site/images/` にコピーされます。
+
 ### ビルド
 
 ```bash
@@ -56,7 +82,8 @@ npm run build
 ```
 tkhsykk__devfolio/
 ├── src/                    # ソースファイル
-│   ├── index.html          # メインHTMLファイル
+│   ├── index.ejs           # メインEJSテンプレート
+│   ├── _*.ejs              # EJSパーシャルテンプレート
 │   └── assets/
 │       ├── js/             # JavaScriptファイル
 │       │   ├── main.js     # エントリーポイント
@@ -66,8 +93,7 @@ tkhsykk__devfolio/
 │       │       ├── work-details.js       # ワーク詳細パネル
 │       │       ├── scroll-animation.js   # スクロールアニメーション
 │       │       ├── text-scramble.js      # テキストスクランブル
-│       │       ├── theme-toggle.js       # テーマ切り替え
-│       │       └── page-transition.js    # ページ遷移（未使用）
+│       │       └── theme-toggle.js       # テーマ切り替え
 │       └── scss/           # SCSSファイル（PDFLOCSS設計）
 │           ├── style.scss  # エントリーポイント
 │           ├── global/    # グローバル変数・関数・ミックスイン
@@ -77,13 +103,11 @@ tkhsykk__devfolio/
 │           ├── utility/    # ユーティリティ（.u-*）
 │           ├── project/    # プロジェクト固有（.p-*）
 │           └── plugins/   # プラグイン用スタイル
+├── private/                # コンテンツデータ
+│   ├── portfolio.csv       # コンテンツデータ（Works、Tech Notes、About、Contact）
+│   └── images/             # 画像ファイル（ビルド時にsite/images/にコピー）
 ├── site/                   # ビルド出力先（.gitignore対象）
-│   ├── index.html
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── main.js
-│   └── fonts/
+│   └── index.html          # ビルド後のHTML（CSS、JS、画像はビルド時に生成）
 ├── create-anything/        # プロトタイプ生成時のファイル（.gitignore対象）
 │   ├── mobile/            # React Native/Expoプロトタイプ
 │   └── web/               # React Routerプロトタイプ
@@ -132,6 +156,17 @@ PDFLOCSS設計に基づいたSCSSファイル構造。
 - **utility/**: 単機能のユーティリティクラス（`.u-*`）
 - **project/**: ページ固有のスタイル（`.p-*`）
 
+#### `private/portfolio.csv`
+
+サイトのコンテンツデータを管理するCSVファイル。Works、Tech Notes、About、Contactセクションの内容を外部化しています。
+
+- **セクション**: A列にセクション名
+- **アイテムID**: B列にアイテムID
+- **セレクタ**: C列にCSSセレクタ
+- **値**: D列に表示する内容
+
+このファイルを編集すると、次回のビルド時に自動的に反映されます。
+
 ## 技術スタック
 
 ### ビルドツール
@@ -141,12 +176,12 @@ PDFLOCSS設計に基づいたSCSSファイル構造。
 - **esbuild**: JavaScriptバンドル
 - **BrowserSync**: 開発サーバー・自動リロード
 - **PostCSS**: CSS後処理（Autoprefixer、メディアクエリ結合）
+- **EJS**: HTMLテンプレートエンジン
+- **PapaParse**: CSVパーサー（コンテンツデータの読み込み）
 
 ### ライブラリ
 
 - **@oddbird/popover-polyfill**: Popover APIのポリフィル
-- **GSAP**: アニメーション（未使用）
-- **Three.js**: 3Dグラフィックス（未使用）
 
 ### CSS設計
 
@@ -154,7 +189,7 @@ PDFLOCSS設計に基づいたSCSSファイル構造。
 
 ## デプロイ
 
-Netlifyを使用して自動デプロイしています。  
+Cloudflare Pagesを使用して自動デプロイしています。BASIC認証を設定済みです。  
 `main`ブランチへのプッシュで自動的にビルド・デプロイが実行されます。
 
 ## ライセンス

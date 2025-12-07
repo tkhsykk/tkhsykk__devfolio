@@ -173,23 +173,20 @@ HTML をパーツに分割し、include で組み立てる：
 
 目的：EJS テンプレをCSVから生成できるようにする
 
-**完了**: 個人情報やコンテンツデータをCSV化して外部化し、EJSテンプレートで動的に生成できるようになりました。
+**完了**: Works、Tech Notes、About、ContactセクションのデータをCSV化して外部化しました。
 
 ### 3.1 CSVファイル構成（決定事項）
 
 **決定事項:**
-- **1つのCSVファイルに統合**: `data/portfolio.csv`（LLMが読みやすいように）
+- **1つのCSVファイルに統合**: `private/portfolio.csv`（LLMが読みやすいように）
 - **1行目は説明行**: 見出しや例を記載し、パース時にスキップ
 - **4列構成**:
-  - A列: セクション名（`Works`）またはワークID（`works_01`, `works_02`）
-  - B列: ワークの順番（`01`, `02`など）
+  - A列: セクション名（`Works`、`Tech Notes`、`About`、`Contact`）またはアイテムID（`works_01`, `note_01`など）
+  - B列: アイテムID（`works_01`, `note_01`など）または空
   - C列: CSSセレクタ（`.p-portfolio__work-details-title`など）
   - D列: 値（テキストまたはファイル名のパイプ区切り）
 - **複数値はパイプ区切り**: `WordPress|SCSS|Gulp|PHP` → 配列に変換（`split('|')`）
-- **改行タグの指定方法**: 改行タグを入れる場合は`<br>|`で区切ります
-  - CSV例: `1行目<br>|2行目<br>|3行目` → 出力: `1行目<br>2行目<br>3行目`
-  - **注意**: `<br>|`形式で区切った場合、各要素に既に`<br>`タグが含まれているため、EJS側で追加の`<br>`は挿入されません
-  - 通常のパイプ区切り（`|`）は画像ファイル名など、改行タグが不要な場合に使用します
+- **改行タグの指定**: `<br>|`で区切ると、各要素に`<br>`タグが含まれた配列に変換される
 
 **CSV例:**
 ```csv
@@ -207,14 +204,14 @@ works_02,02,.p-portfolio__work-details-title,次のワークのタイトル
 ```
 private/
   ├─ portfolio.csv          # CSVデータ（GitHubにコミット）
-  └─ images/                # 非公開画像（.gitignore対象）
+  └─ images/                # 画像ファイル（ビルド時にsite/images/にコピー）
       ├─ works_01_01.png
       ├─ works_01_02.png
       └─ ...
 ```
 
 - [x] `private/portfolio.csv`を作成
-- [x] `.gitignore`に`private/images/`を追加
+- [x] `.gitignore`に`private/images/`を追加（ただし、CSVファイル自体はコミット対象）
 
 ### 3.2 Gulpで CSV → JSON に変換
 
@@ -222,26 +219,20 @@ papaparseを使用してJSON を EJS に渡す
 
 **処理フロー:**
 1. CSVを読み込む（1行目は説明行としてスキップ）
-2. B列でグループ化（`01`, `02`など）
+2. セクション名（A列）とアイテムID（B列）でグループ化
 3. 各グループ内でC列のセレクタをキーにD列の値を取得
-4. D列の値がパイプ区切りの場合は配列に変換（`split('|')`）
-5. EJSテンプレートにデータを渡す
-
-**実装内容：**
-- `gulpfile.js`に`loadCsvData()`関数を実装
-- `papaparse`を使用してCSVをJSONに変換
-- セクション別（Works、Tech Notes、About、Contact）にグループ化
-- パイプ区切りの値を配列に変換
-- 画像パスの処理（`:link`サフィックス対応）
-- エラーハンドリングの強化（null/undefined対応）
+4. D列の値が`<br>|`で区切られている場合は`<br>`タグを含む配列に変換
+5. D列の値が通常の`|`で区切られている場合は配列に変換（画像ファイル名など）
+6. 画像ファイルの場合はパスを`./images/`に変換し、`:link`サフィックスを処理
+7. EJSテンプレートにデータを渡す
 
 - [x] `gulpfile.js`にCSV読み込み処理を追加
 - [x] `papaparse`を使用してCSVをJSONに変換
 - [x] 1行目をスキップする処理を追加
-- [x] セクション別にグループ化する処理を追加
-- [x] パイプ区切りの値を配列に変換する処理を追加
+- [x] セクション名とアイテムIDでグループ化する処理を追加
+- [x] `<br>|`と通常の`|`で区切られた値を配列に変換する処理を追加
+- [x] 画像パスの解決と`:link`サフィックスの処理を追加
 - [x] EJSコンパイル時にCSVデータを渡す
-- [x] エラーハンドリングの強化
 
 ### 3.3 画像処理
 
@@ -259,46 +250,30 @@ papaparseを使用してJSON を EJS に渡す
 
 **ビルド時の処理:**
 1. `private/images/` から画像を読み込む
-2. `site/images/` にコピー（Node.jsの`fs.copyFileSync`を使用）
-3. HTML内のパスを `./images/works_01_01.png` に変換
-4. 画像配列をオブジェクト配列に変換（`:link`サフィックスを処理）
-   - `works_01_02.png:link` → `{ src: './images/works_01_02.png', hasLink: true }`
+2. WebPに変換（可能であれば）
+3. `site/images/` にコピー
+4. HTML内のパスを `./images/works_01_01.png` に変換
+5. 画像配列をオブジェクト配列に変換（`:link`サフィックスを処理）
 
-- [x] Gulpタスクで画像コピー処理を追加（`copyImages`タスク）
-- [x] 画像パスの解決処理を追加（`processImagePath`関数）
-- [x] `:link`サフィックスの処理を追加
+- [x] Gulpタスクで画像コピー処理を追加
 - [ ] WebP変換処理を追加（`gulp-webp`など）- 将来の拡張
+- [x] 画像パスの解決処理を追加
+- [x] `:link`サフィックスの処理を追加
 
 ### 3.4 EJS でループ表示
 
-**実装内容：**
-- `src/_works.ejs`: Worksセクションの動的生成
-- `src/_notes.ejs`: Tech Notesセクションの動的生成
-- `src/_about.ejs`: Aboutセクションの動的生成
-- `src/_contact.ejs`: Contactセクションの動的生成
-
-**実装例：**
-```ejs
-<% if (typeof portfolio !== 'undefined' && portfolio.works && portfolio.works.length > 0) { %>
-    <% portfolio.works.forEach(function(work) { %>
-        <li class="p-portfolio__work-card" data-work-card>
-            <!-- 動的コンテンツ -->
-        </li>
-    <% }); %>
-<% } %>
-```
-
 - [x] EJSテンプレートでCSVデータをループ表示
 - [x] 各セクション（works, notes, about, contact）でEJSのループ構文を使用
-- [x] 画像の拡大リンク対応（`:link`サフィックス）
-- [x] 条件付きレンダリング（コンテンツがない場合は非表示）
+- [x] `<br>|`形式の改行タグ処理を実装
+- [x] 画像の`:link`サフィックス処理を実装
 
-## フェーズ4: 本番ビルド + Netlify デプロイ ✅ 完了
+## フェーズ4: 本番ビルド + Cloudflare Pages デプロイ ✅ 完了
 
 - [x] `gulp build` → minify + assetコピー
 - [x] `.gitignore`に`site/`、`.env`、その他非公開情報を追加
-- [ ] Netlifyのビルドコマンドを`gulp build`に設定
-- [ ] `main`ブランチへのプッシュで自動デプロイが実行される
+- [x] Cloudflare Pagesのビルドコマンドを`gulp build`に設定
+- [x] BASIC認証を設定
+- [x] `main`ブランチへのプッシュで自動デプロイが実行される
 
 ## 🏁 全体の進行順（最短で沼らない順番）
 
@@ -309,10 +284,9 @@ papaparseを使用してJSON を EJS に渡す
 5. [x] デザイン確定
 6. [x] アクセシビリティ対応
 7. [x] パフォーマンス最適化
-8. [x] Netlify公開
+8. [x] Cloudflare Pages公開（BASIC認証設定済み）
 9. [x] EJS化（初めてテンプレ化）- 完了
 10. [x] CSV化（データ外部化）- 完了
-11. [x] `gulpfile.js`のリファクタリング - 完了
 
 ## 補足
 
@@ -324,7 +298,7 @@ papaparseを使用してJSON を EJS に渡す
   - JavaScriptモジュール化
   - アクセシビリティ対応
   - パフォーマンス最適化
-  - Netlifyデプロイ
+  - Cloudflare Pagesデプロイ（BASIC認証設定済み）
 
 - **フェーズ2**: 完了 ✅
   - EJS化によりHTMLをパーシャル化してテンプレート構造を整備
@@ -332,32 +306,11 @@ papaparseを使用してJSON を EJS に渡す
 
 - **フェーズ3**: 完了 ✅
   - CSV化によりデータを外部化
-  - 個人情報やコンテンツデータの管理を容易に
-  - `gulpfile.js`のリファクタリング完了
-    - 不要なコードの削除
-    - 重複コードの統合（`compileEjs`、`compileScss`関数化）
-    - セクション名マッピング（`SECTION_MAP`）の追加
-    - 画像パス処理の関数化（`processImagePath`、`isImageFile`）
-    - エラーハンドリングの強化
+  - Works、Tech Notes、About、ContactセクションのデータをCSVで管理
+  - 画像の拡大リンク指定（`:link`サフィックス）を実装
+  - 改行タグの指定（`<br>|`形式）を実装
 
 ### 今後の拡張予定
 
-- **WebP変換**: 画像のWebP変換処理を追加（`gulp-webp`など）
-- **JavaScriptプラグイン化**: image-slider.js、work-details.jsをクライアントワーク向けにプラグイン化予定
-
-### リファクタリング履歴
-
-#### 2025/12/07
-**gulpfile.jsの改善:**
-- 不要なコードの削除（`paths.html`、デバッグログ）
-- 重複コードの統合
-  - `html()`と`buildProd()` → `compileEjs(minify)`関数に統合
-  - `styles()`と`stylesProd()` → `compileScss(useSourcemaps)`関数に統合
-- セクション名マッピング（`SECTION_MAP`）の追加
-- 画像パス処理の関数化
-  - `processImagePath()`: 画像パスの処理と`:link`サフィックス対応
-  - `isImageFile()`: 画像ファイル判定
-- エラーハンドリングの強化
-  - CSV列のnull/undefined対応
-  - 型チェックの追加
-- コード行数: 429行 → 約350行（約18%削減）
+- **WebP変換**: 画像のWebP変換処理を追加（`gulp-webp`など）- 将来の拡張
+- **JavaScriptプラグイン化**: image-slider.js、work-details.jsをクライアントワーク向けにプラグイン化予定 - 将来の拡張
