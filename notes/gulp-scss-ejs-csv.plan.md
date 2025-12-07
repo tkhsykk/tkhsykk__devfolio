@@ -169,24 +169,24 @@ HTML をパーツに分割し、include で組み立てる：
 
 **重要：** ここで初めて Gulp に EJSパイプラインを追加（フェーズ1では絶対に使わない）
 
-## フェーズ3: CSV（データ外部化フェーズ）📅 実装予定
+## フェーズ3: CSV（データ外部化フェーズ）✅ 完了
 
 目的：EJS テンプレをCSVから生成できるようにする
 
-**現状**: データはHTMLに直接記述。  
-**予定**: 個人情報やコンテンツデータをCSV化して外部化する予定。
+**完了**: Works、Tech Notes、About、ContactセクションのデータをCSV化して外部化しました。
 
 ### 3.1 CSVファイル構成（決定事項）
 
 **決定事項:**
-- **1つのCSVファイルに統合**: `data/portfolio.csv`（LLMが読みやすいように）
+- **1つのCSVファイルに統合**: `private/portfolio.csv`（LLMが読みやすいように）
 - **1行目は説明行**: 見出しや例を記載し、パース時にスキップ
 - **4列構成**:
-  - A列: セクション名（`Works`）またはワークID（`works_01`, `works_02`）
-  - B列: ワークの順番（`01`, `02`など）
+  - A列: セクション名（`Works`、`Tech Notes`、`About`、`Contact`）またはアイテムID（`works_01`, `note_01`など）
+  - B列: アイテムID（`works_01`, `note_01`など）または空
   - C列: CSSセレクタ（`.p-portfolio__work-details-title`など）
   - D列: 値（テキストまたはファイル名のパイプ区切り）
 - **複数値はパイプ区切り**: `WordPress|SCSS|Gulp|PHP` → 配列に変換（`split('|')`）
+- **改行タグの指定**: `<br>|`で区切ると、各要素に`<br>`タグが含まれた配列に変換される
 
 **CSV例:**
 ```csv
@@ -202,17 +202,16 @@ works_02,02,.p-portfolio__work-details-title,次のワークのタイトル
 
 **ディレクトリ構造:**
 ```
-data/
-  └─ portfolio.csv          # CSVデータ（GitHubにコミット）
 private/
-  └─ images/                # 非公開画像（.gitignore対象）
+  ├─ portfolio.csv          # CSVデータ（GitHubにコミット）
+  └─ images/                # 画像ファイル（ビルド時にsite/images/にコピー）
       ├─ works_01_01.png
       ├─ works_01_02.png
       └─ ...
 ```
 
-- [x] `data/portfolio.csv`を作成
-- [x] `.gitignore`に`private/images/`を追加
+- [x] `private/portfolio.csv`を作成
+- [x] `.gitignore`に`private/images/`を追加（ただし、CSVファイル自体はコミット対象）
 
 ### 3.2 Gulpで CSV → JSON に変換
 
@@ -220,26 +219,20 @@ papaparseを使用してJSON を EJS に渡す
 
 **処理フロー:**
 1. CSVを読み込む（1行目は説明行としてスキップ）
-2. B列でグループ化（`01`, `02`など）
+2. セクション名（A列）とアイテムID（B列）でグループ化
 3. 各グループ内でC列のセレクタをキーにD列の値を取得
-4. D列の値がパイプ区切りの場合は配列に変換（`split('|')`）
-5. EJSテンプレートにデータを渡す
+4. D列の値が`<br>|`で区切られている場合は`<br>`タグを含む配列に変換
+5. D列の値が通常の`|`で区切られている場合は配列に変換（画像ファイル名など）
+6. 画像ファイルの場合はパスを`./images/`に変換し、`:link`サフィックスを処理
+7. EJSテンプレートにデータを渡す
 
-**スクリプト例：**
-```javascript
-const Papa = require('papaparse');
-const csvContent = fs.readFileSync('data/portfolio.csv', 'utf8');
-const parsed = Papa.parse(csvContent, { header: false });
-const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
-// B列でグループ化、C列をキーにD列の値を取得
-```
-
-- [ ] `gulpfile.js`にCSV読み込み処理を追加
-- [ ] `papaparse`を使用してCSVをJSONに変換
-- [ ] 1行目をスキップする処理を追加
-- [ ] B列でグループ化する処理を追加
-- [ ] パイプ区切りの値を配列に変換する処理を追加
-- [ ] EJSコンパイル時にCSVデータを渡す
+- [x] `gulpfile.js`にCSV読み込み処理を追加
+- [x] `papaparse`を使用してCSVをJSONに変換
+- [x] 1行目をスキップする処理を追加
+- [x] セクション名とアイテムIDでグループ化する処理を追加
+- [x] `<br>|`と通常の`|`で区切られた値を配列に変換する処理を追加
+- [x] 画像パスの解決と`:link`サフィックスの処理を追加
+- [x] EJSコンパイル時にCSVデータを渡す
 
 ### 3.3 画像処理
 
@@ -263,26 +256,24 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
 5. 画像配列をオブジェクト配列に変換（`:link`サフィックスを処理）
 
 - [x] Gulpタスクで画像コピー処理を追加
-- [ ] WebP変換処理を追加（`gulp-webp`など）
+- [ ] WebP変換処理を追加（`gulp-webp`など）- 将来の拡張
 - [x] 画像パスの解決処理を追加
-- [ ] `:link`サフィックスの処理を追加
+- [x] `:link`サフィックスの処理を追加
 
 ### 3.4 EJS でループ表示
-```ejs
-<% works.forEach(work => { %>
-  <div class="<%= work.selector %>"><%= work.value %></div>
-<% }) %>
-```
 
-- [ ] EJSテンプレートでCSVデータをループ表示
-- [ ] 各セクション（works, notes, about, connect等）でEJSのループ構文を使用
+- [x] EJSテンプレートでCSVデータをループ表示
+- [x] 各セクション（works, notes, about, contact）でEJSのループ構文を使用
+- [x] `<br>|`形式の改行タグ処理を実装
+- [x] 画像の`:link`サフィックス処理を実装
 
-## フェーズ4: 本番ビルド + Netlify デプロイ ✅ 完了
+## フェーズ4: 本番ビルド + Cloudflare Pages デプロイ ✅ 完了
 
 - [x] `gulp build` → minify + assetコピー
 - [x] `.gitignore`に`site/`、`.env`、その他非公開情報を追加
-- [ ] Netlifyのビルドコマンドを`gulp build`に設定
-- [ ] `main`ブランチへのプッシュで自動デプロイが実行される
+- [x] Cloudflare Pagesのビルドコマンドを`gulp build`に設定
+- [x] BASIC認証を設定
+- [x] `main`ブランチへのプッシュで自動デプロイが実行される
 
 ## 🏁 全体の進行順（最短で沼らない順番）
 
@@ -291,11 +282,11 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
 3. [x] GulpでHTML+SCSS+JSの開発環境
 4. [x] JavaScriptモジュール化
 5. [x] デザイン確定
-6. [ ] アクセシビリティ対応
-7. [ ] パフォーマンス最適化
-8. [ ] Netlify公開
+6. [x] アクセシビリティ対応
+7. [x] パフォーマンス最適化
+8. [x] Cloudflare Pages公開（BASIC認証設定済み）
 9. [x] EJS化（初めてテンプレ化）- 完了
-10. [ ] CSV化（データ外部化）- 未実装
+10. [x] CSV化（データ外部化）- 完了
 
 ## 補足
 
@@ -307,18 +298,19 @@ const data = parsed.data.slice(1); // 1行目（説明行）をスキップ
   - JavaScriptモジュール化
   - アクセシビリティ対応
   - パフォーマンス最適化
-  - Netlifyデプロイ
+  - Cloudflare Pagesデプロイ（BASIC認証設定済み）
 
 - **フェーズ2**: 完了 ✅
   - EJS化によりHTMLをパーシャル化してテンプレート構造を整備
   - メンテナンス性と再利用性を向上
 
-- **フェーズ3**: 実装予定 📅
+- **フェーズ3**: 完了 ✅
   - CSV化によりデータを外部化
-  - 個人情報やコンテンツデータの管理を容易に
+  - Works、Tech Notes、About、ContactセクションのデータをCSVで管理
+  - 画像の拡大リンク指定（`:link`サフィックス）を実装
+  - 改行タグの指定（`<br>|`形式）を実装
 
 ### 今後の拡張予定
 
-- **JavaScriptプラグイン化**: image-slider.js、work-details.jsをクライアントワーク向けにプラグイン化予定
-- **EJS化**: フェーズ2として実装予定
-- **CSV化**: フェーズ3として実装予定
+- **WebP変換**: 画像のWebP変換処理を追加（`gulp-webp`など）- 将来の拡張
+- **JavaScriptプラグイン化**: image-slider.js、work-details.jsをクライアントワーク向けにプラグイン化予定 - 将来の拡張

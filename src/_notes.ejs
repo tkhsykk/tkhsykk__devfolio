@@ -16,7 +16,20 @@
 										<h3 class="p-portfolio__note-title"><%= title %></h3>
 									<% } %>
 									<% if (text) { %>
-										<p class="p-portfolio__note-text"><%= text %></p>
+										<p class="p-portfolio__note-text">
+											<%
+												const textLines = Array.isArray(text)
+													? text
+													: [text];
+												// 最初の要素に<br>が含まれているかチェック（<br>|形式かどうか）
+												const hasBrTag = textLines.length > 0 && textLines[0].includes('<br>');
+												textLines.forEach(function(line, index) {
+													// <br>|形式の場合は追加の<br>を挿入しない
+													if (index > 0 && !hasBrTag) { %><br><% }
+													%><%- line %><%
+												});
+											%>
+										</p>
 									<% } %>
 								</article>
 							<% } %>
