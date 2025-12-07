@@ -53,7 +53,7 @@ desktop.ini
 create-anything/mobile/
 site/*
 !site/index.html
-!site/_headers
+!site/functions/
 
 private/portfolio.csv
 
