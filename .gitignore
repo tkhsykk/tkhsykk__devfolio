@@ -52,7 +52,6 @@ desktop.ini
 
 create-anything/mobile/
 site/*
-!site/index.html
 !site/functions/
 
 private/portfolio.csv
