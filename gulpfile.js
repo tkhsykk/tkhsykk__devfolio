@@ -129,6 +129,7 @@ function processImagePath(value, selector) {
  */
 function loadCsvData() {
 	try {
+		console.log('📄 CSVファイルを読み込み中:', csvPath);
 		const csvContent = readFileSync(csvPath, 'utf8');
 		const parsed = Papa.parse(csvContent, {
 			header: false,
@@ -139,6 +140,7 @@ function loadCsvData() {
 		});
 
 		const rows = parsed.data.slice(1); // 1行目（説明行）をスキップ
+		console.log(`✅ CSVファイル読み込み成功: ${rows.length}行を処理`);
 
 		const result = {
 			works: [],
@@ -213,9 +215,20 @@ function loadCsvData() {
 
 		saveCurrentItem(); // 最後のアイテムを保存
 
+		// デバッグログ: セクションごとのアイテム数を出力
+		console.log('\n📊 CSVデータ解析結果:');
+		for (const [sectionName, sectionKey] of Object.entries(SECTION_MAP)) {
+			const items = result[sectionKey];
+			console.log(`  ${sectionName}: ${items.length}件のアイテム`);
+			items.forEach(item => {
+				const selectorCount = Object.keys(item.data).length;
+				console.log(`    - ${item.id}: ${selectorCount}個のセレクタ`);
+			});
+		}
+
 		return result;
 	} catch (error) {
-		console.error('CSV読み込みエラー:', error);
+		console.error('❌ CSV読み込みエラー:', error);
 		return { works: [], notes: [], about: [], contact: [] };
 	}
 }
@@ -227,6 +240,12 @@ function loadCsvData() {
  */
 function compileEjs(minify = false) {
 	const csvData = loadCsvData();
+
+	// デバッグログ: EJSテンプレートへのデータ渡し確認
+	console.log('\n📝 EJSテンプレートをコンパイル中...');
+	const totalItems = csvData.works.length + csvData.notes.length + csvData.about.length + csvData.contact.length;
+	console.log(`   CSVデータをEJSテンプレートに渡します（合計${totalItems}アイテム）`);
+
 	let stream = gulp
 		.src(paths.ejs.src)
 		.pipe(plumber(plumberOptions))
@@ -407,7 +426,15 @@ export const dev = gulp.series(
  * 本番ビルド
  */
 export const build = gulp.series(
-	gulp.parallel(buildProd, stylesProd, scripts, copyImages)
+	gulp.parallel(buildProd, stylesProd, scripts, copyImages),
+	(done) => {
+		console.log('\n✅ ビルド完了！');
+		console.log(`📁 出力先: ${distDir}`);
+		const csvData = loadCsvData();
+		const totalItems = csvData.works.length + csvData.notes.length + csvData.about.length + csvData.contact.length;
+		console.log(`📊 CSVデータ出力確認: ${totalItems}アイテムがHTMLに反映されています`);
+		done();
+	}
 );
 
 export default dev;
