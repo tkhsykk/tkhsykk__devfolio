@@ -51,8 +51,12 @@
 					<li class="p-portfolio__flow-item">
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">CI/CD・デプロイ</h3>
-							<p class="p-portfolio__flow-text">Cloudflare Pagesのデプロイ設定としてビルドコマンドを`gulp
-								build`に設定。BASIC認証を設定し、本番環境への自動デプロイパイプラインを構築。GitHubへのプッシュと連動してデプロイが実行される仕組みを整備しました。</p>
+							<p class="p-portfolio__flow-text">
+								当初は ChatGPT の提案した Netlify での自動デプロイを検討しましたが、無料プランでは閲覧パスワード制限（BASIC 認証相当）が現在は提供されていなかったため、勉強の一環として自動デプロイが出来るところまで一旦進め、最終的には採用を見送りました。<br>
+								次に確実に現時点でBASIC認証が利用できるCloudflare Pagesの自動デプロイを採用しましたが、非公開データ（CSVや画像）を `.gitignore` により公開リポジトリへ含めていないため、GitHub連携による通常のPagesビルドでは非公開データがビルドに取り込まれない問題がありました。<br>
+								解決策として、非公開データを別非公開リポジトリで管理し、GitHub Actionsで Public リポジトリと Private リポジトリの両方をチェックアウトして統合ビルドを実行。その後、`wrangler` による Cloudflare Pages への Direct Upload を行うデプロイパイプラインを構築しました。これにより、非公開データを含むサイトを BASIC 認証付きの Cloudflare Pages に自動デプロイできるようになりました。<br>
+								結果として、個人情報や公開したくないデータを別リポジトリで分離して管理し、ビルド時にのみ統合する構成になったため、全体としてデータ保護の観点でもより安全性が高い運用になったと感じています。
+							</p>
 						</div>
 					</li>
 					<li class="p-portfolio__flow-item">
