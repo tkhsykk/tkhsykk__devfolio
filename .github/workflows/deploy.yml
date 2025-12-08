@@ -1,0 +1,53 @@
+name: Deploy to Cloudflare Pages
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+
+        steps:
+            - name: Checkout public repo
+              uses: actions/checkout@v4
+
+            - name: Checkout private repo
+              uses: actions/checkout@v4
+              with:
+                  repository: ${{ secrets.PRIVATE_REPO_OWNER }}/${{ secrets.PRIVATE_REPO_NAME }}
+                  token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+                  path: private-repo
+
+            - name: Prepare directories
+              run: |
+                  mkdir -p private
+                  mkdir -p private/images
+
+            - name: Copy private data to public repo
+              run: |
+                  cp private-repo/portfolio.csv ./private/
+                  cp -r private-repo/images/* ./private/images/
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20.17.0'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build site
+              run: npm run build
+
+            - name: Deploy to Cloudflare Pages
+              run: |
+                  npx wrangler pages deploy site \
+                    --project-name=${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }} \
+                    --account-id=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+              env:
+                  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
