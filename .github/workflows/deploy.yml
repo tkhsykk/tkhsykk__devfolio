@@ -22,6 +22,7 @@ jobs:
                   repository: ${{ secrets.PRIVATE_REPO_OWNER }}/${{ secrets.PRIVATE_REPO_NAME }}
                   token: ${{ secrets.PRIVATE_REPO_TOKEN }}
                   path: private-repo
+                  fetch-depth: 1
 
             - name: Prepare directories
               run: |
@@ -33,23 +34,28 @@ jobs:
                   cp private-repo/portfolio.csv ./private/
                   cp -r private-repo/images/* ./private/images/
 
+            - name: Cache Node modules
+              uses: actions/cache@v4
+              with:
+                path: ~/.npm
+                key: ${{ runner.os }}-npm-${{ hashFiles('package-lock.json') }}
+                restore-keys: |
+                  ${{ runner.os }}-npm-
+
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
                   node-version: '20.17.0'
+                  cache: 'npm'
 
             - name: Install dependencies
               run: npm ci
 
+            - name: Ensure local wrangler is installed
+              run: npm install --no-save wrangler@3.67.0
+
             - name: Build site
               run: npm run build
-
-            - name: Debug env
-              run: |
-                echo "TOKEN LENGTH:"
-                echo ${#CLOUDFLARE_API_TOKEN}
-              env:
-                CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
 
             - name: Deploy to Cloudflare Pages
               run: |
