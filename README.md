@@ -189,8 +189,26 @@ PDFLOCSS設計に基づいたSCSSファイル構造。
 
 ## デプロイ
 
-Cloudflare Pagesを使用して自動デプロイしています。BASIC認証を設定済みです。  
-`main`ブランチへのプッシュで自動的にビルド・デプロイが実行されます。
+GitHub Actions + Private リポジトリ + Cloudflare Pages Direct Upload を使用して自動デプロイしています。BASIC認証を設定済みです。
+
+### デプロイフロー
+
+1. **Public リポジトリ**（このリポジトリ）に `main` ブランチへプッシュ
+2. GitHub Actions が自動的に実行：
+   - Public リポジトリをチェックアウト
+   - Private リポジトリ（CSVと画像を保存）をチェックアウト
+   - Private リポジトリのファイルを `private/` にコピー
+   - ビルド実行（`npm run build`）
+   - Cloudflare Pages に Direct Upload
+
+### セットアップ
+
+初回セットアップ時は `notes/github-actions-setup.md` を参照してください。
+
+- Private リポジトリの作成
+- GitHub Personal Access Token (PAT) の作成
+- Cloudflare API Token の作成
+- GitHub Secrets の設定
 
 ## ライセンス
 
