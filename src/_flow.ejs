@@ -8,7 +8,9 @@
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">要件定義・技術選定</h3>
 							<p class="p-portfolio__flow-text">
-								ChatGPTでポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、Cursorで開発計画とチェックリストなどを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。
+								ChatGPTでポートフォリオに必要な項目を洗い出し、要件を明確化しました。Cursor用の汎用指示書（mdc）を設置し、Cursorで開発計画とチェックリストなどを作成。以降はこのチェックリストに沿って開発を進めることで、一貫性と品質を担保しました。<br>
+								但し、当然ですが全てが最初に作らせた開発計画通りに進むわけではなく、都度で計画や選定先の修正・追加・削除・方向転換が発生しました。<br>
+								これは基本的には機能をモリモリにしすぎたせいであり、途中から楽しくなってきて自分のスキルセットにはない機能にも勉強がてら手を出したせいでもあります。
 							</p>
 						</div>
 					</li>
@@ -17,7 +19,7 @@
 							<h3 class="p-portfolio__flow-title">デザイン生成・プロトタイプ作成</h3>
 							<p class="p-portfolio__flow-text">
 								ChatGPTの作ったプロンプトを元に<a href="https://www.createanything.com/" target="_blank" rel="noopener noreferrer">Anything</a>でReact+Vite+Tailwindのプロトタイプデザインを生成し、デザインを作成。デザイナーのポートフォリオサイトではないため、あまりここで時間はかけずに最大公約数的なデザインでほぼポン出しを採用しました。<br>
-								生成されたソースをダウンロードして中身を確認しますが、Reactに対して薄い理解しかないため、しばしフリーズの時間。
+								生成されたソースをダウンロードして中身を確認しますが、Reactに対して薄い理解しかないため、ここでしばしフリーズとトライアンドエラー。
 							</p>
 						</div>
 					</li>
@@ -25,9 +27,9 @@
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">技術スタック移行・環境構築</h3>
 							<p class="p-portfolio__flow-text">
-								ChatGPTとCursor Proに相談しながらReact->HTML+CSS+JSへ変換し、HTMLからTailwindのClassを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装しました。<br>
+								ChatGPTとCursor Proに相談しながらReact->HTML+CSSへ変換し、HTMLからTailwindのClassを剥がしてPDFLOCSS形式へ移行。Gulp+SCSSの開発環境を構築し、BrowserSyncでのwatch、Stream形式でのスタイル注入を実装しました。<br>
 								ここでAnythingのデザイン・中身がざっくりしているために調整と加筆にかなり手間取りました。<br>
-								初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると思い、諦め。<br>
+								初手でもっとがっつり叩きまくってAnythingに作らせたほうが良かったのかもしれないとも思いましたが、デザイナーではないので言語化や指示にも限度があると悟り、諦めました。<br>
 								各所の文言はさすがにLLMに任せるにも限度があったので加筆修正多数。
 							</p>
 						</div>
@@ -36,7 +38,9 @@
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">実装・モジュール化</h3>
 							<p class="p-portfolio__flow-text">
-								この時点では公開したくない個人情報やコンテンツデータはダミーです。作ったHTMLをパーシャル（_header.ejs、_footer.ejs等）に分割し、GitHub公開時に公開したくない個人情報やコンテンツデータをCSVに外部化し、EJS->HTMLのビルド時に読み込む仕組みを構築しました。
+								この時点では公開したくない個人情報やコンテンツデータはダミーです。作ったHTMLをパーシャル（_header.ejs、_footer.ejs等）に分割し、GitHub公開時に公開したくない個人情報やコンテンツデータをCSVに外部化し、EJS->HTMLのビルド時に読み込む仕組みを構築しました。<br>
+								デザイン上で追加したい動的なコンテンツがあったため、LLMを使ってJavaScriptで実装しました。<br>
+								見出しの文字がランダムに入れ替わる演出・昼夜テーマの切り替え機能・スライダーのみは比較的容易にスルッと実装できましたが、スライダー内の画像クリックで拡大表示する機能（…の拡大前/拡大後のトゥイーン）・グリッドによる差し込みと詳細拡大機能はかなり手間取りました。
 							</p>
 						</div>
 					</li>
@@ -44,7 +48,7 @@
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">品質保証・最適化</h3>
 							<p class="p-portfolio__flow-text">
-								WAI-ARIA属性の確認、キーボード操作の検証、Lighthouseによるアクセシビリティチェックを実施。パフォーマンス最適化としてクリティカルCSSの抽出、フォント最適化を実施。デプロイ前にはビルド確認、リンク切れチェック、クロスブラウザテストを徹底しました。
+								WAI-ARIA属性の確認、キーボード操作の検証、LLMによるアクセシビリティチェックを実施。
 							</p>
 						</div>
 					</li>
@@ -53,9 +57,9 @@
 							<h3 class="p-portfolio__flow-title">CI/CD・デプロイ</h3>
 							<p class="p-portfolio__flow-text">
 								当初は ChatGPT の提案した Netlify での自動デプロイを検討しましたが、無料プランでは閲覧パスワード制限（BASIC 認証相当）が現在は提供されていなかったため、勉強の一環として自動デプロイが出来るところまで一旦進め、最終的には採用を見送りました。<br>
-								次に確実に現時点でBASIC認証が利用できるCloudflare Pagesの自動デプロイを採用しましたが、非公開データ（CSVや画像）を `.gitignore` により公開リポジトリへ含めていないため、GitHub連携による通常のPagesビルドでは非公開データがビルドに取り込まれない問題がありました。<br>
+								次に確実に現時点で確実にBASIC認証が利用できるCloudflare Pagesの自動デプロイを採用しましたが、非公開データ（CSVや画像）を `.gitignore` により公開リポジトリへ含めていないため、GitHub連携による通常のPagesビルドでは非公開データがビルドに取り込まれない問題がありました。<br>
 								解決策として、非公開データを別非公開リポジトリで管理し、GitHub Actionsで Public リポジトリと Private リポジトリの両方をチェックアウトして統合ビルドを実行。その後、`wrangler` による Cloudflare Pages への Direct Upload を行うデプロイパイプラインを構築しました。これにより、非公開データを含むサイトを BASIC 認証付きの Cloudflare Pages に自動デプロイできるようになりました。<br>
-								結果として、個人情報や公開したくないデータを別リポジトリで分離して管理し、ビルド時にのみ統合する構成になったため、全体としてデータ保護の観点でもより安全性が高い運用になったと感じています。
+								結果として、個人情報やGithubに公開したくないデータを別リポジトリで分離して管理し、ビルド時にのみ統合する構成になったため、全体としてデータ保護の観点でもより安全性が高い運用になったと感じています。
 							</p>
 						</div>
 					</li>
@@ -63,7 +67,8 @@
 						<div class="p-portfolio__flow-content">
 							<h3 class="p-portfolio__flow-title">リリース・運用確認</h3>
 							<p class="p-portfolio__flow-text">
-								本番環境での動作確認と最終調整を実施。実際のデプロイ後の動作を確認し、パフォーマンス指標やアクセシビリティスコアを検証。必要に応じて微調整を行い、安定した運用が可能な状態まで整備しました。
+								本番環境での動作確認と最終調整を実施。実際のデプロイ後の動作を確認し、パフォーマンス指標やアクセシビリティスコアを検証。<br>
+								想定した以上のそこそこの工数がかかりましたが、新しい技術も学べて楽しかったです。
 							</p>
 						</div>
 					</li>

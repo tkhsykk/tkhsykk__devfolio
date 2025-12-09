@@ -1,15 +1,23 @@
 		<nav class="p-portfolio__nav" aria-label="メインナビゲーション">
+			<div class="p-portfolio__nav-backdrop"></div>
 			<div class="l-container p-portfolio__nav-inner">
 				<h1 class="p-portfolio__nav-logo u-font-en">[devfolio]</h1>
-				<ul class="p-portfolio__nav-links">
-					<li><a href="#hero" class="p-portfolio__nav-link">Top</a></li>
-					<li><a href="#skills" class="p-portfolio__nav-link">Skills</a></li>
-					<li><a href="#works" class="p-portfolio__nav-link">Works</a></li>
-					<li><a href="#notes" class="p-portfolio__nav-link">Tech Notes</a></li>
-					<li><a href="#about" class="p-portfolio__nav-link">About</a></li>
-					<li><a href="#flow" class="p-portfolio__nav-link">How I Built</a></li>
-					<li><a href="#contact" class="p-portfolio__nav-link">Contact</a></li>
-				</ul>
+				<button class="p-portfolio__hamburger" type="button" aria-expanded="false" aria-controls="nav-content" aria-label="メニューを開く" data-nav-toggle>
+					<span class="p-portfolio__hamburger-line"></span>
+					<span class="p-portfolio__hamburger-line"></span>
+				</button>
+
+				<div class="p-portfolio__nav-content" id="nav-content" data-nav-content>
+					<ul class="p-portfolio__nav-links">
+						<li><a href="#hero" class="p-portfolio__nav-link">Top</a></li>
+						<li><a href="#skills" class="p-portfolio__nav-link">Skills</a></li>
+						<li><a href="#works" class="p-portfolio__nav-link">Works</a></li>
+						<li><a href="#notes" class="p-portfolio__nav-link">Tech Notes</a></li>
+						<li><a href="#flow" class="p-portfolio__nav-link">How I Built</a></li>
+						<li><a href="#about" class="p-portfolio__nav-link">About</a></li>
+						<li><a href="#contact" class="p-portfolio__nav-link">Contact</a></li>
+					</ul>
+				</div>
 			</div>
 		</nav>
 

@@ -16,10 +16,15 @@
 export default class ScrollAnimation {
 	constructor() {
 		this.targets = document.querySelectorAll('[data-scroll-trigger]');
+// スマホ判定（768px以下）
+const isMobile = window.innerWidth < 768;
+
 		this.options = {
 			root: null,
-			rootMargin: '0px',
-			threshold: 0.2,
+			// スマホ時は下方向に余白を持たせて、画面に入る前からトリガーされやすくする
+			rootMargin: isMobile ? '0px 0px 100px 0px' : '0px',
+				// スマホ時は要素が少しでも見えたらトリガー（0.05 = 5%）
+				threshold: isMobile ? 0.05 : 0.2,
 		};
 
 		this.init();
