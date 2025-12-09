@@ -576,16 +576,24 @@
 		}
 
 		&-content {
-			padding: $spacing-4;
+			padding: $spacing-4 0 0;
 			display: flex;
 			flex-direction: column;
+
+			@include mq(md) {
+				padding: $spacing-4;
+			}
 		}
 
 		&-title {
-			font-size: $font-size-lg;
+			font-size: $font-size-base;
 			font-weight: $font-weight-semibold;
 			margin: 0;
 			text-align: center;
+
+			@include mq(md) {
+				font-size: $font-size-lg;
+			}
 		}
 
 		&-meta {
@@ -753,8 +761,12 @@
 		&-details-content {
 			position: relative;
 			background-color: var(--color-text);
-			padding: $spacing-6 $spacing-12 $spacing-1 $spacing-12;
+			padding: $spacing-6;
 			width: auto;
+
+			@include mq(md) {
+				padding: $spacing-6 $spacing-12 $spacing-1 $spacing-12;
+			}
 		}
 
 		&-close {
@@ -798,10 +810,11 @@
 		&-details-grid {
 			display: grid;
 			grid-template-columns: 1fr;
-			gap: $spacing-8;
+			gap: $spacing-2;
 
 			@include mq(md) {
 				grid-template-columns: 1fr 1fr;
+				gap: $spacing-8;
 			}
 		}
 
@@ -825,17 +838,21 @@
 			display: flex;
 			flex-direction: column;
 			gap: $spacing-4;
-			padding-left: $spacing-4;
 
 			@include mq(md) {
-				padding-left: 0;
+				padding-left: $spacing-4;
+				gap: $spacing-4;
 			}
 		}
 
 		&-details-title {
-			font-size: $font-size-2xl;
+			font-size: $font-size-lg;
 			font-weight: $font-weight-semibold;
 			color: var(--color-bg-light);
+
+			@include mq(md) {
+				font-size: $font-size-2xl;
+			}
 		}
 
 		&-details-divider {
@@ -891,17 +908,20 @@
 		&-list {
 			display: flex;
 			flex-direction: column;
-			gap: $spacing-8;
+			gap: $spacing-6;
 			max-width: 48rem;
 			margin: 0 auto;
 			counter-reset: flow-counter;
+			@include mq(md) {
+				gap: $spacing-8;
+			}
 		}
 
 		&-item {
 			display: flex;
 			align-items: flex-start;
-			padding: $spacing-6;
-			padding-left: calc(3rem + #{$spacing-6} + #{$spacing-6});
+			padding: $spacing-4 $spacing-6;
+			//padding-left: calc(2.5rem + #{$spacing-4} + #{$spacing-3});
 			background-size: auto auto;
 			background-color: var(--color-bg);
 			background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--color-bg-light) 10px, var(--color-bg-light) 12px );
@@ -911,11 +931,11 @@
 			&::before {
 				content: counter(flow-counter, decimal-leading-zero);
 				position: absolute;
-				left: $spacing-6;
-				top: $spacing-6;
+				left: $spacing-4;
+				top: $spacing-4;
 				flex-shrink: 0;
-				width: 3rem;
-				height: 3rem;
+				width: 2.5rem;
+				height: 2.5rem;
 				display: flex;
 				align-items: center;
 				justify-content: center;
@@ -923,7 +943,7 @@
 				color: $color-white;
 				font-weight: $font-weight-semibold;
 				font-family: $font-family-en;
-				font-size: $font-size-lg;
+				font-size: $font-size-base;
 				border-radius: $border-radius-full;
 				box-shadow: $shadow-sm;
 			}
@@ -949,19 +969,29 @@
 		&-title {
 			font-size: $font-size-lg;
 			font-weight: $font-weight-semibold;
-			margin-bottom: $spacing-3;
 			color: var(--color-text);
+			padding-top: $spacing-1;
+			padding-left: calc(2.5rem + #{$spacing-2});
 
 			@include mq(md) {
+				padding-top: unset;
+				padding-left: unset;
+				margin-bottom: $spacing-3;
 				font-size: $font-size-xl;
 			}
 		}
 
 		&-text {
-			font-size: $font-size-base;
+			font-size: $font-size-sm;
 			line-height: $line-height-relaxed;
 			opacity: 0.8;
 			color: var(--color-text);
+			margin-top: $spacing-4;
+
+			@include mq(md) {
+				margin-top: unset;
+				font-size: $font-size-base;
+			}
 		}
 	}
 
@@ -1022,14 +1052,18 @@
 		}
 
 		&-avatar {
-			width: 12rem;
-			height: 12rem;
+			width: 8rem;
+			height: 8rem;
 			color: $color-white;
 			background: linear-gradient(to bottom right, var(--color-primary), var(--color-text));
 			border-radius: $border-radius-full;
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			@include mq(md) {
+				width: 12rem;
+				height: 12rem;
+			}
 		}
 
 		&-name {
@@ -1052,11 +1086,12 @@
 		&-list {
 			display: grid;
 			grid-template-columns: repeat(1, 1fr);
-			gap: $spacing-4;
+			gap: $spacing-2;
 			font-size: $font-size-sm;
 
 			@include mq(sm) {
 				grid-template-columns: repeat(2, 1fr);
+				gap: $spacing-4;
 			}
 		}
 

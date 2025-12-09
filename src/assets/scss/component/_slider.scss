@@ -194,7 +194,7 @@
 		}
 
 		&--prev {
-			left: -42px;
+			left: -20px;
 
 			@include mq(md) {
 				left: $spacing-4;
@@ -209,7 +209,7 @@
 		}
 
 		&--next {
-			right: -42px;
+			right: -20px;
 
 			@include mq(md) {
 				right: $spacing-4;
