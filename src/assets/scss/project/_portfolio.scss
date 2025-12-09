@@ -125,7 +125,7 @@
 			font-size: $font-size-4xl;
 			font-weight: $font-weight-medium;
 			line-height: $line-height-tight;
-			margin-bottom: $spacing-12;
+			margin-bottom: $spacing-20;
 			color: var(--color-text);
 			letter-spacing: -0.02em;
 			position: relative;
@@ -160,14 +160,15 @@
 		}
 
 		&-description {
-			font-size: $font-size-xl;
-			font-weight: $font-weight-light;
+			font-size: $font-size-lg;
+			font-weight: $font-weight-normal;
 			width: min(48rem, 90vw);
 			margin-left: auto;
 			margin-right: auto;
-			margin-bottom: $spacing-12;
+			margin-bottom: $spacing-20;
 			line-height: $line-height-relaxed;
-			opacity: 0.8;
+			opacity: 0.7;
+			text-align: left;
 		}
 
 		&-concepts {
@@ -189,6 +190,8 @@
 				margin-bottom: $spacing-2;
 				color: var(--color-text);
 				flex-shrink: 0;
+				min-width: 5em;
+				text-align: left;
 			}
 
 			&-description {
@@ -780,13 +783,14 @@
 		}
 
 		&-title {
-			font-size: $font-size-lg;
-			font-weight: $font-weight-semibold;
+			font-size: $font-size-base;
+			font-weight: $font-weight-medium;
 			margin-bottom: $spacing-2;
 		}
 
 		&-text {
 			font-size: $font-size-sm;
+			font-weight: $font-weight-light;
 			opacity: 0.7;
 			line-height: $line-height-relaxed;
 		}
