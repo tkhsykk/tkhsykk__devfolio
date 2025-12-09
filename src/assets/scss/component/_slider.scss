@@ -41,11 +41,44 @@
 
 		a {
 			display: block;
+			position: relative;
 			cursor: zoom-in;
-			transition: opacity $transition-base;
+			overflow: hidden;
+			transition: all $transition-base;
 
-			&:hover {
-				opacity: 0.9;
+			&::after {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba($color-black, 0.3);
+				background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size: 40px;
+				opacity: 0;
+				transition: opacity $transition-base;
+				pointer-events: none;
+				z-index: 1;
+				}
+
+				&:hover,
+				&:focus-visible {
+					&::after {
+						opacity: 1;
+					}
+
+					img {
+						transform: scale(1.05);
+					}
+				}
+
+				// キーボード操作時のフォーカスリング
+				&:focus-visible {
+					outline: 2px solid $color-primary;
+					outline-offset: -2px;
 			}
 		}
 
@@ -55,6 +88,8 @@
 			height: auto;
 			display: block;
 			object-fit: cover;
+			transition: transform 0.5s ease;
+			will-change: transform;
 		}
 	}
 
@@ -63,57 +98,102 @@
 		top: 50%;
 		transform: translateY(-50%);
 		z-index: 2;
-		background-color: rgba($color-white, 0.9);
-		//border: 1px solid rgba($color-text, 0.1);
-		//border-radius: 50%;
-		width: 48px;
-		height: 48px;
+		width: 56px;
+		height: 56px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
 		padding: 0;
-		transition: background-color $transition-base, border-color $transition-base;
+		border: 1px solid rgba($color-white, 0.3);
+		border-radius: 50%;
+		background-color: rgba($color-white, 0.1);
+		backdrop-filter: blur(8px);
+		box-shadow: 0 4px 12px rgba($color-black, 0.1);
+		transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+		color: $color-text;
+		opacity: 0; // 初期状態は非表示（ホバーで表示させるなどの演出も可能だが、今回は常時表示でアクセシビリティ確保しつつ、スライドエリアホバーで強調など）
+
+		// 常時表示に戻す（UX考慮）
+		opacity: 1;
 
 		&:hover,
 		&:focus-visible {
-			background-color: $color-white;
-			border-color: rgba($color-text, 0.2);
+			background-color: rgba($color-white, 0.9);
+			border-color: transparent;
+			box-shadow: 0 8px 24px rgba($color-black, 0.15);
+			transform: translateY(-50%) scale(1.1);
+			color: $color-black;
+
+			svg {
+				stroke-width: 2.5;
+			}
+			}
+
+			&:focus-visible {
 			outline: 2px solid $color-primary;
-			outline-offset: 0;
+			outline-offset: 2px;
 		}
 
 		&:active {
-			background-color: rgba($color-white, 0.8);
+			transform: translateY(-50%) scale(0.95);
+			transition-duration: 0.1s;
 		}
 
 		&:disabled {
-			opacity: 0.5;
+			opacity: 0.3;
 			cursor: not-allowed;
+			pointer-events: none;
 		}
 
 		svg {
 			width: 24px;
 			height: 24px;
-			color: $color-text;
+			stroke: currentColor;
+			transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+			stroke-width 0.3s ease;
 			pointer-events: none;
 		}
 
 		&--prev {
-			left: 0;
+			left: $spacing-4;
+
+			&:hover,
+			&:focus-visible {
+				svg {
+					transform: translateX(-4px);
+				}
+			}
 		}
 
 		&--next {
-			right: 0;
+			right: $spacing-4;
+
+			&:hover,
+			&:focus-visible {
+				svg {
+					transform: translateX(4px);
+				}
+			}
 		}
 
 		@include mq(sm) {
-			width: 30px;
-			height: 30px;
+			width: 44px;
+			height: 44px;
+			background-color: rgba($color-white, 0.8); // スマホではタッチしやすいように少し不透明度上げる
+			backdrop-filter: blur(4px);
+
+			&--prev {
+				left: $spacing-2;
+			}
+
+			&--next {
+				right: $spacing-2;
+			}
 
 			svg {
-				width: 24px;
-				height: 24px;
+				width: 20px;
+				height: 20px;
 			}
 		}
 	}
