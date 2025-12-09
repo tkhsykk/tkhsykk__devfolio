@@ -26,8 +26,8 @@ popover 本体（吹き出しボックス）
 	position: relative;
 	//position: absolute;
 	position-area: top span-right;
-	margin: 0.85em 0;
-	max-width: rem(320);
+	margin: 0.85em .5em;
+	max-width: -webkit-fill-available;
 	width: max-content;
 
 	background-color: rgba(20, 20, 30, 0.6);
@@ -46,6 +46,10 @@ popover 本体（吹き出しボックス）
 
 	opacity: 0;
 	transform: translateY(0) scale(0.8);
+
+	@include mq(md) {
+		max-width: rem(320);
+	}
 
 	a{
 		color: $color-white;
