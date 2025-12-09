@@ -44,3 +44,9 @@ new Cursor();
 import TextScramble from './modules/text-scramble.js';
 new TextScramble();
 
+
+/* 10. ナビゲーション */
+import {
+	initNavigation
+} from './modules/navigation.js';
+initNavigation();
