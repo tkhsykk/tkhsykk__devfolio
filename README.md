@@ -4,13 +4,13 @@
 
 ## 目的
 
-このプロジェクトは、LLM（ChatGPT/Cursor）と人間が協働して開発したポートフォリオサイトです。
+このプロジェクトは、LLM（ChatGPT/Cursor/CODEX）と人間が協働して開発したポートフォリオサイトです。
 
 ### 主な目的
 
 1. **ポートフォリオの作成**: 転職活動に向けて、実装コードとデザインの両方を示せるポートフォリオサイトを作成
 2. **LLM協働開発の実践**: 「できるだけ人間が手を動かさない」という方針で、LLM中心の開発フローを試行
-3. **技術スタックの実演**: 実際の開発で使用している技術スタック（Gulp、SCSS、PDFLOCSS設計、モジュール化されたJavaScript）を実装
+3. **技術スタックの実演**: 実際の開発で使用している技術スタック（Gulp、SCSS、PDFLOCSS設計、モジュール化されたJavaScript等）を実装
 
 ### コンセプト
 
@@ -32,6 +32,15 @@
 npm install
 ```
 
+#### 環境変数の設定（ローカル開発時）
+
+コンテンツデータ（`portfolio.csv`）は別の非公開リポジトリ（[tkhsykk__devfolio-asset_private](https://github.com/tkhs/tkhsykk__devfolio-asset_private)）で管理されています。
+
+ローカル開発時は、別リポジトリをcloneした後、プロジェクトルートに `.env` ファイルを作成して、CSVファイルのパスを設定してください：
+
+**注意**: `.env` ファイルは `.gitignore` に含まれているため、Gitにはコミットされません。  
+各開発者は自分の環境に合わせて `.env` ファイルを作成してください。
+
 ### 開発
 
 ```bash
@@ -44,14 +53,12 @@ SCSSやJavaScriptの変更は自動でコンパイルされ、ブラウザが自
 
 ### コンテンツの編集
 
-サイトのコンテンツ（Works、Tech Notes、About、Contact）は `private/portfolio.csv` で管理されています。
+サイトのコンテンツ（Works、Tech Notes、About、Contact）は別リポジトリ（[tkhsykk__devfolio-asset_private](https://github.com/tkhs/tkhsykk__devfolio-asset_private)）の `portfolio.csv` で管理されています。
 
-```bash
-# CSVファイルを編集
-# private/portfolio.csv を編集すると、次回のビルド時に反映されます
-```
+ローカル開発時は、`.env` ファイルで設定したパスのCSVファイルを編集してください。  
+編集後、`npm run dev` を実行中であれば自動的に再ビルドされ、ブラウザが自動リロードされます。
 
-CSVファイルを編集後、`npm run dev` を実行中であれば自動的に再ビルドされ、ブラウザが自動リロードされます。  
+**本番環境（Cloudflare Pages / GitHub Actions）**: 別リポジトリから自動的に `portfolio.csv` が読み込まれます。  
 手動でビルドする場合は `npm run build` を実行してください。
 
 #### CSVファイルの形式
@@ -103,9 +110,9 @@ tkhsykk__devfolio/
 │           ├── utility/    # ユーティリティ（.u-*）
 │           ├── project/    # プロジェクト固有（.p-*）
 │           └── plugins/   # プラグイン用スタイル
-├── private/                # コンテンツデータ
-│   ├── portfolio.csv       # コンテンツデータ（Works、Tech Notes、About、Contact）
+├── private/                # コンテンツデータ（ローカル開発用）
 │   └── images/             # 画像ファイル（ビルド時にsite/images/にコピー）
+│                           # 注意: portfolio.csvは別リポジトリで管理（.envでパス指定）
 ├── site/                   # ビルド出力先（.gitignore対象）
 │   └── index.html          # ビルド後のHTML（CSS、JS、画像はビルド時に生成）
 ├── create-anything/        # プロトタイプ生成時のファイル（.gitignore対象）
@@ -117,20 +124,6 @@ tkhsykk__devfolio/
 ├── package.json            # 依存関係・スクリプト定義
 └── README.md               # このファイル
 ```
-
-### .gitignore対象のディレクトリ
-
-以下のディレクトリは`.gitignore`で無視されており、リポジトリには含まれません：
-
-- **node_modules/**: npmパッケージの依存関係（`npm install`で生成）
-- **site/**: ビルド出力先（`npm run build`で生成）
-- **create-anything/mobile/**: プロトタイプ生成時に作成されたReact Native/Expoプロジェクト
-- **create-anything/web/**: プロトタイプ生成時に作成されたReact Routerプロジェクト
-- **.vscode/**: Visual Studio Codeの設定ファイル
-- **.idea/**: IntelliJ IDEAの設定ファイル
-- **.cache/**: ビルドキャッシュ
-- **.temp/**: 一時ファイル
-- **logs/**: ログファイル
 
 ### 主要ディレクトリの説明
 
@@ -189,8 +182,16 @@ PDFLOCSS設計に基づいたSCSSファイル構造。
 
 ## デプロイ
 
-Cloudflare Pagesを使用して自動デプロイしています。BASIC認証を設定済みです。  
-`main`ブランチへのプッシュで自動的にビルド・デプロイが実行されます。
+本プロジェクトでは、デプロイは Cloudflare Pages によって main ブランチの更新をトリガーに自動実行されます。
+GitHub Actions はデプロイ前の CI として機能しており、Pull Request 作成時に以下のチェックを自動で実行します。
+
+- Lint / Format チェック
+- ビルドエラーの検出
+- 必要に応じたユニットテスト
+- その他、デプロイ前に検証すべき項目
+
+これにより、main ブランチにマージされるコードの品質を担保し、Cloudflare Pages のビルド失敗を未然に防ぐ設計としています。
+なお、GitHub Actions 自体はデプロイ処理を実行せず、あくまで Cloudflare Pages による本番デプロイの前段階として CI を担当します。
 
 ## ライセンス
 
