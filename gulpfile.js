@@ -3,6 +3,7 @@
  * SCSSコンパイル、HTML処理、JavaScriptバンドル、開発サーバーを管理
  */
 
+import 'dotenv/config';
 import gulp from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
@@ -41,7 +42,13 @@ const plumberOptions = {
 
 const srcDir = join(__dirname, 'src');
 const distDir = join(__dirname, 'site');
-const csvPath = join(__dirname, 'private', 'portfolio.csv');
+
+/**
+ * CSVファイルのパスを取得
+ * 環境変数 PORTFOLIO_CSV_PATH が設定されている場合はそれを使用
+ * それ以外の場合はデフォルトの private/portfolio.csv を使用
+ */
+const csvPath = process.env.PORTFOLIO_CSV_PATH || join(__dirname, 'private', 'portfolio.csv');
 const imagesSrcDir = join(__dirname, 'private', 'images');
 const imagesDistDir = join(distDir, 'images');
 
@@ -129,6 +136,11 @@ function processImagePath(value, selector) {
  */
 function loadCsvData() {
 	try {
+		// ファイルの存在確認
+		if (!existsSync(csvPath)) {
+			throw new Error(`ENOENT: no such file or directory, open ${csvPath}`);
+		}
+
 		const csvContent = readFileSync(csvPath, 'utf8');
 		const parsed = Papa.parse(csvContent, {
 			header: false,
@@ -215,7 +227,11 @@ function loadCsvData() {
 
 		return result;
 	} catch (error) {
-		console.error('CSV読み込みエラー:', error);
+		if (error.code === 'ENOENT' || error.message.includes('ENOENT')) {
+			console.error(`\n❌ CSVファイルが見つかりません: ${csvPath}`);
+		} else {
+			console.error('CSV読み込みエラー:', error);
+		}
 		return { works: [], notes: [], about: [], contact: [] };
 	}
 }
@@ -251,12 +267,22 @@ function compileEjs(minify = false) {
  * @returns {Stream}
  */
 function compileScss(useSourcemaps = true) {
-	let stream = gulp
-		.src(paths.scss.src)
-		.pipe(plumber(plumberOptions))
-		.pipe(sass().on('error', sass.logError))
-		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
-		.pipe(
+	let stream = gulp.src(paths.scss.src).pipe(plumber(plumberOptions));
+
+	// ソースマップを初期化（最初に呼ぶ必要がある）
+	if (useSourcemaps) {
+		stream = stream.pipe(sourcemaps.init());
+	}
+
+	// SCSSコンパイル
+	stream = stream.pipe(sass().on('error', sass.logError));
+
+	// PostCSS処理
+	stream = stream.pipe(postcss([autoprefixer(), combineMediaQuery()]));
+
+	// 開発環境では minify をスキップ（ソースマップを壊さないため）
+	if (!useSourcemaps) {
+		stream = stream.pipe(
 			cleanCSS({
 				level: {
 					1: {
@@ -265,11 +291,11 @@ function compileScss(useSourcemaps = true) {
 				},
 			})
 		);
+	}
 
+	// ソースマップを書き込み
 	if (useSourcemaps) {
-		stream = stream
-			.pipe(sourcemaps.init())
-			.pipe(sourcemaps.write('.'));
+		stream = stream.pipe(sourcemaps.write('.'));
 	}
 
 	stream = stream.pipe(gulp.dest(paths.scss.dist));
