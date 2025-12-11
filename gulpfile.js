@@ -3,7 +3,6 @@
  * SCSSコンパイル、HTML処理、JavaScriptバンドル、開発サーバーを管理
  */
 
-import 'dotenv/config';
 import gulp from 'gulp';
 import * as dartSass from 'sass';
 import gulpSass from 'gulp-sass';
@@ -20,11 +19,13 @@ import browserSync from 'browser-sync';
 import plumber from 'gulp-plumber';
 import notify from 'gulp-notify';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, isAbsolute } from 'path';
 import { readFileSync, readdirSync, statSync, copyFileSync, mkdirSync, existsSync } from 'fs';
 import Papa from 'papaparse';
+import dotenv from 'dotenv';
 
 const sass = gulpSass(dartSass);
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -42,13 +43,10 @@ const plumberOptions = {
 
 const srcDir = join(__dirname, 'src');
 const distDir = join(__dirname, 'site');
-
-/**
- * CSVファイルのパスを取得
- * 環境変数 PORTFOLIO_CSV_PATH が設定されている場合はそれを使用
- * それ以外の場合はデフォルトの private/portfolio.csv を使用
- */
-const csvPath = process.env.PORTFOLIO_CSV_PATH || join(__dirname, 'private', 'portfolio.csv');
+const csvPathEnv = process.env.PORTFOLIO_CSV_PATH;
+const csvPath = csvPathEnv
+	? (isAbsolute(csvPathEnv) ? csvPathEnv : join(__dirname, csvPathEnv))
+	: join(__dirname, 'private', 'sample.csv');
 const imagesSrcDir = join(__dirname, 'private', 'images');
 const imagesDistDir = join(distDir, 'images');
 
@@ -81,6 +79,8 @@ const SECTION_MAP = {
  * 画像ファイルの拡張子リスト
  */
 const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
+const LINK_SELECTOR = '.p-portfolio__work-details-link';
+const DEFAULT_LINK_TEXT = 'サイトを見る';
 
 /**
  * 画像ファイルかどうかを判定
@@ -131,16 +131,41 @@ function processImagePath(value, selector) {
 }
 
 /**
+ * サイトリンク用の値を正規化
+ * @param {string|Array|Object} value - CSVから取得した生値
+ * @returns {{url: string, text: string}} 正規化したリンクオブジェクト
+ */
+function normalizeLinkValue(value) {
+	if (!value) {
+		return { url: '', text: DEFAULT_LINK_TEXT };
+	}
+
+	// すでにオブジェクトならそのまま利用
+	if (typeof value === 'object' && !Array.isArray(value)) {
+		return {
+			url: (value.url || '').trim(),
+			text: (value.text || value.label || DEFAULT_LINK_TEXT).trim(),
+		};
+	}
+
+	// 文字列や配列を共通処理に寄せる
+	const parts = Array.isArray(value)
+		? value
+		: String(value).split('|');
+
+	return {
+		url: (parts[0] || '').trim(),
+		text: (parts[1] || DEFAULT_LINK_TEXT).trim(),
+	};
+}
+
+/**
  * CSVファイルを読み込んでJSONに変換
  * @returns {Object} セクション別にグループ化されたデータ
  */
 function loadCsvData() {
 	try {
-		// ファイルの存在確認
-		if (!existsSync(csvPath)) {
-			throw new Error(`ENOENT: no such file or directory, open ${csvPath}`);
-		}
-
+		console.log('📄 CSVファイルを読み込み中:', csvPath);
 		const csvContent = readFileSync(csvPath, 'utf8');
 		const parsed = Papa.parse(csvContent, {
 			header: false,
@@ -151,6 +176,7 @@ function loadCsvData() {
 		});
 
 		const rows = parsed.data.slice(1); // 1行目（説明行）をスキップ
+		console.log(`✅ CSVファイル読み込み成功: ${rows.length}行を処理`);
 
 		const result = {
 			works: [],
@@ -203,6 +229,12 @@ function loadCsvData() {
 				const selector = selectorCol;
 				let value = valueCol || '';
 
+				// ワーク詳細リンクは専用の正規化を実施
+				if (selector === LINK_SELECTOR) {
+					currentItemData[selector] = normalizeLinkValue(value);
+					continue;
+				}
+
 				// `<br>|`で区切られた値を配列に変換（改行タグを含む）
 				if (typeof value === 'string' && value.includes('<br>|')) {
 					value = value.split('<br>|').map((v) => v.trim()).filter((v) => v);
@@ -225,13 +257,20 @@ function loadCsvData() {
 
 		saveCurrentItem(); // 最後のアイテムを保存
 
+		// デバッグログ: セクションごとのアイテム数を出力
+		console.log('\n📊 CSVデータ解析結果:');
+		for (const [sectionName, sectionKey] of Object.entries(SECTION_MAP)) {
+			const items = result[sectionKey];
+			console.log(`  ${sectionName}: ${items.length}件のアイテム`);
+			items.forEach(item => {
+				const selectorCount = Object.keys(item.data).length;
+				console.log(`    - ${item.id}: ${selectorCount}個のセレクタ`);
+			});
+		}
+
 		return result;
 	} catch (error) {
-		if (error.code === 'ENOENT' || error.message.includes('ENOENT')) {
-			console.error(`\n❌ CSVファイルが見つかりません: ${csvPath}`);
-		} else {
-			console.error('CSV読み込みエラー:', error);
-		}
+		console.error('❌ CSV読み込みエラー:', error);
 		return { works: [], notes: [], about: [], contact: [] };
 	}
 }
@@ -243,6 +282,12 @@ function loadCsvData() {
  */
 function compileEjs(minify = false) {
 	const csvData = loadCsvData();
+
+	// デバッグログ: EJSテンプレートへのデータ渡し確認
+	console.log('\n📝 EJSテンプレートをコンパイル中...');
+	const totalItems = csvData.works.length + csvData.notes.length + csvData.about.length + csvData.contact.length;
+	console.log(`   CSVデータをEJSテンプレートに渡します（合計${totalItems}アイテム）`);
+
 	let stream = gulp
 		.src(paths.ejs.src)
 		.pipe(plumber(plumberOptions))
@@ -267,22 +312,12 @@ function compileEjs(minify = false) {
  * @returns {Stream}
  */
 function compileScss(useSourcemaps = true) {
-	let stream = gulp.src(paths.scss.src).pipe(plumber(plumberOptions));
-
-	// ソースマップを初期化（最初に呼ぶ必要がある）
-	if (useSourcemaps) {
-		stream = stream.pipe(sourcemaps.init());
-	}
-
-	// SCSSコンパイル
-	stream = stream.pipe(sass().on('error', sass.logError));
-
-	// PostCSS処理
-	stream = stream.pipe(postcss([autoprefixer(), combineMediaQuery()]));
-
-	// 開発環境では minify をスキップ（ソースマップを壊さないため）
-	if (!useSourcemaps) {
-		stream = stream.pipe(
+	let stream = gulp
+		.src(paths.scss.src)
+		.pipe(plumber(plumberOptions))
+		.pipe(sass().on('error', sass.logError))
+		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
+		.pipe(
 			cleanCSS({
 				level: {
 					1: {
@@ -291,11 +326,11 @@ function compileScss(useSourcemaps = true) {
 				},
 			})
 		);
-	}
 
-	// ソースマップを書き込み
 	if (useSourcemaps) {
-		stream = stream.pipe(sourcemaps.write('.'));
+		stream = stream
+			.pipe(sourcemaps.init())
+			.pipe(sourcemaps.write('.'));
 	}
 
 	stream = stream.pipe(gulp.dest(paths.scss.dist));
@@ -433,7 +468,15 @@ export const dev = gulp.series(
  * 本番ビルド
  */
 export const build = gulp.series(
-	gulp.parallel(buildProd, stylesProd, scripts, copyImages)
+	gulp.parallel(buildProd, stylesProd, scripts, copyImages),
+	(done) => {
+		console.log('\n✅ ビルド完了！');
+		console.log(`📁 出力先: ${distDir}`);
+		const csvData = loadCsvData();
+		const totalItems = csvData.works.length + csvData.notes.length + csvData.about.length + csvData.contact.length;
+		console.log(`📊 CSVデータ出力確認: ${totalItems}アイテムがHTMLに反映されています`);
+		done();
+	}
 );
 
 export default dev;

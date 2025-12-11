@@ -110,6 +110,8 @@ class WorkDetails {
 		const tagsJson = card.dataset.workTags || '[]';
 		const tags = JSON.parse(tagsJson);
 		const description = card.dataset.workDescription || '';
+		const linkJson = card.dataset.workLink || '{}';
+		const link = JSON.parse(linkJson);
 		const imagesJson = card.dataset.workImages || '[]';
 		let images = JSON.parse(imagesJson);
 
@@ -125,6 +127,7 @@ class WorkDetails {
 			meta,
 			tags,
 			description,
+			link,
 			images: images.length > 0 ? images : [{ src: img.src, hasLink: false }]
 		});
 			}
@@ -378,6 +381,18 @@ class WorkDetails {
 								</div>
 							` : ''}
 							${work.description ? `<p class="p-portfolio__work-details-description">${work.description}</p>` : ''}
+							${
+								work.link && work.link.url ? `
+								<a href="${work.link.url}" class="p-portfolio__work-details-link" target="_blank" rel="noopener noreferrer">
+									${work.link.text}
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+										<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+										<polyline points="15 3 21 3 21 9"></polyline>
+										<line x1="10" y1="14" x2="21" y2="3"></line>
+									</svg>
+								</a>
+							` : ''
+							}
 						</div>
 					</div>
 				</div>
