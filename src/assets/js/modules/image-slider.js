@@ -193,20 +193,7 @@ class ImageLightbox {
 		this.isOpen = true;
 		this.lastActiveElement = document.activeElement;
 
-		// 元画像の rect を取得する前に、スライダー track の transform を一時的に外す
-		const track = this.getTrackForImage ? this.getTrackForImage(img) : null;
-		let prevTransform = null;
-
-		if (track && track.style && track.style.transform) {
-			prevTransform = track.style.transform;
-			track.style.transform = 'none';
-		}
-
 		const rect = img.getBoundingClientRect();
-
-		if (track && prevTransform !== null) {
-			track.style.transform = prevTransform;
-		}
 
 		this.sourceRect = {
 			left: rect.left,
@@ -246,7 +233,7 @@ class ImageLightbox {
 		clone.style.width = sWidth + 'px';
 		clone.style.height = sHeight + 'px';
 		clone.style.margin = '0';
-		clone.style.zIndex = '9999';
+		clone.style.zIndex = '2000';
 		clone.style.transformOrigin = 'top left';
 		clone.style.transform = 'translate3d(0, 0, 0) scale(1)'; // 初期状態：元の位置
 		clone.style.willChange = 'transform, opacity';
@@ -259,11 +246,11 @@ class ImageLightbox {
 		this.modal.removeAttribute('hidden');
 		this.modal.setAttribute('aria-hidden', 'false');
 		this.modal.classList.add('is-opening');
+		if (this.backdrop) {
+			this.backdrop.style.opacity = '1';
+		}
 
 		document.addEventListener('keydown', this._onKeyDown, { passive: false });
-
-		// reflow 強制
-		void clone.offsetWidth;
 
 		// 閉じる時と同じ計算式
 		const scaleX = tWidth / sWidth;
@@ -287,13 +274,14 @@ class ImageLightbox {
 
 			// clone 削除前に modalImage を表示状態にしておく（瞬時）
 			this.modalImage.style.opacity = '1';
-			//this.modalImage.style.transition = 'opacity 0s linear';
 
-			// clone 削除（modalImage が先に表示されてから削除）
-			if (this.currentClone) {
-				this.currentClone.remove();
-				this.currentClone = null;
-			}
+			// clone 削除（modalImage が先に表示されてから削除）を1フレーム後にずらす
+			requestAnimationFrame(() => {
+				if (this.currentClone) {
+					this.currentClone.remove();
+					this.currentClone = null;
+				}
+			});
 
 			// モーダル本体を正式に open 状態へ
 			this.modal.classList.remove('is-opening');
@@ -308,15 +296,14 @@ class ImageLightbox {
 			}
 		};
 
-		// モーダル表示後、backdrop をフェードイン
-		requestAnimationFrame(() => {
-			this.backdrop.style.opacity = '1';
-		});
-
 		clone.addEventListener('transitionend', onOpened);
 
 		// transform を目標地点（中央）へ：閉じる時の真逆
-		clone.style.transform = 'translate3d(' + translateX + 'px,' + translateY + 'px,0) scale(' + scaleX + ',' + scaleY + ')';
+		// レイアウト確定を1回だけ挟み、次フレームでtransformを適用
+		clone.getBoundingClientRect();
+		requestAnimationFrame(() => {
+			clone.style.transform = 'translate3d(' + translateX + 'px,' + translateY + 'px,0) scale(' + scaleX + ',' + scaleY + ')';
+		});
 	}
 
 	/**
@@ -325,8 +312,11 @@ class ImageLightbox {
 	_computeTargetRect(img, sourceRect) {
 		const viewportW = window.innerWidth;
 		const viewportH = window.innerHeight;
-		const maxW = viewportW * 0.9;
-		const maxH = viewportH * 0.9;
+		// PCでの過大スケールを抑えるため、絶対値でも上限を設ける
+		const MAX_W = 1400;
+		const MAX_H = 900;
+		const maxW = Math.min(viewportW * 0.85, MAX_W);
+		const maxH = Math.min(viewportH * 0.85, MAX_H);
 
 		let naturalW = img.naturalWidth;
 		let naturalH = img.naturalHeight;
@@ -386,7 +376,7 @@ class ImageLightbox {
 		clone.style.width = tWidth + 'px';
 		clone.style.height = tHeight + 'px';
 		clone.style.margin = '0';
-		clone.style.zIndex = '999';
+		clone.style.zIndex = '2000';
 		clone.style.transformOrigin = 'top left';
 		clone.style.transform = 'translate3d(0, 0, 0) scale(1)'; // 初期状態：現在の位置
 
@@ -405,9 +395,6 @@ class ImageLightbox {
 
 		// キーボードイベント解除
 		document.removeEventListener('keydown', this._onKeyDown);
-
-		// reflow
-		void clone.offsetWidth;
 
 		const scaleX = sWidth / tWidth;
 		const scaleY = sHeight / tHeight;
@@ -437,7 +424,12 @@ class ImageLightbox {
 		clone.addEventListener('transitionend', onClosed);
 
 		// transform を元の sourceRect へ戻す
-		clone.style.transform = 'translate3d(' + translateX + 'px,' + translateY + 'px,0) scale(' + scaleX + ',' + scaleY + ')';
+		// rAFを2回噛ませて初期レイアウト確定後に移動させる
+		requestAnimationFrame(() => {
+			requestAnimationFrame(() => {
+				clone.style.transform = 'translate3d(' + translateX + 'px,' + translateY + 'px,0) scale(' + scaleX + ',' + scaleY + ')';
+			});
+		});
 	}
 }
 
@@ -464,6 +456,7 @@ class ImageSlider {
 		this.options = { ...SLIDER_DEFAULTS, ...options };
 		this.track = element.querySelector(this.options.trackSelector);
 		this.slides = Array.from(element.querySelectorAll(this.options.slideSelector));
+		this.slideCount = this.slides.length;
 		this.prevButton = element.querySelector(this.options.prevSelector);
 		this.nextButton = element.querySelector(this.options.nextSelector);
 		this.pagination = element.querySelector(this.options.paginationSelector);
@@ -492,7 +485,7 @@ class ImageSlider {
 	}
 
 	init() {
-		if (!this.track || this.slides.length === 0) {
+		if (!this.track || this.slideCount === 0) {
 			return;
 		}
 
@@ -515,7 +508,7 @@ class ImageSlider {
 
 		this.bindEvents();
 
-		if (this.slides.length <= 1) {
+		if (this.slideCount <= 1) {
 			this.toggleControls(false);
 			this.updateSlides();
 			return;
@@ -527,25 +520,31 @@ class ImageSlider {
 	}
 
 	bindEvents() {
-		if (this.prevButton) {
+		if (this.slideCount > 1 && this.prevButton) {
 			this.prevButton.addEventListener('click', this.handlePrev);
 		}
 
-		if (this.nextButton) {
+		if (this.slideCount > 1 && this.nextButton) {
 			this.nextButton.addEventListener('click', this.handleNext);
 		}
 
-		this.root.addEventListener('keydown', this.handleKeydown);
+		if (this.slideCount > 1) {
+			this.root.addEventListener('keydown', this.handleKeydown);
+		}
 
 		if (this.track) {
-			this.track.addEventListener('touchstart', this.handleTouchStart, { passive: true });
-			this.track.addEventListener('touchend', this.handleTouchEnd, { passive: true });
+			if (this.slideCount > 1) {
+				this.track.addEventListener('touchstart', this.handleTouchStart, { passive: true });
+				this.track.addEventListener('touchend', this.handleTouchEnd, { passive: true });
+			}
 			// イベント委譲で画像リンクのクリックを処理
 			this.track.addEventListener('click', this.handleImageLinkClick);
 		}
 
 		// 画像リンクの初期設定
 		this.setupImageLinks();
+		// GPUレイヤーの事前ウォームアップ（PC hover時のみ効く）
+		this.prewarmImages();
 	}
 
 	/**
@@ -587,6 +586,22 @@ class ImageSlider {
 		});
 	}
 
+	/**
+	 * 画像のGPUレイヤー化を事前に促す
+	 * @private
+	 */
+	prewarmImages() {
+		this.slides.forEach((slide) => {
+			const img = slide.querySelector('img');
+			if (!img) return;
+			const handler = () => {
+				img.style.willChange = 'transform';
+				img.removeEventListener('pointerenter', handler);
+			};
+			img.addEventListener('pointerenter', handler, { once: true });
+		});
+	}
+
 	// openLightboxWithImage, setupFocusTrap, showModalWithImage, closeLightbox, closeLightboxSimple, openLightbox, animateImageExpand は
 	// ImageLightboxクラスに統合されたため削除されました
 
@@ -620,8 +635,11 @@ class ImageSlider {
 	}
 
 	updateSlides() {
+		const len = this.slideCount;
 		const translateX = -this.currentIndex * 100;
-		this.track.style.transform = `translateX(${translateX}%)`;
+		if (this.track) {
+			this.track.style.transform = `translateX(${translateX}%)`;
+		}
 
 		this.slides.forEach((slide, index) => {
 			const isActive = index === this.currentIndex;
@@ -636,29 +654,29 @@ class ImageSlider {
 		if (this.liveRegion) {
 			const currentSlide = this.slides[this.currentIndex];
 			const slideLabel = currentSlide.querySelector('img')?.alt || `スライド${this.currentIndex + 1}`;
-			this.liveRegion.textContent = `${slideLabel}、${this.currentIndex + 1}枚目 / 全${this.slides.length}枚`;
+			this.liveRegion.textContent = `${slideLabel}、${this.currentIndex + 1}枚目 / 全${len}枚`;
 		}
 	}
 
 	goToPrev() {
-		if (this.slides.length <= 1) {
+		if (this.slideCount <= 1) {
 			return;
 		}
 
 		if (this.currentIndex > 0) {
 			this.currentIndex -= 1;
 		} else {
-			this.currentIndex = this.slides.length - 1;
+			this.currentIndex = this.slideCount - 1;
 		}
 		this.updateSlides();
 	}
 
 	goToNext() {
-		if (this.slides.length <= 1) {
+		if (this.slideCount <= 1) {
 			return;
 		}
 
-		if (this.currentIndex < this.slides.length - 1) {
+		if (this.currentIndex < this.slideCount - 1) {
 			this.currentIndex += 1;
 		} else {
 			this.currentIndex = 0;
@@ -667,7 +685,7 @@ class ImageSlider {
 	}
 
 	goToSlide(index) {
-		if (index < 0 || index >= this.slides.length) {
+		if (index < 0 || index >= this.slideCount) {
 			return;
 		}
 		this.currentIndex = index;
@@ -688,12 +706,14 @@ class ImageSlider {
 
 	updateControlState() {
 		if (this.prevButton) {
-			this.prevButton.disabled = this.slides.length <= 1;
-			this.prevButton.setAttribute('aria-disabled', String(this.slides.length <= 1));
+			const disabled = this.slideCount <= 1;
+			this.prevButton.disabled = disabled;
+			this.prevButton.setAttribute('aria-disabled', String(disabled));
 		}
 		if (this.nextButton) {
-			this.nextButton.disabled = this.slides.length <= 1;
-			this.nextButton.setAttribute('aria-disabled', String(this.slides.length <= 1));
+			const disabled = this.slideCount <= 1;
+			this.nextButton.disabled = disabled;
+			this.nextButton.setAttribute('aria-disabled', String(disabled));
 		}
 	}
 
@@ -710,7 +730,7 @@ class ImageSlider {
 	}
 
 	handleKeydown(e) {
-		if (this.slides.length <= 1) {
+		if (this.slideCount <= 1) {
 			return;
 		}
 

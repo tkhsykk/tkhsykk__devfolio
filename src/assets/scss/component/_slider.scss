@@ -30,7 +30,7 @@
 
 	&__track {
 		display: flex;
-		transition: transform 0.3s ease-in-out;
+		transition: transform 0.22s cubic-bezier(0.25, 0.85, 0.35, 1);
 		will-change: transform;
 	}
 
@@ -44,7 +44,7 @@
 			position: relative;
 			cursor: zoom-in;
 			overflow: hidden;
-			transition: all $transition-base;
+			transition: transform 0.18s ease, opacity 0.18s ease;
 
 			// スマホ用: 右下に虫眼鏡アイコンを常時表示
 			&::before {
@@ -84,7 +84,7 @@
 				background-position: center;
 				background-size: 40px;
 				opacity: 0;
-				transition: opacity $transition-base;
+				transition: opacity 0.18s ease;
 				pointer-events: none;
 				z-index: 1;
 				// スマホでは ::after オーバーレイを非表示
@@ -103,7 +103,7 @@
 				}
 
 				img {
-					transform: scale(1.05);
+					transform: scale(1.03);
 				}
 				}
 
@@ -120,7 +120,7 @@
 			height: auto;
 			display: block;
 			object-fit: cover;
-			transition: transform 0.5s ease;
+			transition: transform 0.22s cubic-bezier(0.25, 0.85, 0.35, 1);
 			will-change: transform;
 		}
 	}
@@ -279,4 +279,3 @@
 		}
 	}
 }
-

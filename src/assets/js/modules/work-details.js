@@ -51,6 +51,8 @@ class WorkDetails {
 		this.worksSection = document.querySelector('[data-work]');
 		this.workList = document.querySelector('[data-work-list]');
 		this.workCards = document.querySelectorAll('[data-work-card]');
+		this.workCardsArray = Array.from(this.workCards);
+		this.cardIndexMap = new WeakMap();
 		this.currentCard = null;
 		this.detailsBlock = null;
 		this.workData = [];
@@ -75,6 +77,7 @@ class WorkDetails {
 
 		// 各カードにクリックイベントを設定
 		this.workCards.forEach((card, index) => {
+			this.cardIndexMap.set(card, index);
 			const trigger = card.querySelector('[data-work-trigger]');
 			if (trigger) {
 				trigger.addEventListener('click', (e) => {
@@ -249,6 +252,20 @@ class WorkDetails {
 	}
 
 	/**
+	 * 行内の最後のカードのインデックスを取得
+	 * @param {number} cardIndex
+	 * @returns {number}
+	 * @private
+	 */
+	getRowLastIndex(cardIndex) {
+		const columnCount = this.getGridColumnCount();
+		const rowNumber = Math.floor(cardIndex / columnCount);
+		const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
+		const totalCards = this.workCardsArray.length;
+		return Math.min(currentRowLastIndex, totalCards - 1);
+	}
+
+	/**
 	 * 詳細ブロックの高さを最新化（幅変更時など）
 	 * @private
 	 */
@@ -291,16 +308,16 @@ class WorkDetails {
 		if (!this.detailsBlock || !this.currentCard) return;
 
 		// 現在のカードのインデックスを取得
-		const currentIndex = Array.from(this.workCards).indexOf(this.currentCard);
-		if (currentIndex === -1) return;
+		const currentIndex = this.cardIndexMap.get(this.currentCard);
+		if (currentIndex === undefined || currentIndex === -1) return;
 
 		// 現在の行の最後のカードを取得
-		const rowLastCard = this.getRowLastCard(currentIndex);
-		const rowLastIndex = Array.from(this.workCards).indexOf(rowLastCard);
+		const rowLastIndex = this.getRowLastIndex(currentIndex);
+		const rowLastCard = this.workCardsArray[rowLastIndex];
 
 		// 詳細ブロックの現在の位置を確認
 		const currentPrevSibling = this.detailsBlock.previousElementSibling;
-		const expectedPrevSibling = this.workCards[rowLastIndex];
+		const expectedPrevSibling = rowLastCard;
 
 		// 既に正しい位置にある場合は何もしない
 		if (currentPrevSibling === expectedPrevSibling) return;
@@ -368,17 +385,8 @@ class WorkDetails {
 	 * @private
 	 */
 	getRowLastCard(cardIndex) {
-		const columnCount = this.getGridColumnCount();
-		const rowNumber = Math.floor(cardIndex / columnCount);
-
-		// 現在の行の最後のカードのインデックスを計算
-		const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
-		const totalCards = this.workCards.length;
-
-		// 最後の行を超える場合は、最後のカードを返す
-		const lastCardIndex = Math.min(currentRowLastIndex, totalCards - 1);
-
-		return this.workCards[lastCardIndex];
+		const rowLastIndex = this.getRowLastIndex(cardIndex);
+		return this.workCardsArray[rowLastIndex];
 	}
 
 	/**
@@ -401,10 +409,11 @@ class WorkDetails {
 		const detailsElement = this.createDetailsElement(detailsHTML);
 
 		// クリックしたカードの行の最後のカードを取得
-		const rowLastCard = this.getRowLastCard(index);
+		const rowLastIndex = this.getRowLastIndex(index);
+		const rowLastCard = this.workCardsArray[rowLastIndex];
 
 		// 行の最後のカードの次に詳細ブロックを挿入
-		const nextCard = this.workCards[Array.from(this.workCards).indexOf(rowLastCard) + 1];
+		const nextCard = this.workCardsArray[rowLastIndex + 1];
 		if (nextCard) {
 			nextCard.insertAdjacentElement('beforebegin', detailsElement);
 		} else {
