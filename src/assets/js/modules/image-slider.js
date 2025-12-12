@@ -55,6 +55,8 @@ class ImageLightbox {
 		this.sourceRect = null;
 		this.targetRect = null;
 		this.lastActiveElement = null;
+		this.scrollY = 0;
+		this.originalScrollBehavior = '';
 
 		this._onKeyDown = this._onKeyDown.bind(this);
 		this._onBackdropClick = this._onBackdropClick.bind(this);
@@ -242,6 +244,18 @@ class ImageLightbox {
 		document.body.appendChild(clone);
 		this.currentClone = clone;
 
+		// 現在の scroll-behavior を退避し、強制的に auto に
+		this.originalScrollBehavior = document.documentElement.style.scrollBehavior;
+		document.documentElement.style.scrollBehavior = 'auto';
+
+		// bodyスクロールをロック
+		this.scrollY = window.scrollY || window.pageYOffset || 0;
+		document.body.style.position = 'fixed';
+		document.body.style.top = `-${this.scrollY}px`;
+		document.body.style.left = '0';
+		document.body.style.right = '0';
+		document.body.style.width = '100%';
+
 		// モーダルを表示準備
 		this.modal.removeAttribute('hidden');
 		this.modal.setAttribute('aria-hidden', 'false');
@@ -419,6 +433,19 @@ class ImageLightbox {
 			if (this.lastActiveElement && typeof this.lastActiveElement.focus === 'function') {
 				this.lastActiveElement.focus();
 			}
+
+			// bodyスクロールを復元
+			document.body.style.position = '';
+			document.body.style.top = '';
+			document.body.style.left = '';
+			document.body.style.right = '';
+			document.body.style.width = '';
+			window.scrollTo(0, this.scrollY || 0);
+
+			// 次のフレームで scroll-behavior を元に戻す
+			requestAnimationFrame(() => {
+				document.documentElement.style.scrollBehavior = this.originalScrollBehavior;
+			});
 		};
 
 		clone.addEventListener('transitionend', onClosed);
