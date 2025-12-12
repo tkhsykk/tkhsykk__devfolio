@@ -314,7 +314,13 @@ function compileEjs(minify = false) {
 function compileScss(useSourcemaps = true) {
 	let stream = gulp
 		.src(paths.scss.src)
-		.pipe(plumber(plumberOptions))
+		.pipe(plumber(plumberOptions));
+
+	if (useSourcemaps) {
+		stream = stream.pipe(sourcemaps.init());
+	}
+
+	stream = stream
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
 		.pipe(
@@ -328,9 +334,7 @@ function compileScss(useSourcemaps = true) {
 		);
 
 	if (useSourcemaps) {
-		stream = stream
-			.pipe(sourcemaps.init())
-			.pipe(sourcemaps.write('.'));
+		stream = stream.pipe(sourcemaps.write('.'));
 	}
 
 	stream = stream.pipe(gulp.dest(paths.scss.dist));
