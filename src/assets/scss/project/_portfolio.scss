@@ -1035,6 +1035,10 @@
 			color: var(--color-text);
 			margin-top: $spacing-4;
 
+			&:not(:last-child) {
+				margin-bottom: $spacing-2;
+			}
+
 			@include mq(md) {
 				margin-top: unset;
 				font-size: $font-size-base;
