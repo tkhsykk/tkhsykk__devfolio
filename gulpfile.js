@@ -47,7 +47,12 @@ const csvPathEnv = process.env.PORTFOLIO_CSV_PATH;
 const csvPath = csvPathEnv
 	? (isAbsolute(csvPathEnv) ? csvPathEnv : join(__dirname, csvPathEnv))
 	: join(__dirname, 'private', 'sample.csv');
-const imagesSrcDir = join(__dirname, 'private', 'images');
+
+// CSVファイルのディレクトリパスを取得し、そこからimagesフォルダのパスを生成
+const csvDir = csvPathEnv
+	? (isAbsolute(csvPathEnv) ? dirname(csvPathEnv) : join(__dirname, dirname(csvPathEnv)))
+	: join(__dirname, 'private');
+const imagesSrcDir = join(csvDir, 'images');
 const imagesDistDir = join(distDir, 'images');
 
 const paths = {
@@ -81,6 +86,7 @@ const SECTION_MAP = {
 const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
 const LINK_SELECTOR = '.p-portfolio__work-details-link';
 const DEFAULT_LINK_TEXT = 'サイトを見る';
+const LINK_SUFFIX = ':link';
 
 /**
  * 画像ファイルかどうかを判定
@@ -89,7 +95,42 @@ const DEFAULT_LINK_TEXT = 'サイトを見る';
  */
 function isImageFile(fileName) {
 	if (!fileName) return false;
-	return IMAGE_EXTENSIONS.some(ext => fileName.toLowerCase().endsWith(ext));
+	const normalized = stripLinkSuffix(String(fileName)).trim().toLowerCase();
+	return IMAGE_EXTENSIONS.some(ext => normalized.endsWith(ext));
+}
+
+/**
+ * :linkサフィックスを除去
+ * @param {string} fileName
+ * @returns {string}
+ */
+function stripLinkSuffix(fileName = '') {
+	const value = String(fileName);
+	return value.endsWith(LINK_SUFFIX) ? value.slice(0, -LINK_SUFFIX.length) : value;
+}
+
+/**
+ * 画像パスを ./images/ 配下に解決（既存パスは尊重）
+ * @param {string} fileName
+ * @returns {string}
+ */
+function resolveImagePath(fileName) {
+	const normalized = stripLinkSuffix(String(fileName)).trim();
+
+	if (/^(https?:)?\/\//i.test(normalized)) {
+		return normalized;
+	}
+	if (normalized.startsWith('./images/')) {
+		return normalized;
+	}
+	if (normalized.startsWith('/images/')) {
+		return `.${normalized}`;
+	}
+	if (normalized.startsWith('images/')) {
+		return `./${normalized}`;
+	}
+
+	return `./images/${normalized}`;
 }
 
 /**
@@ -99,29 +140,25 @@ function isImageFile(fileName) {
  * @returns {string|Array|Object} 処理後の値
  */
 function processImagePath(value, selector) {
-	const isSliderSelector = selector === '.p-portfolio__work-details-content .c-slider__slide';
 	const processSingleValue = (v) => {
 		if (!v) return v;
 
+		if (typeof v === 'object' && !Array.isArray(v) && v.src) {
+			return { src: resolveImagePath(v.src), hasLink: Boolean(v.hasLink) };
+		}
+
 		// :linkサフィックスの処理
-		const hasLink = v.endsWith(':link');
-		const fileName = hasLink ? v.replace(/:link$/, '') : v;
+		const raw = String(v).trim();
+		const hasLink = raw.endsWith(LINK_SUFFIX);
+		const fileName = stripLinkSuffix(raw);
 
 		// 画像ファイル名の場合
-		if (isImageFile(fileName)) {
-			const imagePath = `./images/${fileName}`;
-			// スライダーセレクタの場合はオブジェクト形式で返す
-			if (isSliderSelector) {
-				return { src: imagePath, hasLink: hasLink };
-			}
-			return imagePath;
+		if (isImageFile(raw)) {
+			return { src: resolveImagePath(fileName), hasLink };
 		}
 
-		// スライダーセレクタで画像以外の場合はオブジェクト形式
-		if (isSliderSelector) {
-			return { src: fileName, hasLink: hasLink };
-		}
-		return fileName;
+		// 画像以外の場合はそのままのファイル名を使用
+		return { src: fileName, hasLink };
 	};
 
 	if (Array.isArray(value)) {

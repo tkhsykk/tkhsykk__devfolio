@@ -56,6 +56,7 @@ class WorkDetails {
 		this.workData = [];
 		this.resizeObserver = null;
 		this.lastColumnCount = null;
+		this.isAnimatingHeight = false;
 
 		if (!this.worksSection || !this.workList) {
 			return;
@@ -106,10 +107,12 @@ class WorkDetails {
 			clearTimeout(this.resizeTimeout);
 			this.resizeTimeout = setTimeout(() => {
 				const currentColumnCount = this.getGridColumnCount();
-				// 詳細ブロックが表示されていて、列数が変わった場合のみ処理
-				if (this.detailsBlock && currentColumnCount !== this.lastColumnCount) {
-					this.recalculatePosition();
-					this.lastColumnCount = currentColumnCount;
+				if (this.detailsBlock) {
+					if (currentColumnCount !== this.lastColumnCount) {
+						this.recalculatePosition();
+						this.lastColumnCount = currentColumnCount;
+					}
+					this.updateDetailsHeight();
 				}
 			}, 100); // debounceを短く
 		};
@@ -120,6 +123,7 @@ class WorkDetails {
 			// 詳細ブロックが表示されている場合のみ処理
 			if (this.detailsBlock && entries.some(entry => entry.contentRect.width !== parseInt(entry.target.dataset.lastWidth || 0))) {
 				this.recalculatePosition();
+				this.updateDetailsHeight();
 				// 最後の幅を保存
 				entries.forEach(entry => {
 					entry.target.dataset.lastWidth = entry.contentRect.width.toString();
@@ -134,37 +138,126 @@ class WorkDetails {
 	 * @private
 	 */
 	extractWorkData() {
-		this.workCards.forEach((card) => {
+		const safeParse = (value, fallback) => {
+			try {
+				return JSON.parse(value);
+			} catch (error) {
+				console.error('Failed to parse work data attribute:', value, error);
+				return fallback;
+			}
+		};
+
+		this.workCards.forEach((card, cardIndex) => {
 			const img = card.querySelector('[data-work-trigger] img');
 			const title = card.querySelector('.p-portfolio__work-title');
 
 			if (img && title) {
-		const meta = card.dataset.workMeta || '';
-		const tagsJson = card.dataset.workTags || '[]';
-		const tags = JSON.parse(tagsJson);
-		const description = card.dataset.workDescription || '';
-		const linkJson = card.dataset.workLink || '{}';
-		const link = JSON.parse(linkJson);
-		const imagesJson = card.dataset.workImages || '[]';
-		let images = JSON.parse(imagesJson);
+				const meta = card.dataset.workMeta || '';
+				const tagsRaw = safeParse(card.dataset.workTags || '[]', []);
+				const tags = Array.isArray(tagsRaw) ? tagsRaw : [];
+				const description = card.dataset.workDescription || '';
+				const linkRaw = safeParse(card.dataset.workLink || '{}', {});
+				const link = linkRaw && typeof linkRaw === 'object' ? linkRaw : {};
+				const imagesRaw = safeParse(card.dataset.workImages || '[]', []);
+				const imagesArray = Array.isArray(imagesRaw) ? imagesRaw : (imagesRaw ? [imagesRaw] : []);
+				const normalizedImages = this.normalizeImages(imagesArray, img.src);
 
-		// 画像データを正規化（文字列配列の場合はオブジェクト配列に変換）
-		if (images.length > 0 && typeof images[0] === 'string') {
-			images = images.map((src) => ({ src, hasLink: false }));
-		}
-
-		this.workData.push({
-			image: img.src,
-			alt: img.alt,
-			title: title.textContent,
-			meta,
-			tags,
-			description,
-			link,
-			images: images.length > 0 ? images : [{ src: img.src, hasLink: false }]
-		});
+				this.workData[cardIndex] = {
+					image: img.src,
+					alt: img.alt,
+					title: title.textContent,
+					meta,
+					tags,
+					description,
+					link,
+					images: normalizedImages
+				};
+			} else {
+				// 条件を満たさないカードも空のデータを設定してインデックスを維持
+				this.workData[cardIndex] = null;
 			}
 		});
+	}
+
+	/**
+	 * 画像パスを一貫して解決
+	 * @param {string} src
+	 * @returns {string}
+	 * @private
+	 */
+	normalizeImagePath(src) {
+		const value = (src || '').trim();
+		if (!value) return '';
+
+		if (/^(https?:)?\/\//i.test(value)) {
+			return value;
+		}
+		if (value.startsWith('./images/')) {
+			return value;
+		}
+		if (value.startsWith('/images/')) {
+			return `.${value}`;
+		}
+		if (value.startsWith('images/')) {
+			return `./${value}`;
+		}
+		return `./images/${value}`;
+	}
+
+	/**
+	 * 画像配列を正規化
+	 * @param {Array} images
+	 * @param {string} fallbackSrc
+	 * @returns {Array<{src: string, hasLink: boolean}>}
+	 * @private
+	 */
+	normalizeImages(images, fallbackSrc) {
+		if (!Array.isArray(images) || images.length === 0) {
+			return fallbackSrc ? [{ src: this.normalizeImagePath(fallbackSrc), hasLink: false }] : [];
+		}
+
+		const normalized = images
+			.map((img) => {
+				if (!img) return null;
+
+				if (typeof img === 'object' && img.src) {
+					return {
+						src: this.normalizeImagePath(img.src),
+						hasLink: Boolean(img.hasLink)
+					};
+				}
+
+				if (typeof img === 'string') {
+					const raw = img.trim();
+					const hasLink = raw.endsWith(':link');
+					const src = hasLink ? raw.replace(/:link$/, '') : raw;
+					return {
+						src: this.normalizeImagePath(src),
+						hasLink
+					};
+				}
+
+				return null;
+			})
+			.filter(Boolean);
+
+		if (normalized.length === 0 && fallbackSrc) {
+			return [{ src: this.normalizeImagePath(fallbackSrc), hasLink: false }];
+		}
+
+		return normalized;
+	}
+
+	/**
+	 * 詳細ブロックの高さを最新化（幅変更時など）
+	 * @private
+	 */
+	updateDetailsHeight() {
+		if (!this.detailsBlock || this.isAnimatingHeight) return;
+		const detailsElement = this.detailsBlock;
+		detailsElement.style.height = 'auto';
+		const targetHeight = detailsElement.scrollHeight;
+		detailsElement.style.height = `${targetHeight}px`;
 	}
 
 	/**
@@ -297,6 +390,7 @@ class WorkDetails {
 	insertDetailsBlock(index, card) {
 		const work = this.workData[index];
 		if (!work) {
+			console.error('Work data not found for index:', index, 'workData length:', this.workData.length);
 			return;
 		}
 
@@ -370,12 +464,10 @@ class WorkDetails {
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
 						${work.images.map((imgData, imgIndex) => {
-							// 画像データを正規化（文字列の場合はオブジェクトに変換）
-							const imgObj = typeof imgData === 'string'
-								? { src: imgData, hasLink: false }
-								: imgData;
+							// gulpfile.jsで処理済みのデータをそのまま使用
+							const imgObj = imgData;
 							// 原寸大のURLを生成（パラメータを削除）
-							const fullSizeUrl = imgObj.src.split('?')[0];
+							const fullSizeUrl = imgObj.src.replace('./images/', '').split('?')[0];
 							return `
 							<div class="c-slider__slide">
 								${imgObj.hasLink ? `<a href="${fullSizeUrl}">` : ''}
@@ -402,10 +494,8 @@ class WorkDetails {
 			<div class="p-portfolio__work-details-image">
 				${(() => {
 					const firstImg = work.images[0];
-					const imgObj = typeof firstImg === 'string'
-						? { src: firstImg, hasLink: false }
-						: firstImg;
-					const fullSizeUrl = imgObj.src.split('?')[0];
+					const imgObj = firstImg;
+					const fullSizeUrl = imgObj.src.replace('./images/', '').split('?')[0];
 					return imgObj.hasLink
 						? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
 						: `<img src="${imgObj.src}" alt="${work.alt}" />`;
@@ -494,6 +584,7 @@ class WorkDetails {
 	 * @private
 	 */
 	openDetailsBlock(detailsElement) {
+		this.isAnimatingHeight = true;
 		// 一旦高さを0に設定（初期状態）
 		detailsElement.style.height = '0px';
 
@@ -508,6 +599,13 @@ class WorkDetails {
 				// 次のフレームでtransition開始
 				requestAnimationFrame(() => {
 					detailsElement.style.height = `${targetHeight}px`;
+
+					const handleOpened = () => {
+						detailsElement.removeEventListener('transitionend', handleOpened);
+						detailsElement.style.height = 'auto';
+						this.isAnimatingHeight = false;
+					};
+					detailsElement.addEventListener('transitionend', handleOpened);
 				});
 			});
 		});
@@ -520,6 +618,7 @@ class WorkDetails {
 	 */
 	closeDetailsBlock(detailsElement) {
 		return new Promise((resolve) => {
+			this.isAnimatingHeight = true;
 			// 現在の高さを取得
 			const currentHeight = detailsElement.scrollHeight;
 			detailsElement.style.height = `${currentHeight}px`;
@@ -531,6 +630,7 @@ class WorkDetails {
 				// transition完了を待つ
 				const handleTransitionEnd = () => {
 					detailsElement.removeEventListener('transitionend', handleTransitionEnd);
+					this.isAnimatingHeight = false;
 					resolve();
 				};
 				detailsElement.addEventListener('transitionend', handleTransitionEnd);
@@ -616,4 +716,3 @@ init();
 
 // エクスポート
 export { WorkDetails, initWorkDetails };
-
