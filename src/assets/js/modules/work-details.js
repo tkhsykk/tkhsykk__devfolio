@@ -54,6 +54,8 @@ class WorkDetails {
 		this.currentCard = null;
 		this.detailsBlock = null;
 		this.workData = [];
+		this.resizeObserver = null;
+		this.lastColumnCount = null;
 
 		if (!this.worksSection || !this.workList) {
 			return;
@@ -94,6 +96,37 @@ class WorkDetails {
 			}
 		};
 		document.addEventListener('keydown', this.escapeHandler);
+
+		// 初期列数を保存
+		this.lastColumnCount = this.getGridColumnCount();
+
+		// windowのリサイズイベントを監視（メディアクエリ変更検知）
+		this.resizeTimeout = null;
+		this.windowResizeHandler = () => {
+			clearTimeout(this.resizeTimeout);
+			this.resizeTimeout = setTimeout(() => {
+				const currentColumnCount = this.getGridColumnCount();
+				// 詳細ブロックが表示されていて、列数が変わった場合のみ処理
+				if (this.detailsBlock && currentColumnCount !== this.lastColumnCount) {
+					this.recalculatePosition();
+					this.lastColumnCount = currentColumnCount;
+				}
+			}, 100); // debounceを短く
+		};
+		window.addEventListener('resize', this.windowResizeHandler);
+
+		// ResizeObserverでグリッドコンテナのサイズ変更を監視
+		this.resizeObserver = new ResizeObserver(entries => {
+			// 詳細ブロックが表示されている場合のみ処理
+			if (this.detailsBlock && entries.some(entry => entry.contentRect.width !== parseInt(entry.target.dataset.lastWidth || 0))) {
+				this.recalculatePosition();
+				// 最後の幅を保存
+				entries.forEach(entry => {
+					entry.target.dataset.lastWidth = entry.contentRect.width.toString();
+				});
+			}
+		});
+		this.resizeObserver.observe(this.workList);
 	}
 
 	/**
@@ -154,8 +187,64 @@ class WorkDetails {
 		this.insertDetailsBlock(index, card);
 	}
 
+
+
+
 	/**
-	 * グリッドの列数を取得
+	 * 詳細ブロックの位置を再計算（ResizeObserverから呼び出し）
+	 * @private
+	 */
+	recalculatePosition() {
+		if (!this.detailsBlock || !this.currentCard) return;
+
+		// 現在のカードのインデックスを取得
+		const currentIndex = Array.from(this.workCards).indexOf(this.currentCard);
+		if (currentIndex === -1) return;
+
+		// 現在の行の最後のカードを取得
+		const rowLastCard = this.getRowLastCard(currentIndex);
+		const rowLastIndex = Array.from(this.workCards).indexOf(rowLastCard);
+
+		// 詳細ブロックの現在の位置を確認
+		const currentPrevSibling = this.detailsBlock.previousElementSibling;
+		const expectedPrevSibling = this.workCards[rowLastIndex];
+
+		// 既に正しい位置にある場合は何もしない
+		if (currentPrevSibling === expectedPrevSibling) return;
+
+		// 詳細ブロックを一旦取り除いてから正しい位置に挿入
+		const detailsBlock = this.detailsBlock;
+		detailsBlock.remove();
+
+		// 行の最後のカードの次に詳細ブロックを挿入
+		const nextCard = this.workCards[rowLastIndex + 1];
+		if (nextCard) {
+			nextCard.insertAdjacentElement('beforebegin', detailsBlock);
+		} else {
+			// 最後の行の場合は末尾に追加
+			this.workList.appendChild(detailsBlock);
+		}
+	}
+
+	/**
+	 * 詳細ブロック要素を作成
+	 * @param {string} detailsHTML - 詳細ブロックのHTML
+	 * @returns {HTMLElement} 詳細ブロック要素
+	 * @private
+	 */
+	createDetailsElement(detailsHTML) {
+		// <li>要素として作成（グリッドアイテムとして挿入）
+		const detailsElement = document.createElement('li');
+		detailsElement.className = 'p-portfolio__work-details-block';
+		detailsElement.setAttribute('data-work-details-block', '');
+		detailsElement.innerHTML = detailsHTML;
+
+		return detailsElement;
+	}
+
+
+	/**
+	 * グリッドの列数を取得（動的計算）
 	 * @returns {number} 列数
 	 * @private
 	 */
@@ -180,63 +269,21 @@ class WorkDetails {
 	}
 
 	/**
-	 * 行番号を計算
-	 * @param {number} cardIndex - カードのインデックス
-	 * @param {number} columnCount - グリッドの列数
-	 * @returns {number} 行番号（0始まり）
-	 * @private
-	 */
-	getRowNumber(cardIndex, columnCount) {
-		return Math.floor(cardIndex / columnCount);
-	}
-
-	/**
-	 * 次の行の開始位置（カードのインデックス）を取得
-	 * @param {number} rowNumber - 現在の行番号
-	 * @param {number} columnCount - グリッドの列数
-	 * @returns {number} 次の行の開始位置のカードインデックス
-	 * @private
-	 */
-	getNextRowStartCardIndex(rowNumber, columnCount) {
-		const nextRowStart = (rowNumber + 1) * columnCount;
-		const totalCards = this.workCards.length;
-
-		// 最後の行を超える場合は、最後のカードの位置を返す
-		return nextRowStart >= totalCards ? totalCards - 1 : nextRowStart;
-	}
-
-	/**
-	 * 詳細ブロック要素を作成
-	 * @param {string} detailsHTML - 詳細ブロックのHTML
-	 * @returns {HTMLElement} 詳細ブロック要素
-	 * @private
-	 */
-	createDetailsElement(detailsHTML) {
-		// <li>要素として作成（グリッドアイテムとして挿入）
-		const detailsElement = document.createElement('li');
-		detailsElement.className = 'p-portfolio__work-details-block';
-		detailsElement.setAttribute('data-work-details-block', '');
-		detailsElement.innerHTML = detailsHTML;
-
-		return detailsElement;
-	}
-
-	/**
-	 * 現在の行の最後のカードを取得
+	 * クリックしたカードの行の最後のカードを取得
 	 * @param {number} cardIndex - クリックされたカードのインデックス
-	 * @returns {HTMLElement} 現在の行の最後のカード要素
+	 * @returns {HTMLElement} 行の最後のカード要素
 	 * @private
 	 */
-	getCurrentRowLastCard(cardIndex) {
+	getRowLastCard(cardIndex) {
 		const columnCount = this.getGridColumnCount();
-		const rowNumber = this.getRowNumber(cardIndex, columnCount);
+		const rowNumber = Math.floor(cardIndex / columnCount);
 
 		// 現在の行の最後のカードのインデックスを計算
 		const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
 		const totalCards = this.workCards.length;
 
 		// 最後の行を超える場合は、最後のカードを返す
-		const lastCardIndex = currentRowLastIndex >= totalCards ? totalCards - 1 : currentRowLastIndex;
+		const lastCardIndex = Math.min(currentRowLastIndex, totalCards - 1);
 
 		return this.workCards[lastCardIndex];
 	}
@@ -259,11 +306,17 @@ class WorkDetails {
 		// 詳細ブロック要素を作成（<li>要素として）
 		const detailsElement = this.createDetailsElement(detailsHTML);
 
-		// 現在の行の最後のカードを取得
-		const currentRowLastCard = this.getCurrentRowLastCard(index);
+		// クリックしたカードの行の最後のカードを取得
+		const rowLastCard = this.getRowLastCard(index);
 
-		// 現在の行の最後のカードの次に挿入（次の行の開始位置の前に挿入）
-		currentRowLastCard.insertAdjacentElement('afterend', detailsElement);
+		// 行の最後のカードの次に詳細ブロックを挿入
+		const nextCard = this.workCards[Array.from(this.workCards).indexOf(rowLastCard) + 1];
+		if (nextCard) {
+			nextCard.insertAdjacentElement('beforebegin', detailsElement);
+		} else {
+			// 最後の行の場合は末尾に追加
+			this.workList.appendChild(detailsElement);
+		}
 
 		this.currentCard = card;
 		this.detailsBlock = detailsElement;
@@ -520,6 +573,20 @@ class WorkDetails {
 	destroy() {
 		this.close();
 		document.removeEventListener('keydown', this.escapeHandler);
+
+		// window resizeイベントのクリーンアップ
+		if (this.windowResizeHandler) {
+			window.removeEventListener('resize', this.windowResizeHandler);
+		}
+		if (this.resizeTimeout) {
+			clearTimeout(this.resizeTimeout);
+		}
+
+		// ResizeObserverのクリーンアップ
+		if (this.resizeObserver) {
+			this.resizeObserver.disconnect();
+			this.resizeObserver = null;
+		}
 	}
 }
 
