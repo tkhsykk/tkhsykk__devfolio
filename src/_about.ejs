@@ -29,16 +29,14 @@
 								<% if (about.data['.p-portfolio__about-text']) { %>
 							<p class="p-portfolio__about-text">
 										<%
-											const textLines = Array.isArray(about.data['.p-portfolio__about-text'])
-												? about.data['.p-portfolio__about-text']
-												: [about.data['.p-portfolio__about-text']];
-											// 最初の要素に<br>が含まれているかチェック（<br>|形式かどうか）
-											const hasBrTag = textLines.length > 0 && textLines[0].includes('<br>');
-											textLines.forEach(function(line, index) {
-												// <br>|形式の場合は追加の<br>を挿入しない
-												if (index > 0 && !hasBrTag) { %><br><% }
-												%><%- line %><%
-											});
+											const textValue = about.data['.p-portfolio__about-text'];
+											if (Array.isArray(textValue)) {
+												// 配列の場合は<br>で結合して出力
+												%><%- textValue.join('<br>') %><%
+											} else {
+												// 文字列の場合はそのまま出力（<br>タグが含まれている前提）
+												%><%- textValue %><%
+											}
 										%>
 									</p>
 								<% } %>

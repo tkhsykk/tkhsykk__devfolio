@@ -4,13 +4,15 @@ Works,,,
 ,,.p-portfolio__work-details-title,サンプルワーク タイトル
 ,,.p-portfolio__work-details-meta,2024年制作 / クライアント名
 ,,.p-portfolio__work-details-tags,WordPress|SCSS|Gulp|PHP|JavaScript
-,,.p-portfolio__work-details-description,これはサンプルワークの説明文です。実際のプロジェクトでは、ここにプロジェクトの詳細や技術的な説明を記載します。
+,,.p-portfolio__work-details-description,これはサンプルワークの説明文です。<br>|実際のプロジェクトでは、ここにプロジェクトの詳細や技術的な説明を記載します。
+,,.p-portfolio__work-details-link,https://example.com|サイトを見る
 ,,.p-portfolio__work-details-content .c-slider__slide,dummy.png|dummy.png:link|dummy.png|dummy.png:link
 ,works_02,,
 ,,.p-portfolio__work-details-title,サンプルワーク タイトル2
 ,,.p-portfolio__work-details-meta,2023年制作 / クライアント名2
 ,,.p-portfolio__work-details-tags,HTML|CSS|JavaScript|React
 ,,.p-portfolio__work-details-description,2つ目のサンプルワークの説明文です。複数のワークを登録する際の参考にしてください。
+,,.p-portfolio__work-details-link,https://example2.com|プロジェクトサイト
 ,,.p-portfolio__work-details-content .c-slider__slide,dummy.png|dummy.png
 Tech Notes,,,
 ,note_01,,

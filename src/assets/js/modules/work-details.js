@@ -39,10 +39,21 @@
  * initWorkDetails();
  */
 
-/**
- * ワーク詳細パネルの制御クラス
- * @class WorkDetails
- */
+	/**
+	 * HTMLエンティティをデコードする関数
+	 * @param {string} text - エンコードされたテキスト
+	 * @returns {string} デコードされたテキスト
+	 */
+function decodeHtmlEntities(text) {
+		const textarea = document.createElement('textarea');
+		textarea.innerHTML = text;
+		return textarea.value;
+	}
+
+	/**
+	 * ワーク詳細パネルの制御クラス
+	 * @class WorkDetails
+	 */
 class WorkDetails {
 	/**
 	 * @constructor
@@ -51,9 +62,14 @@ class WorkDetails {
 		this.worksSection = document.querySelector('[data-work]');
 		this.workList = document.querySelector('[data-work-list]');
 		this.workCards = document.querySelectorAll('[data-work-card]');
+		this.workCardsArray = Array.from(this.workCards);
+		this.cardIndexMap = new WeakMap();
 		this.currentCard = null;
 		this.detailsBlock = null;
 		this.workData = [];
+		this.resizeObserver = null;
+		this.lastColumnCount = null;
+		this.isAnimatingHeight = false;
 
 		if (!this.worksSection || !this.workList) {
 			return;
@@ -72,6 +88,7 @@ class WorkDetails {
 
 		// 各カードにクリックイベントを設定
 		this.workCards.forEach((card, index) => {
+			this.cardIndexMap.set(card, index);
 			const trigger = card.querySelector('[data-work-trigger]');
 			if (trigger) {
 				trigger.addEventListener('click', (e) => {
@@ -94,6 +111,40 @@ class WorkDetails {
 			}
 		};
 		document.addEventListener('keydown', this.escapeHandler);
+
+		// 初期列数を保存
+		this.lastColumnCount = this.getGridColumnCount();
+
+		// windowのリサイズイベントを監視（メディアクエリ変更検知）
+		this.resizeTimeout = null;
+		this.windowResizeHandler = () => {
+			clearTimeout(this.resizeTimeout);
+			this.resizeTimeout = setTimeout(() => {
+				const currentColumnCount = this.getGridColumnCount();
+				if (this.detailsBlock) {
+					if (currentColumnCount !== this.lastColumnCount) {
+						this.recalculatePosition();
+						this.lastColumnCount = currentColumnCount;
+					}
+					this.updateDetailsHeight();
+				}
+			}, 100); // debounceを短く
+		};
+		window.addEventListener('resize', this.windowResizeHandler);
+
+		// ResizeObserverでグリッドコンテナのサイズ変更を監視
+		this.resizeObserver = new ResizeObserver(entries => {
+			// 詳細ブロックが表示されている場合のみ処理
+			if (this.detailsBlock && entries.some(entry => entry.contentRect.width !== parseInt(entry.target.dataset.lastWidth || 0))) {
+				this.recalculatePosition();
+				this.updateDetailsHeight();
+				// 最後の幅を保存
+				entries.forEach(entry => {
+					entry.target.dataset.lastWidth = entry.contentRect.width.toString();
+				});
+			}
+		});
+		this.resizeObserver.observe(this.workList);
 	}
 
 	/**
@@ -101,34 +152,140 @@ class WorkDetails {
 	 * @private
 	 */
 	extractWorkData() {
-		this.workCards.forEach((card) => {
+		const safeParse = (value, fallback) => {
+			try {
+				return JSON.parse(value);
+			} catch (error) {
+				console.error('Failed to parse work data attribute:', value, error);
+				return fallback;
+			}
+		};
+
+		this.workCards.forEach((card, cardIndex) => {
 			const img = card.querySelector('[data-work-trigger] img');
 			const title = card.querySelector('.p-portfolio__work-title');
 
 			if (img && title) {
-		const meta = card.dataset.workMeta || '';
-		const tagsJson = card.dataset.workTags || '[]';
-		const tags = JSON.parse(tagsJson);
-		const description = card.dataset.workDescription || '';
-		const imagesJson = card.dataset.workImages || '[]';
-		let images = JSON.parse(imagesJson);
+				const meta = card.dataset.workMeta || '';
+				const tagsRaw = safeParse(card.dataset.workTags || '[]', []);
+				const tags = Array.isArray(tagsRaw) ? tagsRaw : [];
+				const description = decodeHtmlEntities(card.dataset.workDescription || '');
+				const linkRaw = safeParse(card.dataset.workLink || '{}', {});
+				const link = linkRaw && typeof linkRaw === 'object' ? linkRaw : {};
+				const imagesRaw = safeParse(card.dataset.workImages || '[]', []);
+				const imagesArray = Array.isArray(imagesRaw) ? imagesRaw : (imagesRaw ? [imagesRaw] : []);
+				const normalizedImages = this.normalizeImages(imagesArray, img.src);
 
-		// 画像データを正規化（文字列配列の場合はオブジェクト配列に変換）
-		if (images.length > 0 && typeof images[0] === 'string') {
-			images = images.map((src) => ({ src, hasLink: false }));
-		}
-
-		this.workData.push({
-			image: img.src,
-			alt: img.alt,
-			title: title.textContent,
-			meta,
-			tags,
-			description,
-			images: images.length > 0 ? images : [{ src: img.src, hasLink: false }]
-		});
+				this.workData[cardIndex] = {
+					image: img.src,
+					alt: img.alt,
+					title: title.textContent,
+					meta,
+					tags,
+					description,
+					link,
+					images: normalizedImages
+				};
+			} else {
+				// 条件を満たさないカードも空のデータを設定してインデックスを維持
+				this.workData[cardIndex] = null;
 			}
 		});
+	}
+
+	/**
+	 * 画像パスを一貫して解決
+	 * @param {string} src
+	 * @returns {string}
+	 * @private
+	 */
+	normalizeImagePath(src) {
+		const value = (src || '').trim();
+		if (!value) return '';
+
+		if (/^(https?:)?\/\//i.test(value)) {
+			return value;
+		}
+		if (value.startsWith('./images/')) {
+			return value;
+		}
+		if (value.startsWith('/images/')) {
+			return `.${value}`;
+		}
+		if (value.startsWith('images/')) {
+			return `./${value}`;
+		}
+		return `./images/${value}`;
+	}
+
+	/**
+	 * 画像配列を正規化
+	 * @param {Array} images
+	 * @param {string} fallbackSrc
+	 * @returns {Array<{src: string, hasLink: boolean}>}
+	 * @private
+	 */
+	normalizeImages(images, fallbackSrc) {
+		if (!Array.isArray(images) || images.length === 0) {
+			return fallbackSrc ? [{ src: this.normalizeImagePath(fallbackSrc), hasLink: false }] : [];
+		}
+
+		const normalized = images
+			.map((img) => {
+				if (!img) return null;
+
+				if (typeof img === 'object' && img.src) {
+					return {
+						src: this.normalizeImagePath(img.src),
+						hasLink: Boolean(img.hasLink)
+					};
+				}
+
+				if (typeof img === 'string') {
+					const raw = img.trim();
+					const hasLink = raw.endsWith(':link');
+					const src = hasLink ? raw.replace(/:link$/, '') : raw;
+					return {
+						src: this.normalizeImagePath(src),
+						hasLink
+					};
+				}
+
+				return null;
+			})
+			.filter(Boolean);
+
+		if (normalized.length === 0 && fallbackSrc) {
+			return [{ src: this.normalizeImagePath(fallbackSrc), hasLink: false }];
+		}
+
+		return normalized;
+	}
+
+	/**
+	 * 行内の最後のカードのインデックスを取得
+	 * @param {number} cardIndex
+	 * @returns {number}
+	 * @private
+	 */
+	getRowLastIndex(cardIndex) {
+		const columnCount = this.getGridColumnCount();
+		const rowNumber = Math.floor(cardIndex / columnCount);
+		const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
+		const totalCards = this.workCardsArray.length;
+		return Math.min(currentRowLastIndex, totalCards - 1);
+	}
+
+	/**
+	 * 詳細ブロックの高さを最新化（幅変更時など）
+	 * @private
+	 */
+	updateDetailsHeight() {
+		if (!this.detailsBlock || this.isAnimatingHeight) return;
+		const detailsElement = this.detailsBlock;
+		detailsElement.style.height = 'auto';
+		const targetHeight = detailsElement.scrollHeight;
+		detailsElement.style.height = `${targetHeight}px`;
 	}
 
 	/**
@@ -151,8 +308,64 @@ class WorkDetails {
 		this.insertDetailsBlock(index, card);
 	}
 
+
+
+
 	/**
-	 * グリッドの列数を取得
+	 * 詳細ブロックの位置を再計算（ResizeObserverから呼び出し）
+	 * @private
+	 */
+	recalculatePosition() {
+		if (!this.detailsBlock || !this.currentCard) return;
+
+		// 現在のカードのインデックスを取得
+		const currentIndex = this.cardIndexMap.get(this.currentCard);
+		if (currentIndex === undefined || currentIndex === -1) return;
+
+		// 現在の行の最後のカードを取得
+		const rowLastIndex = this.getRowLastIndex(currentIndex);
+		const rowLastCard = this.workCardsArray[rowLastIndex];
+
+		// 詳細ブロックの現在の位置を確認
+		const currentPrevSibling = this.detailsBlock.previousElementSibling;
+		const expectedPrevSibling = rowLastCard;
+
+		// 既に正しい位置にある場合は何もしない
+		if (currentPrevSibling === expectedPrevSibling) return;
+
+		// 詳細ブロックを一旦取り除いてから正しい位置に挿入
+		const detailsBlock = this.detailsBlock;
+		detailsBlock.remove();
+
+		// 行の最後のカードの次に詳細ブロックを挿入
+		const nextCard = this.workCards[rowLastIndex + 1];
+		if (nextCard) {
+			nextCard.insertAdjacentElement('beforebegin', detailsBlock);
+		} else {
+			// 最後の行の場合は末尾に追加
+			this.workList.appendChild(detailsBlock);
+		}
+	}
+
+	/**
+	 * 詳細ブロック要素を作成
+	 * @param {string} detailsHTML - 詳細ブロックのHTML
+	 * @returns {HTMLElement} 詳細ブロック要素
+	 * @private
+	 */
+	createDetailsElement(detailsHTML) {
+		// <li>要素として作成（グリッドアイテムとして挿入）
+		const detailsElement = document.createElement('li');
+		detailsElement.className = 'p-portfolio__work-details-block';
+		detailsElement.setAttribute('data-work-details-block', '');
+		detailsElement.innerHTML = detailsHTML;
+
+		return detailsElement;
+	}
+
+
+	/**
+	 * グリッドの列数を取得（動的計算）
 	 * @returns {number} 列数
 	 * @private
 	 */
@@ -177,65 +390,14 @@ class WorkDetails {
 	}
 
 	/**
-	 * 行番号を計算
-	 * @param {number} cardIndex - カードのインデックス
-	 * @param {number} columnCount - グリッドの列数
-	 * @returns {number} 行番号（0始まり）
-	 * @private
-	 */
-	getRowNumber(cardIndex, columnCount) {
-		return Math.floor(cardIndex / columnCount);
-	}
-
-	/**
-	 * 次の行の開始位置（カードのインデックス）を取得
-	 * @param {number} rowNumber - 現在の行番号
-	 * @param {number} columnCount - グリッドの列数
-	 * @returns {number} 次の行の開始位置のカードインデックス
-	 * @private
-	 */
-	getNextRowStartCardIndex(rowNumber, columnCount) {
-		const nextRowStart = (rowNumber + 1) * columnCount;
-		const totalCards = this.workCards.length;
-
-		// 最後の行を超える場合は、最後のカードの位置を返す
-		return nextRowStart >= totalCards ? totalCards - 1 : nextRowStart;
-	}
-
-	/**
-	 * 詳細ブロック要素を作成
-	 * @param {string} detailsHTML - 詳細ブロックのHTML
-	 * @returns {HTMLElement} 詳細ブロック要素
-	 * @private
-	 */
-	createDetailsElement(detailsHTML) {
-		// <li>要素として作成（グリッドアイテムとして挿入）
-		const detailsElement = document.createElement('li');
-		detailsElement.className = 'p-portfolio__work-details-block';
-		detailsElement.setAttribute('data-work-details-block', '');
-		detailsElement.innerHTML = detailsHTML;
-
-		return detailsElement;
-	}
-
-	/**
-	 * 現在の行の最後のカードを取得
+	 * クリックしたカードの行の最後のカードを取得
 	 * @param {number} cardIndex - クリックされたカードのインデックス
-	 * @returns {HTMLElement} 現在の行の最後のカード要素
+	 * @returns {HTMLElement} 行の最後のカード要素
 	 * @private
 	 */
-	getCurrentRowLastCard(cardIndex) {
-		const columnCount = this.getGridColumnCount();
-		const rowNumber = this.getRowNumber(cardIndex, columnCount);
-
-		// 現在の行の最後のカードのインデックスを計算
-		const currentRowLastIndex = (rowNumber + 1) * columnCount - 1;
-		const totalCards = this.workCards.length;
-
-		// 最後の行を超える場合は、最後のカードを返す
-		const lastCardIndex = currentRowLastIndex >= totalCards ? totalCards - 1 : currentRowLastIndex;
-
-		return this.workCards[lastCardIndex];
+	getRowLastCard(cardIndex) {
+		const rowLastIndex = this.getRowLastIndex(cardIndex);
+		return this.workCardsArray[rowLastIndex];
 	}
 
 	/**
@@ -247,6 +409,7 @@ class WorkDetails {
 	insertDetailsBlock(index, card) {
 		const work = this.workData[index];
 		if (!work) {
+			console.error('Work data not found for index:', index, 'workData length:', this.workData.length);
 			return;
 		}
 
@@ -256,11 +419,18 @@ class WorkDetails {
 		// 詳細ブロック要素を作成（<li>要素として）
 		const detailsElement = this.createDetailsElement(detailsHTML);
 
-		// 現在の行の最後のカードを取得
-		const currentRowLastCard = this.getCurrentRowLastCard(index);
+		// クリックしたカードの行の最後のカードを取得
+		const rowLastIndex = this.getRowLastIndex(index);
+		const rowLastCard = this.workCardsArray[rowLastIndex];
 
-		// 現在の行の最後のカードの次に挿入（次の行の開始位置の前に挿入）
-		currentRowLastCard.insertAdjacentElement('afterend', detailsElement);
+		// 行の最後のカードの次に詳細ブロックを挿入
+		const nextCard = this.workCardsArray[rowLastIndex + 1];
+		if (nextCard) {
+			nextCard.insertAdjacentElement('beforebegin', detailsElement);
+		} else {
+			// 最後の行の場合は末尾に追加
+			this.workList.appendChild(detailsElement);
+		}
 
 		this.currentCard = card;
 		this.detailsBlock = detailsElement;
@@ -291,8 +461,8 @@ class WorkDetails {
 			});
 		}
 
-		// スライダーの初期化（複数画像がある場合）
-		if (work.images.length > 1) {
+		// スライダーの初期化（画像がある場合）
+		if (work.images.length > 0) {
 			this.initSlider(detailsElement);
 		}
 
@@ -314,11 +484,9 @@ class WorkDetails {
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
 						${work.images.map((imgData, imgIndex) => {
-							// 画像データを正規化（文字列の場合はオブジェクトに変換）
-							const imgObj = typeof imgData === 'string'
-								? { src: imgData, hasLink: false }
-								: imgData;
-							// 原寸大のURLを生成（パラメータを削除）
+							// gulpfile.jsで処理済みのデータをそのまま使用
+							const imgObj = imgData;
+							// 原寸大のURLを生成（./images/プレフィックスを維持）
 							const fullSizeUrl = imgObj.src.split('?')[0];
 							return `
 							<div class="c-slider__slide">
@@ -343,17 +511,21 @@ class WorkDetails {
 				<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
 			</div>
 		` : `
-			<div class="p-portfolio__work-details-image">
-				${(() => {
-					const firstImg = work.images[0];
-					const imgObj = typeof firstImg === 'string'
-						? { src: firstImg, hasLink: false }
-						: firstImg;
-					const fullSizeUrl = imgObj.src.split('?')[0];
-					return imgObj.hasLink
-						? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
-						: `<img src="${imgObj.src}" alt="${work.alt}" />`;
-				})()}
+			<div class="c-slider" data-slider="work-details-${index}">
+				<div class="c-slider__viewport">
+					<div class="c-slider__track">
+						<div class="c-slider__slide">
+							${(() => {
+								const firstImg = work.images[0];
+								const imgObj = firstImg;
+								const fullSizeUrl = imgObj.src.split('?')[0];
+								return imgObj.hasLink
+									? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
+									: `<img src="${imgObj.src}" alt="${work.alt}" />`;
+							})()}
+						</div>
+					</div>
+				</div>
 			</div>
 		`;
 
@@ -378,6 +550,18 @@ class WorkDetails {
 								</div>
 							` : ''}
 							${work.description ? `<p class="p-portfolio__work-details-description">${work.description}</p>` : ''}
+							${
+								work.link && work.link.url ? `
+								<a href="${work.link.url}" class="p-portfolio__work-details-link" target="_blank" rel="noopener noreferrer">
+									${work.link.text}
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+										<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+										<polyline points="15 3 21 3 21 9"></polyline>
+										<line x1="10" y1="14" x2="21" y2="3"></line>
+									</svg>
+								</a>
+							` : ''
+							}
 						</div>
 					</div>
 				</div>
@@ -426,6 +610,7 @@ class WorkDetails {
 	 * @private
 	 */
 	openDetailsBlock(detailsElement) {
+		this.isAnimatingHeight = true;
 		// 一旦高さを0に設定（初期状態）
 		detailsElement.style.height = '0px';
 
@@ -440,6 +625,13 @@ class WorkDetails {
 				// 次のフレームでtransition開始
 				requestAnimationFrame(() => {
 					detailsElement.style.height = `${targetHeight}px`;
+
+					const handleOpened = () => {
+						detailsElement.removeEventListener('transitionend', handleOpened);
+						detailsElement.style.height = 'auto';
+						this.isAnimatingHeight = false;
+					};
+					detailsElement.addEventListener('transitionend', handleOpened);
 				});
 			});
 		});
@@ -452,6 +644,7 @@ class WorkDetails {
 	 */
 	closeDetailsBlock(detailsElement) {
 		return new Promise((resolve) => {
+			this.isAnimatingHeight = true;
 			// 現在の高さを取得
 			const currentHeight = detailsElement.scrollHeight;
 			detailsElement.style.height = `${currentHeight}px`;
@@ -463,6 +656,7 @@ class WorkDetails {
 				// transition完了を待つ
 				const handleTransitionEnd = () => {
 					detailsElement.removeEventListener('transitionend', handleTransitionEnd);
+					this.isAnimatingHeight = false;
 					resolve();
 				};
 				detailsElement.addEventListener('transitionend', handleTransitionEnd);
@@ -505,6 +699,20 @@ class WorkDetails {
 	destroy() {
 		this.close();
 		document.removeEventListener('keydown', this.escapeHandler);
+
+		// window resizeイベントのクリーンアップ
+		if (this.windowResizeHandler) {
+			window.removeEventListener('resize', this.windowResizeHandler);
+		}
+		if (this.resizeTimeout) {
+			clearTimeout(this.resizeTimeout);
+		}
+
+		// ResizeObserverのクリーンアップ
+		if (this.resizeObserver) {
+			this.resizeObserver.disconnect();
+			this.resizeObserver = null;
+		}
 	}
 }
 
@@ -534,4 +742,3 @@ init();
 
 // エクスポート
 export { WorkDetails, initWorkDetails };
-

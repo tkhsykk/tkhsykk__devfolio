@@ -13,16 +13,43 @@
 								const meta = work.data['.p-portfolio__work-details-meta'] || '';
 								const tags = work.data['.p-portfolio__work-details-tags'] || [];
 								const description = work.data['.p-portfolio__work-details-description'] || '';
+								const linkData = work.data['.p-portfolio__work-details-link'] || '';
 								const images = work.data['.p-portfolio__work-details-content .c-slider__slide'] || [];
 								// 画像データを正規化（オブジェクト配列の場合はsrcを取得、文字列配列の場合はそのまま）
 								const firstImageData = Array.isArray(images) && images.length > 0 ? images[0] : null;
-								const firstImage = firstImageData
+								let firstImage = firstImageData
 									? (typeof firstImageData === 'object' && firstImageData.src ? firstImageData.src : firstImageData)
 									: '';
+								// :linkサフィックスを削除して正しいパスに修正
+								if (firstImage) {
+									// 既に./images/プレフィックスが付いている場合はそのまま
+									if (!firstImage.startsWith('./images/')) {
+										firstImage = './images/' + firstImage.replace(/:link$/, '');
+									}
+								}
 								const tagsJson = JSON.stringify(Array.isArray(tags) ? tags : []);
 								const imagesJson = JSON.stringify(Array.isArray(images) ? images : []);
-								// タイトル、画像、meta、tags、descriptionのいずれかがあれば表示
-								const hasContent = title || firstImage || meta || (Array.isArray(tags) && tags.length > 0) || description;
+								// リンクデータの処理（URL|テキスト形式、またはオブジェクト/配列）
+								const defaultLinkText = 'サイトを見る';
+								let linkUrl = '';
+								let linkText = defaultLinkText;
+								if (linkData) {
+									if (typeof linkData === 'string') {
+										const linkParts = linkData.split('|');
+										linkUrl = (linkParts[0] || '').trim();
+										linkText = (linkParts[1] || defaultLinkText).trim();
+									} else if (Array.isArray(linkData)) {
+										linkUrl = (linkData[0] || '').trim();
+										linkText = (linkData[1] || defaultLinkText).trim();
+									} else if (typeof linkData === 'object') {
+										linkUrl = (linkData.url || '').trim();
+										linkText = (linkData.text || linkData.label || defaultLinkText).trim();
+									}
+								}
+								const hasLink = !!linkUrl;
+								const linkJson = hasLink ? JSON.stringify({ url: linkUrl, text: linkText }) : '{}';
+								// タイトル、画像、meta、tags、description、リンクのいずれかがあれば表示
+								const hasContent = title || firstImage || meta || (Array.isArray(tags) && tags.length > 0) || description || hasLink;
 							%>
 							<% if (hasContent) { %>
 								<li class="p-portfolio__work-card"
@@ -30,6 +57,7 @@
 									data-work-meta="<%= meta %>"
 									data-work-tags='<%= tagsJson %>'
 									data-work-description="<%= description %>"
+									data-work-link='<%= linkJson %>'
 									data-work-images='<%= imagesJson %>'>
 									<article>
 										<% if (firstImage) { %>
