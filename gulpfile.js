@@ -272,13 +272,12 @@ function loadCsvData() {
 					continue;
 				}
 
-				// `<br>|`で区切られた値を配列に変換（改行タグを含む）
-				if (typeof value === 'string' && value.includes('<br>|')) {
-					value = value.split('<br>|').map((v) => v.trim()).filter((v) => v);
-				}
-				// 通常のパイプ区切りの値を配列に変換（画像ファイルなど）
-				else if (typeof value === 'string' && value.includes('|')) {
-					value = value.split('|').map((v) => v.trim()).filter((v) => v);
+				// `<br>|`を`<br>`に変換してからパイプ区切り処理
+				if (typeof value === 'string') {
+					value = value.replace(/<br>\|/g, '<br>');
+					if (value.includes('|')) {
+						value = value.split('|').map((v) => v.trim()).filter((v) => v);
+					}
 				}
 
 				// 画像パスの処理

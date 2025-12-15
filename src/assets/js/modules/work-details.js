@@ -39,10 +39,21 @@
  * initWorkDetails();
  */
 
-/**
- * ワーク詳細パネルの制御クラス
- * @class WorkDetails
- */
+	/**
+	 * HTMLエンティティをデコードする関数
+	 * @param {string} text - エンコードされたテキスト
+	 * @returns {string} デコードされたテキスト
+	 */
+function decodeHtmlEntities(text) {
+		const textarea = document.createElement('textarea');
+		textarea.innerHTML = text;
+		return textarea.value;
+	}
+
+	/**
+	 * ワーク詳細パネルの制御クラス
+	 * @class WorkDetails
+	 */
 class WorkDetails {
 	/**
 	 * @constructor
@@ -158,7 +169,7 @@ class WorkDetails {
 				const meta = card.dataset.workMeta || '';
 				const tagsRaw = safeParse(card.dataset.workTags || '[]', []);
 				const tags = Array.isArray(tagsRaw) ? tagsRaw : [];
-				const description = card.dataset.workDescription || '';
+				const description = decodeHtmlEntities(card.dataset.workDescription || '');
 				const linkRaw = safeParse(card.dataset.workLink || '{}', {});
 				const link = linkRaw && typeof linkRaw === 'object' ? linkRaw : {};
 				const imagesRaw = safeParse(card.dataset.workImages || '[]', []);
