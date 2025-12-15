@@ -461,8 +461,8 @@ class WorkDetails {
 			});
 		}
 
-		// スライダーの初期化（複数画像がある場合）
-		if (work.images.length > 1) {
+		// スライダーの初期化（画像がある場合）
+		if (work.images.length > 0) {
 			this.initSlider(detailsElement);
 		}
 
@@ -486,8 +486,8 @@ class WorkDetails {
 						${work.images.map((imgData, imgIndex) => {
 							// gulpfile.jsで処理済みのデータをそのまま使用
 							const imgObj = imgData;
-							// 原寸大のURLを生成（パラメータを削除）
-							const fullSizeUrl = imgObj.src.replace('./images/', '').split('?')[0];
+							// 原寸大のURLを生成（./images/プレフィックスを維持）
+							const fullSizeUrl = imgObj.src.split('?')[0];
 							return `
 							<div class="c-slider__slide">
 								${imgObj.hasLink ? `<a href="${fullSizeUrl}">` : ''}
@@ -511,15 +511,21 @@ class WorkDetails {
 				<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
 			</div>
 		` : `
-			<div class="p-portfolio__work-details-image">
-				${(() => {
-					const firstImg = work.images[0];
-					const imgObj = firstImg;
-					const fullSizeUrl = imgObj.src.replace('./images/', '').split('?')[0];
-					return imgObj.hasLink
-						? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
-						: `<img src="${imgObj.src}" alt="${work.alt}" />`;
-				})()}
+			<div class="c-slider" data-slider="work-details-${index}">
+				<div class="c-slider__viewport">
+					<div class="c-slider__track">
+						<div class="c-slider__slide">
+							${(() => {
+								const firstImg = work.images[0];
+								const imgObj = firstImg;
+								const fullSizeUrl = imgObj.src.split('?')[0];
+								return imgObj.hasLink
+									? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
+									: `<img src="${imgObj.src}" alt="${work.alt}" />`;
+							})()}
+						</div>
+					</div>
+				</div>
 			</div>
 		`;
 
