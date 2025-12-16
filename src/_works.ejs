@@ -29,6 +29,7 @@
 								}
 								const tagsJson = JSON.stringify(Array.isArray(tags) ? tags : []);
 								const imagesJson = JSON.stringify(Array.isArray(images) ? images : []);
+								const descriptionJson = JSON.stringify(description);
 								// リンクデータの処理（URL|テキスト形式、またはオブジェクト/配列）
 								const defaultLinkText = 'サイトを見る';
 								let linkUrl = '';
@@ -56,7 +57,7 @@
 									data-work-card
 									data-work-meta="<%= meta %>"
 									data-work-tags='<%= tagsJson %>'
-									data-work-description="<%= description %>"
+									data-work-description="<%= descriptionJson %>"
 									data-work-link='<%= linkJson %>'
 									data-work-images='<%= imagesJson %>'>
 									<article>
