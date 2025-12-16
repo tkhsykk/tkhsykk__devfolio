@@ -51,7 +51,11 @@ desktop.ini
 
 
 create-anything/mobile/
-site/
+site/*
+!site/functions/
+!site/functions/**
+site/index.html
+
 private/portfolio.csv
 
 # 非公開画像（dummy.pngを除く）
