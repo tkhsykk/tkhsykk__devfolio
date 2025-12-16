@@ -333,7 +333,7 @@ function compileEjs(minify = false) {
 	if (minify) {
 		stream = stream.pipe(
 			htmlmin({
-				collapseWhitespace: true,
+				collapseWhitespace: false, // 改行を保持するためにfalseに設定
 				removeComments: true,
 			})
 		);
