@@ -169,7 +169,18 @@ class WorkDetails {
 				const meta = card.dataset.workMeta || '';
 				const tagsRaw = safeParse(card.dataset.workTags || '[]', []);
 				const tags = Array.isArray(tagsRaw) ? tagsRaw : [];
-				const description = decodeHtmlEntities(card.dataset.workDescription || '');
+				let description = card.dataset.workDescription || '';
+				try {
+					const parsed = JSON.parse(description);
+					if (typeof parsed === 'string') {
+						// 改行を<br>タグに変換
+						description = decodeHtmlEntities(parsed).replace(/\n/g, '<br>');
+					} else {
+						description = decodeHtmlEntities(parsed);
+					}
+				} catch (e) {
+					description = decodeHtmlEntities(description);
+				}
 				const linkRaw = safeParse(card.dataset.workLink || '{}', {});
 				const link = linkRaw && typeof linkRaw === 'object' ? linkRaw : {};
 				const imagesRaw = safeParse(card.dataset.workImages || '[]', []);

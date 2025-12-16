@@ -26,7 +26,8 @@ import '@oddbird/popover-polyfill';
 import './modules/image-slider.js';
 
 /* 5. ワーク詳細パネル */
-import './modules/work-details.js';
+import { initWorkDetails } from './modules/work-details.js';
+initWorkDetails();
 
 /* 6. テーマ切り替え */
 import ThemeToggle from './modules/theme-toggle.js';
