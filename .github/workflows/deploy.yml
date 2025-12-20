@@ -56,6 +56,8 @@ jobs:
 
             - name: Build site
               run: npm run build
+              env:
+                PORTFOLIO_CSV_PATH: private/portfolio.csv
 
             - name: Deploy to Cloudflare Pages
               run: |
