@@ -19,11 +19,13 @@ import browserSync from 'browser-sync';
 import plumber from 'gulp-plumber';
 import notify from 'gulp-notify';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, isAbsolute } from 'path';
 import { readFileSync, readdirSync, statSync, copyFileSync, mkdirSync, existsSync } from 'fs';
 import Papa from 'papaparse';
+import dotenv from 'dotenv';
 
 const sass = gulpSass(dartSass);
+dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -41,8 +43,16 @@ const plumberOptions = {
 
 const srcDir = join(__dirname, 'src');
 const distDir = join(__dirname, 'site');
-const csvPath = join(__dirname, 'private', 'portfolio.csv');
-const imagesSrcDir = join(__dirname, 'private', 'images');
+const csvPathEnv = process.env.PORTFOLIO_CSV_PATH;
+const csvPath = csvPathEnv
+	? (isAbsolute(csvPathEnv) ? csvPathEnv : join(__dirname, csvPathEnv))
+	: join(__dirname, 'private', 'sample.csv');
+
+// CSVファイルのディレクトリパスを取得し、そこからimagesフォルダのパスを生成
+const csvDir = csvPathEnv
+	? (isAbsolute(csvPathEnv) ? dirname(csvPathEnv) : join(__dirname, dirname(csvPathEnv)))
+	: join(__dirname, 'private');
+const imagesSrcDir = join(csvDir, 'images');
 const imagesDistDir = join(distDir, 'images');
 
 const paths = {
@@ -74,6 +84,9 @@ const SECTION_MAP = {
  * 画像ファイルの拡張子リスト
  */
 const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
+const LINK_SELECTOR = '.p-portfolio__work-details-link';
+const DEFAULT_LINK_TEXT = 'サイトを見る';
+const LINK_SUFFIX = ':link';
 
 /**
  * 画像ファイルかどうかを判定
@@ -82,7 +95,42 @@ const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
  */
 function isImageFile(fileName) {
 	if (!fileName) return false;
-	return IMAGE_EXTENSIONS.some(ext => fileName.toLowerCase().endsWith(ext));
+	const normalized = stripLinkSuffix(String(fileName)).trim().toLowerCase();
+	return IMAGE_EXTENSIONS.some(ext => normalized.endsWith(ext));
+}
+
+/**
+ * :linkサフィックスを除去
+ * @param {string} fileName
+ * @returns {string}
+ */
+function stripLinkSuffix(fileName = '') {
+	const value = String(fileName);
+	return value.endsWith(LINK_SUFFIX) ? value.slice(0, -LINK_SUFFIX.length) : value;
+}
+
+/**
+ * 画像パスを ./images/ 配下に解決（既存パスは尊重）
+ * @param {string} fileName
+ * @returns {string}
+ */
+function resolveImagePath(fileName) {
+	const normalized = stripLinkSuffix(String(fileName)).trim();
+
+	if (/^(https?:)?\/\//i.test(normalized)) {
+		return normalized;
+	}
+	if (normalized.startsWith('./images/')) {
+		return normalized;
+	}
+	if (normalized.startsWith('/images/')) {
+		return `.${normalized}`;
+	}
+	if (normalized.startsWith('images/')) {
+		return `./${normalized}`;
+	}
+
+	return `./images/${normalized}`;
 }
 
 /**
@@ -92,35 +140,67 @@ function isImageFile(fileName) {
  * @returns {string|Array|Object} 処理後の値
  */
 function processImagePath(value, selector) {
-	const isSliderSelector = selector === '.p-portfolio__work-details-content .c-slider__slide';
 	const processSingleValue = (v) => {
 		if (!v) return v;
 
+		if (typeof v === 'object' && !Array.isArray(v) && v.src) {
+			return { src: resolveImagePath(v.src), hasLink: Boolean(v.hasLink) };
+		}
+
 		// :linkサフィックスの処理
-		const hasLink = v.endsWith(':link');
-		const fileName = hasLink ? v.replace(/:link$/, '') : v;
+		const raw = String(v).trim();
+		const hasLink = raw.endsWith(LINK_SUFFIX);
+		const fileName = stripLinkSuffix(raw);
 
 		// 画像ファイル名の場合
-		if (isImageFile(fileName)) {
-			const imagePath = `./images/${fileName}`;
-			// スライダーセレクタの場合はオブジェクト形式で返す
-			if (isSliderSelector) {
-				return { src: imagePath, hasLink: hasLink };
-			}
-			return imagePath;
+		if (isImageFile(raw)) {
+			return { src: resolveImagePath(fileName), hasLink };
 		}
 
-		// スライダーセレクタで画像以外の場合はオブジェクト形式
-		if (isSliderSelector) {
-			return { src: fileName, hasLink: hasLink };
-		}
-		return fileName;
+		// 画像以外の場合はそのままのファイル名を使用
+		return { src: fileName, hasLink };
 	};
 
 	if (Array.isArray(value)) {
 		return value.map(processSingleValue);
 	}
 	return processSingleValue(value);
+}
+
+const PIPE_ALLOWED_SELECTORS = new Set([
+	'.p-portfolio__work-details-content .c-slider__slide',
+	'.p-portfolio__work-details-tags',
+	'.p-portfolio__work-details-link',
+]);
+
+
+/**
+ * サイトリンク用の値を正規化
+ * @param {string|Array|Object} value - CSVから取得した生値
+ * @returns {{url: string, text: string}} 正規化したリンクオブジェクト
+ */
+function normalizeLinkValue(value) {
+	if (!value) {
+		return { url: '', text: DEFAULT_LINK_TEXT };
+	}
+
+	// すでにオブジェクトならそのまま利用
+	if (typeof value === 'object' && !Array.isArray(value)) {
+		return {
+			url: (value.url || '').trim(),
+			text: (value.text || value.label || DEFAULT_LINK_TEXT).trim(),
+		};
+	}
+
+	// 文字列や配列を共通処理に寄せる
+	const parts = Array.isArray(value)
+		? value
+		: String(value).split('|');
+
+	return {
+		url: (parts[0] || '').trim(),
+		text: (parts[1] || DEFAULT_LINK_TEXT).trim(),
+	};
 }
 
 /**
@@ -138,6 +218,16 @@ function loadCsvData() {
 			quoteChar: '"', // ダブルクォートでフィールドを囲む
 			escapeChar: '"', // エスケープ文字
 		});
+
+		if (parsed.errors && parsed.errors.length > 0) {
+			console.error('❌ CSVパースエラーが検出されたためビルドを中断します:');
+			parsed.errors.forEach((error, index) => {
+				console.error(
+					`  ${index + 1}. row=${error.row ?? 'unknown'} col=${error.column ?? 'unknown'} message=${error.message ?? '不明なエラー'}`
+				);
+			});
+			throw new Error('CSVのパースに失敗しました。エラー内容を確認してください。');
+		}
 
 		const rows = parsed.data.slice(1); // 1行目（説明行）をスキップ
 		console.log(`✅ CSVファイル読み込み成功: ${rows.length}行を処理`);
@@ -193,13 +283,18 @@ function loadCsvData() {
 				const selector = selectorCol;
 				let value = valueCol || '';
 
-				// `<br>|`で区切られた値を配列に変換（改行タグを含む）
-				if (typeof value === 'string' && value.includes('<br>|')) {
-					value = value.split('<br>|').map((v) => v.trim()).filter((v) => v);
+				// 物理改行は先に <br>
+				if (typeof value === 'string') {
+					value = value.replace(/\r?\n/g, '<br>');
 				}
-				// 通常のパイプ区切りの値を配列に変換（画像ファイルなど）
-				else if (typeof value === 'string' && value.includes('|')) {
-					value = value.split('|').map((v) => v.trim()).filter((v) => v);
+
+				// | 分割は「許可されたセレクタのみ」
+				if (
+					typeof value === 'string' &&
+					value.includes('|') &&
+					PIPE_ALLOWED_SELECTORS.has(selector)
+				) {
+					value = value.split('|').map(v => v.trim()).filter(Boolean);
 				}
 
 				// 画像パスの処理
@@ -272,7 +367,13 @@ function compileEjs(minify = false) {
 function compileScss(useSourcemaps = true) {
 	let stream = gulp
 		.src(paths.scss.src)
-		.pipe(plumber(plumberOptions))
+		.pipe(plumber(plumberOptions));
+
+	if (useSourcemaps) {
+		stream = stream.pipe(sourcemaps.init());
+	}
+
+	stream = stream
 		.pipe(sass().on('error', sass.logError))
 		.pipe(postcss([autoprefixer(), combineMediaQuery()]))
 		.pipe(
@@ -286,9 +387,7 @@ function compileScss(useSourcemaps = true) {
 		);
 
 	if (useSourcemaps) {
-		stream = stream
-			.pipe(sourcemaps.init())
-			.pipe(sourcemaps.write('.'));
+		stream = stream.pipe(sourcemaps.write('.'));
 	}
 
 	stream = stream.pipe(gulp.dest(paths.scss.dist));
@@ -343,6 +442,15 @@ export async function scripts() {
  */
 export function copyImages(done) {
 	try {
+		if (!existsSync(imagesSrcDir)) {
+			console.warn(
+				'⚠ imagesSrcDir が存在しないため画像コピーをスキップ:',
+				imagesSrcDir
+			);
+			done();
+			return;
+		}
+
 		if (!existsSync(imagesDistDir)) {
 			mkdirSync(imagesDistDir, { recursive: true });
 		}
@@ -356,18 +464,17 @@ export function copyImages(done) {
 			if (stat.isFile()) {
 				const ext = file.toLowerCase().substring(file.lastIndexOf('.'));
 				if (IMAGE_EXTENSIONS.includes(ext)) {
-					const destPath = join(imagesDistDir, file);
-					copyFileSync(filePath, destPath);
+					copyFileSync(filePath, join(imagesDistDir, file));
 				}
 			}
 		}
 
 		done();
 	} catch (error) {
-		console.error('画像コピーエラー:', error);
 		done(error);
 	}
 }
+
 
 /**
  * EJSファイル変更時の処理（開発用）
@@ -394,7 +501,7 @@ export function serve() {
 	});
 
 	gulp.watch(join(srcDir, '**/*.ejs'), htmlWatch);
-	gulp.watch(csvPath, htmlWatch);
+	gulp.watch(csvPath, gulp.series(copyImages, htmlWatch));
 	gulp.watch(join(srcDir, 'assets/scss/**/*.scss'), styles);
 	gulp.watch(paths.js.src, scripts).on('change', browserSync.reload);
 	gulp.watch(join(imagesSrcDir, '**/*.{png,jpg,jpeg,gif,webp}'), copyImages).on('change', browserSync.reload);

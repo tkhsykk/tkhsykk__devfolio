@@ -44,7 +44,7 @@
 	 * @param {string} text - エンコードされたテキスト
 	 * @returns {string} デコードされたテキスト
 	 */
-function decodeHtmlEntities(text) {
+	function decodeHtmlEntities(text) {
 		const textarea = document.createElement('textarea');
 		textarea.innerHTML = text;
 		return textarea.value;
@@ -172,12 +172,10 @@ class WorkDetails {
 				let description = card.dataset.workDescription || '';
 				try {
 					const parsed = JSON.parse(description);
-					if (typeof parsed === 'string') {
-						// 改行を<br>タグに変換
-						description = decodeHtmlEntities(parsed).replace(/\n/g, '<br>');
-					} else {
-						description = decodeHtmlEntities(parsed);
-					}
+					description =
+						typeof parsed === 'string'
+							? decodeHtmlEntities(parsed)
+							: decodeHtmlEntities(description);
 				} catch (e) {
 					description = decodeHtmlEntities(description);
 				}
