@@ -16,19 +16,19 @@
 
 					<div class="p-portfolio__about-content">
 						<% if (typeof portfolio !== 'undefined' && portfolio.about && portfolio.about.length > 0) { %>
-							<% const about = portfolio.about[0]; %>
+						<% const about = portfolio.about[0]; %>
 						<div>
-								<% if (about.data['.p-portfolio__about-name']) { %>
-									<h3 class="p-portfolio__about-name"><%= about.data['.p-portfolio__about-name'] %></h3>
-								<% } %>
+							<% if (about.data['.p-portfolio__about-name']) { %>
+							<h3 class="p-portfolio__about-name"><%= about.data['.p-portfolio__about-name'] %></h3>
+							<% } %>
 
-								<% if (about.data['.p-portfolio__about-role']) { %>
-									<p class="p-portfolio__about-role"><%= about.data['.p-portfolio__about-role'] %></p>
-								<% } %>
+							<% if (about.data['.p-portfolio__about-role']) { %>
+							<p class="p-portfolio__about-role"><%= about.data['.p-portfolio__about-role'] %></p>
+							<% } %>
 
-								<% if (about.data['.p-portfolio__about-text']) { %>
+							<% if (about.data['.p-portfolio__about-text']) { %>
 							<p class="p-portfolio__about-text">
-										<%
+								<%
 											const textValue = about.data['.p-portfolio__about-text'];
 											if (Array.isArray(textValue)) {
 												// 配列の場合は<br>で結合して出力
@@ -38,36 +38,39 @@
 												%><%- textValue %><%
 											}
 										%>
-									</p>
-								<% } %>
+							</p>
+							<% } %>
 						</div>
 
-							<% if (about.data['.p-portfolio__about-list']) { %>
+						<% if (about.data['.p-portfolio__about-list']) { %>
 						<ul class="p-portfolio__about-list">
-									<%
-										const listItems = Array.isArray(about.data['.p-portfolio__about-list'])
-											? about.data['.p-portfolio__about-list']
-											: [about.data['.p-portfolio__about-list']];
-										listItems.forEach(function(item) {
-									%>
+							<%
+								const raw = about.data['.p-portfolio__about-list'];
+								const listItems = typeof raw === 'string'
+									? raw.split('|').map(v => v.trim()).filter(Boolean)
+									: Array.isArray(raw)
+										? raw
+										: [raw];
+
+								listItems.forEach(function(item) {
+							%>
 							<li class="p-portfolio__about-item">
-											<span><%= item %></span>
+								<span><%= item %></span>
 							</li>
-									<% }); %>
+							<% }); %>
 						</ul>
-							<% } %>
+						<% } %>
 
 						<div class="p-portfolio__about-hobbies">
-								<% if (about.data['.p-portfolio__about-hobbies-title']) { %>
-									<h4 class="p-portfolio__about-hobbies-title"><%= about.data['.p-portfolio__about-hobbies-title'] %></h4>
-								<% } %>
-								<% if (about.data['.p-portfolio__about-hobbies-text']) { %>
-									<p class="p-portfolio__about-hobbies-text"><%= about.data['.p-portfolio__about-hobbies-text'] %></p>
-								<% } %>
+							<% if (about.data['.p-portfolio__about-hobbies-title']) { %>
+							<h4 class="p-portfolio__about-hobbies-title"><%= about.data['.p-portfolio__about-hobbies-title'] %></h4>
+							<% } %>
+							<% if (about.data['.p-portfolio__about-hobbies-text']) { %>
+							<p class="p-portfolio__about-hobbies-text"><%= about.data['.p-portfolio__about-hobbies-text'] %></p>
+							<% } %>
 						</div>
 						<% } %>
 					</div>
 				</div>
 			</div>
 		</section>
-
