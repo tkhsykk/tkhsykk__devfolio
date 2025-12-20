@@ -212,6 +212,16 @@ function loadCsvData() {
 			escapeChar: '"', // エスケープ文字
 		});
 
+		if (parsed.errors && parsed.errors.length > 0) {
+			console.error('❌ CSVパースエラーが検出されたためビルドを中断します:');
+			parsed.errors.forEach((error, index) => {
+				console.error(
+					`  ${index + 1}. row=${error.row ?? 'unknown'} col=${error.column ?? 'unknown'} message=${error.message ?? '不明なエラー'}`
+				);
+			});
+			throw new Error('CSVのパースに失敗しました。エラー内容を確認してください。');
+		}
+
 		const rows = parsed.data.slice(1); // 1行目（説明行）をスキップ
 		console.log(`✅ CSVファイル読み込み成功: ${rows.length}行を処理`);
 
@@ -266,18 +276,20 @@ function loadCsvData() {
 				const selector = selectorCol;
 				let value = valueCol || '';
 
+				// 画像用：| 区切りは必ず配列化
+				if (typeof value === 'string' && value.includes('|')) {
+					value = value.split('|').map(v => v.trim()).filter(Boolean);
+				}
+
 				// ワーク詳細リンクは専用の正規化を実施
 				if (selector === LINK_SELECTOR) {
 					currentItemData[selector] = normalizeLinkValue(value);
 					continue;
 				}
 
-				// `<br>|`を`<br>`に変換してからパイプ区切り処理
+				// 物理改行`<br>`に変換
 				if (typeof value === 'string') {
-					value = value.replace(/<br>\|/g, '<br>');
-					if (value.includes('|')) {
-						value = value.split('|').map((v) => v.trim()).filter((v) => v);
-					}
+					value = value.replace(/\r?\n/g, '<br>');
 				}
 
 				// 画像パスの処理
@@ -425,6 +437,15 @@ export async function scripts() {
  */
 export function copyImages(done) {
 	try {
+		if (!existsSync(imagesSrcDir)) {
+			console.warn(
+				'⚠ imagesSrcDir が存在しないため画像コピーをスキップ:',
+				imagesSrcDir
+			);
+			done();
+			return;
+		}
+
 		if (!existsSync(imagesDistDir)) {
 			mkdirSync(imagesDistDir, { recursive: true });
 		}
@@ -438,18 +459,17 @@ export function copyImages(done) {
 			if (stat.isFile()) {
 				const ext = file.toLowerCase().substring(file.lastIndexOf('.'));
 				if (IMAGE_EXTENSIONS.includes(ext)) {
-					const destPath = join(imagesDistDir, file);
-					copyFileSync(filePath, destPath);
+					copyFileSync(filePath, join(imagesDistDir, file));
 				}
 			}
 		}
 
 		done();
 	} catch (error) {
-		console.error('画像コピーエラー:', error);
 		done(error);
 	}
 }
+
 
 /**
  * EJSファイル変更時の処理（開発用）
@@ -476,7 +496,7 @@ export function serve() {
 	});
 
 	gulp.watch(join(srcDir, '**/*.ejs'), htmlWatch);
-	gulp.watch(csvPath, htmlWatch);
+	gulp.watch(csvPath, gulp.series(copyImages, htmlWatch));
 	gulp.watch(join(srcDir, 'assets/scss/**/*.scss'), styles);
 	gulp.watch(paths.js.src, scripts).on('change', browserSync.reload);
 	gulp.watch(join(imagesSrcDir, '**/*.{png,jpg,jpeg,gif,webp}'), copyImages).on('change', browserSync.reload);
@@ -520,4 +540,3 @@ export const build = gulp.series(
 );
 
 export default dev;
-
