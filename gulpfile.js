@@ -167,6 +167,13 @@ function processImagePath(value, selector) {
 	return processSingleValue(value);
 }
 
+const PIPE_ALLOWED_SELECTORS = new Set([
+	'.p-portfolio__work-details-content .c-slider__slide',
+	'.p-portfolio__work-details-tags',
+	'.p-portfolio__work-details-link',
+]);
+
+
 /**
  * サイトリンク用の値を正規化
  * @param {string|Array|Object} value - CSVから取得した生値
@@ -276,20 +283,18 @@ function loadCsvData() {
 				const selector = selectorCol;
 				let value = valueCol || '';
 
-				// 画像用：| 区切りは必ず配列化
-				if (typeof value === 'string' && value.includes('|')) {
-					value = value.split('|').map(v => v.trim()).filter(Boolean);
-				}
-
-				// ワーク詳細リンクは専用の正規化を実施
-				if (selector === LINK_SELECTOR) {
-					currentItemData[selector] = normalizeLinkValue(value);
-					continue;
-				}
-
-				// 物理改行`<br>`に変換
+				// 物理改行は先に <br>
 				if (typeof value === 'string') {
 					value = value.replace(/\r?\n/g, '<br>');
+				}
+
+				// | 分割は「許可されたセレクタのみ」
+				if (
+					typeof value === 'string' &&
+					value.includes('|') &&
+					PIPE_ALLOWED_SELECTORS.has(selector)
+				) {
+					value = value.split('|').map(v => v.trim()).filter(Boolean);
 				}
 
 				// 画像パスの処理
