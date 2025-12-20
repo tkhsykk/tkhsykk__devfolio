@@ -14,7 +14,14 @@
 								const tags = work.data['.p-portfolio__work-details-tags'] || [];
 								const description = work.data['.p-portfolio__work-details-description'] || '';
 								const linkData = work.data['.p-portfolio__work-details-link'] || '';
-								const images = work.data['.p-portfolio__work-details-content .c-slider__slide'] || [];
+								const rawImages = work.data['.p-portfolio__work-details-content .c-slider__slide'];
+
+								const images = Array.isArray(rawImages)
+									? rawImages
+									: rawImages
+										? [rawImages]
+										: [];
+								//const images = work.data['.p-portfolio__work-details-content .c-slider__slide'] || [];
 								// 画像データを正規化（オブジェクト配列の場合はsrcを取得、文字列配列の場合はそのまま）
 								const firstImageData = Array.isArray(images) && images.length > 0 ? images[0] : null;
 								let firstImage = firstImageData

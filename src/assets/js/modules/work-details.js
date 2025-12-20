@@ -740,16 +740,5 @@ function initWorkDetails() {
 	new WorkDetails();
 }
 
-// 初期化
-function init() {
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', initWorkDetails);
-	} else {
-		setTimeout(initWorkDetails, 0);
-	}
-}
-
-init();
-
 // エクスポート
 export { WorkDetails, initWorkDetails };
