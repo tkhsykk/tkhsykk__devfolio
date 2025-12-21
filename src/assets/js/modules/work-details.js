@@ -492,19 +492,24 @@ class WorkDetails {
 			<div class="c-slider" data-slider="work-details-${index}">
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
-						${work.images.map((imgData, imgIndex) => {
-							// gulpfile.jsで処理済みのデータをそのまま使用
-							const imgObj = imgData;
-							// 原寸大のURLを生成（./images/プレフィックスを維持）
+						${work.images.map((imgObj, imgIndex) => {
 							const fullSizeUrl = imgObj.src.split('?')[0];
+							const isFirst = imgIndex === 0;
+
 							return `
 							<div class="c-slider__slide">
 								${imgObj.hasLink ? `<a href="${fullSizeUrl}">` : ''}
-									<img src="${imgObj.src}" alt="${work.alt} - 画像${imgIndex + 1}" />
+									<img
+										${isFirst ? `src="${imgObj.src}"` : `data-src="${imgObj.src}"`}
+										alt="${work.alt} - 画像${imgIndex + 1}"
+										loading="lazy"
+										decoding="async"
+									/>
 								${imgObj.hasLink ? '</a>' : ''}
 							</div>
-						`;
+							`;
 						}).join('')}
+
 					</div>
 				</div>
 				<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
@@ -529,8 +534,8 @@ class WorkDetails {
 								const imgObj = firstImg;
 								const fullSizeUrl = imgObj.src.split('?')[0];
 								return imgObj.hasLink
-									? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
-									: `<img src="${imgObj.src}" alt="${work.alt}" />`;
+									? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" loading="lazy" decoding="async" /></a>`
+									: `<img src="${imgObj.src}" alt="${work.alt}" loading="lazy" decoding="async" />`;
 							})()}
 						</div>
 					</div>

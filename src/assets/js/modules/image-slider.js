@@ -664,6 +664,7 @@ class ImageSlider {
 	updateSlides() {
 		const len = this.slideCount;
 		const translateX = -this.currentIndex * 100;
+
 		if (this.track) {
 			this.track.style.transform = `translateX(${translateX}%)`;
 		}
@@ -672,6 +673,13 @@ class ImageSlider {
 			const isActive = index === this.currentIndex;
 			slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
 			slide.classList.toggle('is-active', isActive);
+
+			if (isActive) {
+				const img = slide.querySelector('img');
+				if (img && !img.src && img.dataset.src) {
+					img.src = img.dataset.src;
+				}
+			}
 		});
 
 		this.updatePagination();

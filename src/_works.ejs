@@ -72,7 +72,9 @@
 											<button class="p-portfolio__work-image p-portfolio__work-trigger" data-work-trigger
 												aria-label="<%= title || 'ワーク' %>の詳細を表示">
 												<img src="<%= firstImage %>"
-													alt="<%= title || 'ワーク' %>" />
+													alt="<%= title || 'ワーク' %>"
+													loading="lazy"
+													decoding="async" />
 											</button>
 										<% } %>
 
