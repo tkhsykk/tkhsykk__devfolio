@@ -1,23 +1,20 @@
-# HTMLはキャッシュしない
-/*.html
+# HTML
+/*
   Cache-Control: no-cache
 
-/
-  Cache-Control: no-cache
-
-# CSS / JS
-/*.css
-/*.js
+# JS / CSS
+/**/*.js
+/**/*.css
   Cache-Control: public, max-age=31536000, immutable
 
 # Images
-/*.jpg
-/*.jpeg
-/*.png
-/*.webp
-/*.svg
+/**/*.jpg
+/**/*.jpeg
+/**/*.png
+/**/*.webp
+/**/*.svg
   Cache-Control: public, max-age=31536000, immutable
 
 # Fonts
-/*.woff2
+/**/*.woff2
   Cache-Control: public, max-age=31536000, immutable
