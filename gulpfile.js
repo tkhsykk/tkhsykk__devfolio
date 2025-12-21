@@ -18,6 +18,7 @@ import { build as esbuild } from 'esbuild';
 import browserSync from 'browser-sync';
 import plumber from 'gulp-plumber';
 import notify from 'gulp-notify';
+import webp from 'gulp-webp';
 import { fileURLToPath } from 'url';
 import { dirname, join, isAbsolute } from 'path';
 import { readFileSync, readdirSync, statSync, copyFileSync, mkdirSync, existsSync } from 'fs';
@@ -83,7 +84,7 @@ const SECTION_MAP = {
 /**
  * 画像ファイルの拡張子リスト
  */
-const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
+const IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.gif'];
 const LINK_SELECTOR = '.p-portfolio__work-details-link';
 const DEFAULT_LINK_TEXT = 'サイトを見る';
 const LINK_SUFFIX = ':link';
@@ -475,6 +476,22 @@ export function copyImages(done) {
 	}
 }
 
+/**
+ * 画像をWebPに変換
+ */
+export function imagesWebp() {
+	return gulp
+		.src(join(imagesSrcDir, '**/*.{png,jpg,jpeg}'), {
+			encoding: false,
+		})
+		.pipe(
+			webp({
+				quality: 75,
+			})
+		)
+		.pipe(gulp.dest(imagesDistDir));
+}
+
 
 /**
  * EJSファイル変更時の処理（開発用）
@@ -501,10 +518,11 @@ export function serve() {
 	});
 
 	gulp.watch(join(srcDir, '**/*.ejs'), htmlWatch);
-	gulp.watch(csvPath, gulp.series(copyImages, htmlWatch));
+	gulp.watch(csvPath, gulp.series(copyImages, imagesWebp, htmlWatch));
 	gulp.watch(join(srcDir, 'assets/scss/**/*.scss'), styles);
 	gulp.watch(paths.js.src, scripts).on('change', browserSync.reload);
-	gulp.watch(join(imagesSrcDir, '**/*.{png,jpg,jpeg,gif,webp}'), copyImages).on('change', browserSync.reload);
+	gulp.watch(join(imagesSrcDir, '**/*.{png,jpg,jpeg,gif}'), gulp.series(copyImages, imagesWebp))
+		.on('change', browserSync.reload);
 }
 
 /**
@@ -525,7 +543,7 @@ export function stylesProd() {
  * 開発環境
  */
 export const dev = gulp.series(
-	gulp.parallel(html, styles, scripts, copyImages),
+	gulp.parallel(html, styles, scripts, copyImages, imagesWebp),
 	serve
 );
 
@@ -533,13 +551,9 @@ export const dev = gulp.series(
  * 本番ビルド
  */
 export const build = gulp.series(
-	gulp.parallel(buildProd, stylesProd, scripts, copyImages),
+	gulp.parallel(buildProd, stylesProd, scripts, copyImages, imagesWebp),
 	(done) => {
 		console.log('\n✅ ビルド完了！');
-		console.log(`📁 出力先: ${distDir}`);
-		const csvData = loadCsvData();
-		const totalItems = csvData.works.length + csvData.notes.length + csvData.about.length + csvData.contact.length;
-		console.log(`📊 CSVデータ出力確認: ${totalItems}アイテムがHTMLに反映されています`);
 		done();
 	}
 );
