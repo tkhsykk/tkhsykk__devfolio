@@ -126,6 +126,11 @@
 			background-color: var(--color-text);
 			transition: transform 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6), width 0.3s ease;
 			border-radius: 4px;
+			box-shadow: 0 0 2px rgba(255, 255, 255, .4), 0 0 6px #fff;
+
+			[data-theme="dark"] & {
+				box-shadow: 0 0 2px rgba(0, 0, 0, .4), 0 0 6px #000;
+			}
 
 			&:first-child {
 				transform-origin: center center;
@@ -220,7 +225,7 @@
 
 	&__nav-links {
 		display: flex;
-		flex-direction: column; // SPは縦並び
+		flex-direction: column;
 		align-items: center;
 		gap: $spacing-8;
 		//margin: $spacing-6;
@@ -229,7 +234,7 @@
 		background: color-mix(in srgb, var(--color-text), transparent 80%);
 		backdrop-filter: blur(12px);
 		padding: $spacing-6;
-		width: 80%;
+		width: 90vw;
 		border-radius: $border-radius-sm;
 
 		@include mq(md) {
@@ -589,7 +594,7 @@
 			font-size: $font-size-base;
 			font-weight: $font-weight-semibold;
 			margin: 0;
-			text-align: center;
+			//text-align: center;
 
 			@include mq(md) {
 				font-size: $font-size-lg;
@@ -761,17 +766,17 @@
 		&-details-content {
 			position: relative;
 			background-color: var(--color-text);
-			padding: $spacing-6;
+			padding: $spacing-12 $spacing-6 $spacing-6;
 			width: auto;
 
 			@include mq(md) {
-				padding: $spacing-6 $spacing-12;
+				padding: $spacing-6 $spacing-12 $spacing-12 $spacing-12;
 			}
 		}
 
 		&-close {
 			position: absolute;
-			top: .5rem;
+			top: .25rem;
 			right: .5rem;
 			z-index: 10;
 			width: 2.5rem;
@@ -780,8 +785,12 @@
 			align-items: center;
 			justify-content: center;
 			//background-color: rgba($color-white, 0.9);
-			color: $color-white;
+			color: var(--color-bg);
 			transition: background-color $transition-base, transform $transition-base;
+
+			@include mq(md) {
+				top: .5rem;
+			}
 
 			&:hover,
 			&:focus-visible {
@@ -815,6 +824,10 @@
 			@include mq(md) {
 				grid-template-columns: 1fr 1fr;
 				gap: $spacing-8;
+			}
+
+			.c-slider {
+				align-self: center;
 			}
 		}
 
