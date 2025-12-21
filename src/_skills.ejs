@@ -78,6 +78,7 @@
 								<div class="c-popbox" id="popover-docker" popover>
 									Windowsの低速なDocker開発を避けるため、WSL2上でコンテナを構築・実行し、Dockerをネイティブに近い高速かつ安定した開発環境として使用。
 								</div>
+								<span class="c-badge">WSL2+nginxでのWordPress開発</span>
 								<span class="c-badge">XAMPP</span>
 								<span class="c-badge">EmEditor</span>
 								<span class="c-badge">VSCode</span>
@@ -105,7 +106,7 @@
 								<button class="c-badge c-badge--popover"
 									popovertarget="popover-auto-deploy">自動デプロイ</button>
 								<div class="c-popbox" id="popover-auto-deploy" popover>
-									Cloudflare Pagesを使用した自動デプロイ。BASIC認証を設定済みです。このサイトもCloudflare Pagesでデプロイされています。
+									Cloudflare Pagesを使用した自動デプロイ。このサイトもGitHub Actionsでのビルド→Cloudflare Pagesでデプロイという手順で公開されています。
 								</div>
 							</div>
 						</article>
@@ -199,7 +200,7 @@
 								<button class="c-badge c-badge--popover"
 									popovertarget="popover-js-plugin">JavaScriptプラグイン</button>
 								<div class="c-popbox" id="popover-js-plugin" popover>
-									現在は配布するかは不明ですが、このサイトで使用しているJavaScriptモジュールをクライアントワーク向けにプラグイン化予定です。
+									現時点では配布するかは未定ですが、このサイトで使用しているJavaScriptモジュールをクライアントワーク向けにプラグイン化予定です。
 									<ul>
 										<li><a href="https://github.com/tkhsykk/tkhsykk__devfolio/blob/main/src/assets/js/modules/image-slider.js" target="_blank" rel="noopener noreferrer">image-slider.js</a>: 画像をクリックすると元の位置から画面中央へスムーズに拡大表示するライトボックス。スライダー機能も内蔵し、タッチスワイプ・キーボード操作・アクセシビリティ対応。</li>
 										<li><a href="https://github.com/tkhsykk/tkhsykk__devfolio/blob/main/src/assets/js/modules/work-details.js" target="_blank" rel="noopener noreferrer">work-details.js</a>: カードクリックでグリッド内に詳細ブロックを動的に挿入・表示するパネル。高さトランジションアニメーション付きで、スライダーとの連携も可能。</li>

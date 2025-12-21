@@ -10,7 +10,7 @@
 	padding: $spacing-2 $spacing-3;
 	background-color: $color-bg-lighter;
 	color: $color-text;
-	font-size: $font-size-sm;
+	font-size: rem(15);
 	border-radius: $border-radius-full;
 	line-height: 1.25;
 	@include transition();
