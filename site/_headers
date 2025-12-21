@@ -1,10 +1,13 @@
 # HTML
-/*
+/*.html
+  Cache-Control: no-cache
+
+/
   Cache-Control: no-cache
 
 # JS / CSS
 /**/*.js
-/**/*.css
+/css/*
   Cache-Control: public, max-age=31536000, immutable
 
 # Images
