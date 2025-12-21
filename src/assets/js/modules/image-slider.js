@@ -675,10 +675,7 @@ class ImageSlider {
 			slide.classList.toggle('is-active', isActive);
 
 			if (isActive) {
-				const img = slide.querySelector('img');
-				if (img && !img.src && img.dataset.src) {
-					img.src = img.dataset.src;
-				}
+				this.loadSlideMedia(slide);
 			}
 		});
 
@@ -690,6 +687,28 @@ class ImageSlider {
 			const currentSlide = this.slides[this.currentIndex];
 			const slideLabel = currentSlide.querySelector('img')?.alt || `スライド${this.currentIndex + 1}`;
 			this.liveRegion.textContent = `${slideLabel}、${this.currentIndex + 1}枚目 / 全${len}枚`;
+		}
+	}
+
+	loadSlideMedia(slide) {
+		if (!slide) return;
+
+		const picture = slide.querySelector('picture');
+
+		if (picture && !picture.dataset.loaded) {
+			const source = picture.querySelector('source[data-srcset]');
+			const img = picture.querySelector('img[data-src]');
+
+			if (source) {
+				source.srcset = source.dataset.srcset;
+			}
+
+			if (img) {
+				img.src = img.dataset.src;
+			}
+
+			picture.dataset.loaded = 'true';
+			return;
 		}
 	}
 

@@ -78,6 +78,19 @@ class WorkDetails {
 		this.init();
 	}
 
+	getWebpSrc(src) {
+		if (!src) return '';
+		return src.replace(/\.(png|jpe?g)$/i, '.webp');
+	}
+
+	buildLazyPictureMarkup(src, alt) {
+		if (!src) return '';
+		const webp = this.getWebpSrc(src);
+		const sourceMarkup = webp ? `<source data-srcset="${webp}" type="image/webp">` : '';
+		const imgMarkup = `<img data-src="${src}" alt="${alt}" loading="lazy" decoding="async">`;
+		return `<picture data-src="${src}">${sourceMarkup}${imgMarkup}</picture>`;
+	}
+
 	/**
 	 * 初期化
 	 * @private
@@ -494,17 +507,15 @@ class WorkDetails {
 					<div class="c-slider__track">
 						${work.images.map((imgObj, imgIndex) => {
 							const fullSizeUrl = imgObj.src.split('?')[0];
-							const isFirst = imgIndex === 0;
+							const pictureMarkup = this.buildLazyPictureMarkup(
+								imgObj.src,
+								`${work.alt} - 画像${imgIndex + 1}`
+							);
 
 							return `
 							<div class="c-slider__slide">
 								${imgObj.hasLink ? `<a href="${fullSizeUrl}">` : ''}
-									<img
-										${isFirst ? `src="${imgObj.src}"` : `data-src="${imgObj.src}"`}
-										alt="${work.alt} - 画像${imgIndex + 1}"
-										loading="lazy"
-										decoding="async"
-									/>
+									${pictureMarkup}
 								${imgObj.hasLink ? '</a>' : ''}
 							</div>
 							`;
