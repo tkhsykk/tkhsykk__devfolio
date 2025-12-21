@@ -501,7 +501,7 @@ class WorkDetails {
 	 * @private
 	 */
 	createDetailsHTML(work, index) {
-		const sliderHTML = work.images.length > 1 ? `
+		const sliderHTML = `
 			<div class="c-slider" data-slider="work-details-${index}">
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
@@ -534,23 +534,6 @@ class WorkDetails {
 					</svg>
 				</button>
 				<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
-			</div>
-		` : `
-			<div class="c-slider" data-slider="work-details-${index}">
-				<div class="c-slider__viewport">
-					<div class="c-slider__track">
-						<div class="c-slider__slide">
-							${(() => {
-								const firstImg = work.images[0];
-								const imgObj = firstImg;
-								const fullSizeUrl = imgObj.src.split('?')[0];
-								return imgObj.hasLink
-									? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" loading="lazy" decoding="async" /></a>`
-									: `<img src="${imgObj.src}" alt="${work.alt}" loading="lazy" decoding="async" />`;
-							})()}
-						</div>
-					</div>
-				</div>
 			</div>
 		`;
 

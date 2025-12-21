@@ -208,8 +208,11 @@ class ImageLightbox {
 		this.targetRect = this._computeTargetRect(img, this.sourceRect);
 
 		// モーダル側の画像をセット
-		const src = img.currentSrc || img.src;
-		this.modalImage.src = src;
+		const resolvedSrc = img.currentSrc || img.src;
+
+		// modalImage に使う
+		this.modalImage.src = resolvedSrc;
+
 		if (img.hasAttribute('alt')) {
 			this.modalImage.alt = img.alt;
 		} else {
@@ -222,6 +225,10 @@ class ImageLightbox {
 
 		// tween 用 clone を作成（閉じる時の真逆のロジック）
 		const clone = img.cloneNode();
+
+		// cloneでpngが読まれるのを回避
+		clone.src = resolvedSrc;
+
 		clone.removeAttribute('id');
 		clone.setAttribute('aria-hidden', 'true');
 
