@@ -208,8 +208,11 @@ class ImageLightbox {
 		this.targetRect = this._computeTargetRect(img, this.sourceRect);
 
 		// モーダル側の画像をセット
-		const src = img.currentSrc || img.src;
-		this.modalImage.src = src;
+		const resolvedSrc = img.currentSrc || img.src;
+
+		// modalImage に使う
+		this.modalImage.src = resolvedSrc;
+
 		if (img.hasAttribute('alt')) {
 			this.modalImage.alt = img.alt;
 		} else {
@@ -222,6 +225,10 @@ class ImageLightbox {
 
 		// tween 用 clone を作成（閉じる時の真逆のロジック）
 		const clone = img.cloneNode();
+
+		// cloneでpngが読まれるのを回避
+		clone.src = resolvedSrc;
+
 		clone.removeAttribute('id');
 		clone.setAttribute('aria-hidden', 'true');
 
@@ -664,6 +671,7 @@ class ImageSlider {
 	updateSlides() {
 		const len = this.slideCount;
 		const translateX = -this.currentIndex * 100;
+
 		if (this.track) {
 			this.track.style.transform = `translateX(${translateX}%)`;
 		}
@@ -672,6 +680,10 @@ class ImageSlider {
 			const isActive = index === this.currentIndex;
 			slide.setAttribute('aria-hidden', isActive ? 'false' : 'true');
 			slide.classList.toggle('is-active', isActive);
+
+			if (isActive) {
+				this.loadSlideMedia(slide);
+			}
 		});
 
 		this.updatePagination();
@@ -682,6 +694,28 @@ class ImageSlider {
 			const currentSlide = this.slides[this.currentIndex];
 			const slideLabel = currentSlide.querySelector('img')?.alt || `スライド${this.currentIndex + 1}`;
 			this.liveRegion.textContent = `${slideLabel}、${this.currentIndex + 1}枚目 / 全${len}枚`;
+		}
+	}
+
+	loadSlideMedia(slide) {
+		if (!slide) return;
+
+		const picture = slide.querySelector('picture');
+
+		if (picture && !picture.dataset.loaded) {
+			const source = picture.querySelector('source[data-srcset]');
+			const img = picture.querySelector('img[data-src]');
+
+			if (source) {
+				source.srcset = source.dataset.srcset;
+			}
+
+			if (img) {
+				img.src = img.dataset.src;
+			}
+
+			picture.dataset.loaded = 'true';
+			return;
 		}
 	}
 

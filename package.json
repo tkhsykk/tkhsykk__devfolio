@@ -37,6 +37,7 @@
 		"gulp-rename": "^2.1.0",
 		"gulp-sass": "^5.1.0",
 		"gulp-sourcemaps": "^2.6.5",
+		"gulp-webp": "^5.1.0",
 		"papaparse": "^5.4.1",
 		"postcss": "^8.5.6",
 		"postcss-combine-media-query": "^2.1.0",

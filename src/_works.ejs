@@ -54,8 +54,8 @@
 										linkText = (linkData.text || linkData.label || defaultLinkText).trim();
 									}
 								}
-								const hasLink = !!linkUrl;
-								const linkJson = hasLink ? JSON.stringify({ url: linkUrl, text: linkText }) : '{}';
+						const hasLink = !!linkUrl;
+						const linkJson = hasLink ? JSON.stringify({ url: linkUrl, text: linkText }) : '{}';
 								// タイトル、画像、meta、tags、description、リンクのいずれかがあれば表示
 								const hasContent = title || firstImage || meta || (Array.isArray(tags) && tags.length > 0) || description || hasLink;
 							%>
@@ -69,11 +69,23 @@
 									data-work-images='<%= imagesJson %>'>
 									<article>
 										<% if (firstImage) { %>
-											<button class="p-portfolio__work-image p-portfolio__work-trigger" data-work-trigger
-												aria-label="<%= title || 'ワーク' %>の詳細を表示">
-												<img src="<%= firstImage %>"
-													alt="<%= title || 'ワーク' %>" />
-											</button>
+									<button class="p-portfolio__work-image p-portfolio__work-trigger" data-work-trigger
+										aria-label="<%= title || 'ワーク' %>の詳細を表示">
+										<%
+											const firstImageWebp = firstImage && /\.(png|jpe?g)$/i.test(firstImage)
+												? firstImage.replace(/\.(png|jpe?g)$/i, '.webp')
+												: null;
+										%>
+										<picture>
+											<% if (firstImageWebp) { %>
+												<source srcset="<%= firstImageWebp %>" type="image/webp">
+											<% } %>
+											<img src="<%= firstImage %>"
+												alt="<%= title || 'ワーク' %>"
+												loading="lazy"
+												decoding="async" />
+										</picture>
+									</button>
 										<% } %>
 
 										<div class="p-portfolio__work-content">

@@ -78,6 +78,19 @@ class WorkDetails {
 		this.init();
 	}
 
+	getWebpSrc(src) {
+		if (!src) return '';
+		return src.replace(/\.(png|jpe?g)$/i, '.webp');
+	}
+
+	buildLazyPictureMarkup(src, alt) {
+		if (!src) return '';
+		const webp = this.getWebpSrc(src);
+		const sourceMarkup = webp ? `<source data-srcset="${webp}" type="image/webp">` : '';
+		const imgMarkup = `<img data-src="${src}" alt="${alt}" loading="lazy" decoding="async">`;
+		return `<picture data-src="${src}">${sourceMarkup}${imgMarkup}</picture>`;
+	}
+
 	/**
 	 * 初期化
 	 * @private
@@ -488,23 +501,26 @@ class WorkDetails {
 	 * @private
 	 */
 	createDetailsHTML(work, index) {
-		const sliderHTML = work.images.length > 1 ? `
+		const sliderHTML = `
 			<div class="c-slider" data-slider="work-details-${index}">
 				<div class="c-slider__viewport">
 					<div class="c-slider__track">
-						${work.images.map((imgData, imgIndex) => {
-							// gulpfile.jsで処理済みのデータをそのまま使用
-							const imgObj = imgData;
-							// 原寸大のURLを生成（./images/プレフィックスを維持）
+						${work.images.map((imgObj, imgIndex) => {
 							const fullSizeUrl = imgObj.src.split('?')[0];
+							const pictureMarkup = this.buildLazyPictureMarkup(
+								imgObj.src,
+								`${work.alt} - 画像${imgIndex + 1}`
+							);
+
 							return `
 							<div class="c-slider__slide">
 								${imgObj.hasLink ? `<a href="${fullSizeUrl}">` : ''}
-									<img src="${imgObj.src}" alt="${work.alt} - 画像${imgIndex + 1}" />
+									${pictureMarkup}
 								${imgObj.hasLink ? '</a>' : ''}
 							</div>
-						`;
+							`;
 						}).join('')}
+
 					</div>
 				</div>
 				<button class="c-slider__button c-slider__button--prev" aria-label="前の画像" data-slider-prev>
@@ -518,23 +534,6 @@ class WorkDetails {
 					</svg>
 				</button>
 				<div class="c-slider__pagination" aria-label="スライダーのページネーション"></div>
-			</div>
-		` : `
-			<div class="c-slider" data-slider="work-details-${index}">
-				<div class="c-slider__viewport">
-					<div class="c-slider__track">
-						<div class="c-slider__slide">
-							${(() => {
-								const firstImg = work.images[0];
-								const imgObj = firstImg;
-								const fullSizeUrl = imgObj.src.split('?')[0];
-								return imgObj.hasLink
-									? `<a href="${fullSizeUrl}"><img src="${imgObj.src}" alt="${work.alt}" /></a>`
-									: `<img src="${imgObj.src}" alt="${work.alt}" />`;
-							})()}
-						</div>
-					</div>
-				</div>
 			</div>
 		`;
 

@@ -54,6 +54,9 @@ create-anything/mobile/
 site/*
 !site/functions/
 !site/_headers
+!apple-touch-icon.png
+!favicon.ico
+!icon.svg
 
 private/portfolio.csv
 
