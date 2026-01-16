@@ -16,20 +16,14 @@ jobs:
             - name: Checkout public repo
               uses: actions/checkout@v4
 
-            - name: Assert PRIVATE_REPO_TOKEN is available
-              run: |
-                if [ -z "${{ secrets.PRIVATE_REPO_TOKEN }}" ]; then
-                  echo "PRIVATE_REPO_TOKEN is empty or not available to this job."
-                  exit 1
-                fi
-
             - name: Checkout private repo
               uses: actions/checkout@v4
               with:
-                  repository: ${{ secrets.PRIVATE_REPO_OWNER }}/${{ secrets.PRIVATE_REPO_NAME }}
-                  token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-                  path: private-repo
-                  fetch-depth: 1
+                repository: ${{ secrets.PRIVATE_REPO_OWNER }}/${{ secrets.PRIVATE_REPO_NAME }}
+                token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+                ref: main
+                path: private-repo
+                fetch-depth: 1
 
             - name: Prepare directories
               run: |
